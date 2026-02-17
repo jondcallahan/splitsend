@@ -1,15 +1,315 @@
-@import "tailwindcss";
+/* Oat UI is imported in root.tsx via JS imports */
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+/* Override Oat's default font with Google Sans Flex */
+:root {
+  --font-family: "Google Sans Flex", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  font-family: var(--font-family);
+  padding-bottom: var(--space-16);
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+/* Keyboard shortcut display */
+[data-kbd],
+kbd {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85em;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+  color: var(--foreground);
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-small);
+  white-space: nowrap;
+}
+
+/* Better keyboard focus indicators */
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Command Palette */
+.command-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  z-index: var(--z-modal, 1000);
+}
+
+.command-palette-content {
+  background-color: var(--background, #fff);
+  border-radius: var(--radius-large, 0.75rem);
+  box-shadow: var(--shadow-large);
+  width: 90%;
+  max-width: 640px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.command-palette-search {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.command-palette-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: var(--text-4);
+  padding: var(--space-2) 0;
+  outline: none;
+  color: var(--foreground);
+}
+
+.command-palette-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2);
+}
+
+.command-palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-medium);
+  cursor: pointer;
+  font-size: var(--text-6);
+  text-align: left;
+  color: var(--foreground);
+  transition: background-color var(--transition-fast);
+}
+
+.command-palette-item:hover,
+.command-palette-item.active {
+  background-color: var(--muted);
+}
+
+.command-palette-label {
+  flex: 1;
+}
+
+.command-palette-shortcut {
+  margin-left: var(--space-4);
+  opacity: 0.6;
+}
+
+.command-palette-empty {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: var(--text-7);
+}
+
+.command-palette-footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: var(--space-6);
+  justify-content: center;
+  font-size: var(--text-8);
+  color: var(--muted-foreground);
+}
+
+.command-palette-footer span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Help Overlay */
+.help-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  z-index: var(--z-modal, 1000);
+  overflow-y: auto;
+}
+
+.help-overlay-content {
+  background-color: var(--background, #fff);
+  border-radius: var(--radius-large, 0.75rem);
+  box-shadow: var(--shadow-large);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.help-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.help-overlay-header h2 {
+  margin: 0;
+  font-size: var(--text-2);
+}
+
+.help-overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-8);
+}
+
+.help-overlay-group h3 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+  font-weight: var(--font-semibold);
+}
+
+.help-overlay-list {
+  margin: 0;
+  padding: 0;
+}
+
+.help-overlay-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--faint);
+}
+
+.help-overlay-item:last-child {
+  border-bottom: none;
+}
+
+.help-overlay-item dt {
+  flex-shrink: 0;
+}
+
+.help-overlay-item dd {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-7);
+  color: var(--muted-foreground);
+}
+
+.help-overlay-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: var(--text-7);
+  color: var(--muted-foreground);
+}
+
+.help-overlay-footer p {
+  margin: 0;
+}
+
+/* Keyboard Hints (floating buttons) */
+.keyboard-hints {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  gap: var(--space-2);
+  z-index: 100;
+}
+
+.keyboard-hints button {
+  box-shadow: var(--shadow-medium);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.keyboard-hints button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-large);
+}
+
+.keyboard-hints button kbd {
+  margin: 0;
+}
+
+/* Hide hints on touch devices or small screens */
+@media (pointer: coarse), (max-width: 640px) {
+  .keyboard-hints {
+    display: none;
   }
 }
+
+/* Narrow container for forms/content pages */
+.container.narrow {
+  --container-max: 680px;
+}
+
+/* Card header styles */
+.card > h2:first-child,
+.card > h3:first-child {
+  margin-top: 0;
+}
+
+/* Form with consistent vertical spacing between groups */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-stack label {
+  margin-bottom: var(--space-1);
+}
+
+.form-stack input,
+.form-stack select {
+  margin-bottom: 0;
+}
+
+/* Checkbox/Radio group fieldset */
+fieldset.checkbox-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Expense item animations */
+@keyframes highlightNew {
+  0% {
+    background-color: rgb(from var(--success) r g b / 0.15);
+    transform: translateX(-4px);
+  }
+  100% {
+    background-color: transparent;
+    transform: translateX(0);
+  }
+}
+
+.expense-item {
+  animation: highlightNew 0.6s ease-out;
+}
+
+/* Use Oat's built-in animations instead of custom ones */
