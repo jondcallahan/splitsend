@@ -11,7 +11,9 @@ const isMac =
  * Converts mod+k -> ⌘K on Mac, Ctrl+K on Windows/Linux
  */
 export function formatForDisplay(shortcut: string): string {
-  if (!shortcut) {return "";}
+  if (!shortcut) {
+    return "";
+  }
 
   const parts = shortcut.split("+").map((part) => part.trim());
   const formatted = parts.map((part) => {

@@ -11,10 +11,10 @@ import {
 import { useEffect, useRef } from "react";
 import { Form, redirect, useNavigation } from "react-router";
 
-import type { Command } from "~/components/CommandPalette";
-import type { ShortcutGroup } from "~/components/HelpOverlay";
-import { Kbd } from "~/components/Kbd";
-import { useKeyboard } from "~/contexts/KeyboardContext";
+import type { Command } from "~/components/command-palette";
+import type { ShortcutGroup } from "~/components/help-overlay";
+import { Kbd } from "~/components/kbd";
+import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
 import { parseRecentGroups } from "~/lib/recent-groups.server";
 
@@ -97,16 +97,16 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
     const shortcuts: ShortcutGroup[] = [
       {
         shortcuts: [
-          { key: "Mod+K", description: "Open command palette" },
-          { key: "/", description: "Open command palette" },
-          { key: "?", description: "Show keyboard shortcuts" },
+          { description: "Open command palette", key: "Mod+K" },
+          { description: "Open command palette", key: "/" },
+          { description: "Show keyboard shortcuts", key: "?" },
         ],
         title: "Navigation",
       },
       {
         shortcuts: [
-          { key: "N", description: "Focus name input" },
-          { key: "Enter", description: "Create group" },
+          { description: "Focus name input", key: "N" },
+          { description: "Create group", key: "Enter" },
         ],
         title: "Actions",
       },
@@ -115,8 +115,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
     if (recentGroups.length > 0) {
       shortcuts.push({
         shortcuts: recentGroups.slice(0, 9).map((group, index) => ({
-          key: String(index + 1),
           description: `Go to ${group.name}`,
+          key: String(index + 1),
         })),
         title: "Recent Groups",
       });

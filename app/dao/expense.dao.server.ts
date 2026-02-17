@@ -85,7 +85,10 @@ export const ExpenseDAO = {
          WHERE e.group_id = ?
          ORDER BY e.created_at DESC`
       )
-      .all(groupId) as (Expense & { paid_by_name: string; added_by_name: string | null })[];
+      .all(groupId) as (Expense & {
+      paid_by_name: string;
+      added_by_name: string | null;
+    })[];
 
     return expenses.map((expense) => {
       const splits = db
@@ -202,8 +205,12 @@ export const ExpenseDAO = {
 
     for (const debtor of debtors) {
       for (const creditor of creditors) {
-        if (debtor.remaining <= 0) {break;}
-        if (creditor.remaining <= 0) {continue;}
+        if (debtor.remaining <= 0) {
+          break;
+        }
+        if (creditor.remaining <= 0) {
+          continue;
+        }
 
         const settleAmount = Math.min(debtor.remaining, creditor.remaining);
         if (settleAmount > 0) {

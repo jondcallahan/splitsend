@@ -19,7 +19,9 @@ interface HelpOverlayProps {
  * Opened with ? key, closed with Escape or backdrop click
  */
 export function HelpOverlay({ isOpen, onClose, groups }: HelpOverlayProps) {
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
-import type { Command } from "~/components/CommandPalette";
-import type { ShortcutGroup } from "~/components/HelpOverlay";
+import type { Command } from "~/components/command-palette";
+import type { ShortcutGroup } from "~/components/help-overlay";
 
 interface KeyboardContextValue {
   commands: Command[];

@@ -92,7 +92,9 @@ export function CommandPalette({
     }
   };
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="command-palette-backdrop" onClick={handleBackdropClick}>

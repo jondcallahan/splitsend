@@ -44,7 +44,9 @@ function runMigrations() {
   );
 
   for (const file of files) {
-    if (applied.has(file)) {continue;}
+    if (applied.has(file)) {
+      continue;
+    }
 
     const sql = readFileSync(join(migrationsDir, file), "utf8");
     console.log(`Running migration: ${file}`);

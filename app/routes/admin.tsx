@@ -12,10 +12,10 @@ import { useState, useRef, useEffect } from "react";
 import { Form, redirect, useNavigation, data } from "react-router";
 import { sileo } from "sileo";
 
-import type { Command } from "~/components/CommandPalette";
-import type { ShortcutGroup } from "~/components/HelpOverlay";
-import { Kbd } from "~/components/Kbd";
-import { useKeyboard } from "~/contexts/KeyboardContext";
+import type { Command } from "~/components/command-palette";
+import type { ShortcutGroup } from "~/components/help-overlay";
+import { Kbd } from "~/components/kbd";
+import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
 import { MemberDAO } from "~/dao/member.dao.server";
@@ -71,7 +71,9 @@ export async function action({ request, params }: Route.ActionArgs) {
 
   if (intent === "add-member") {
     const name = String(formData.get("memberName")).trim();
-    if (!name) {return { error: "Member name is required" };}
+    if (!name) {
+      return { error: "Member name is required" };
+    }
     MemberDAO.create(group.id, name);
     return { success: true };
   }
@@ -82,14 +84,23 @@ export async function action({ request, params }: Route.ActionArgs) {
     const paidBy = Number(formData.get("paidBy"));
     const splitAmong = formData.getAll("splitAmong").map(Number);
 
-    if (!description) {return { error: "Description is required" };}
-    if (!amountStr) {return { error: "Amount is required" };}
-    if (!paidBy) {return { error: "Select who paid" };}
-    if (splitAmong.length === 0)
-      {return { error: "Select at least one person to split with" };}
+    if (!description) {
+      return { error: "Description is required" };
+    }
+    if (!amountStr) {
+      return { error: "Amount is required" };
+    }
+    if (!paidBy) {
+      return { error: "Select who paid" };
+    }
+    if (splitAmong.length === 0) {
+      return { error: "Select at least one person to split with" };
+    }
 
     const amountCents = currency(amountStr).intValue;
-    if (amountCents <= 0) {return { error: "Amount must be greater than 0" };}
+    if (amountCents <= 0) {
+      return { error: "Amount must be greater than 0" };
+    }
 
     ExpenseDAO.create(group.id, paidBy, description, amountCents, splitAmong);
     return { success: true };
@@ -97,7 +108,9 @@ export async function action({ request, params }: Route.ActionArgs) {
 
   if (intent === "update-name") {
     const name = String(formData.get("groupName")).trim();
-    if (!name) {return { error: "Group name is required" };}
+    if (!name) {
+      return { error: "Group name is required" };
+    }
     GroupDAO.updateName(group.id, name);
     return { success: true };
   }
@@ -109,14 +122,23 @@ export async function action({ request, params }: Route.ActionArgs) {
     const paidBy = Number(formData.get("paidBy"));
     const splitAmong = formData.getAll("splitAmong").map(Number);
 
-    if (!description) {return { error: "Description is required" };}
-    if (!amountStr) {return { error: "Amount is required" };}
-    if (!paidBy) {return { error: "Select who paid" };}
-    if (splitAmong.length === 0)
-      {return { error: "Select at least one person to split with" };}
+    if (!description) {
+      return { error: "Description is required" };
+    }
+    if (!amountStr) {
+      return { error: "Amount is required" };
+    }
+    if (!paidBy) {
+      return { error: "Select who paid" };
+    }
+    if (splitAmong.length === 0) {
+      return { error: "Select at least one person to split with" };
+    }
 
     const amountCents = currency(amountStr).intValue;
-    if (amountCents <= 0) {return { error: "Amount must be greater than 0" };}
+    if (amountCents <= 0) {
+      return { error: "Amount must be greater than 0" };
+    }
 
     ExpenseDAO.update(expenseId, description, amountCents, paidBy, splitAmong);
     return { success: true };
@@ -169,7 +191,8 @@ export default function Admin({
 
   // R - Toggle rename dialog using OAT's dialog API
   useHotkey("R", () => {
-    const dialog = document.querySelector("#rename-dialog"
+    const dialog = document.querySelector(
+      "#rename-dialog"
     ) as HTMLDialogElement;
     if (dialog) {
       dialog.open ? dialog.close() : dialog.showModal();
@@ -239,8 +262,7 @@ export default function Admin({
       },
       {
         action: () => {
-          const dialog = document.getElementById(
-            "rename-dialog"
+          const dialog = document.querySelector("#rename-dialog"
           ) as HTMLDialogElement;
           dialog?.showModal();
         },
@@ -291,18 +313,18 @@ export default function Admin({
     const shortcuts: ShortcutGroup[] = [
       {
         shortcuts: [
-          { key: "H", description: "Go home" },
-          { key: "Mod+K", description: "Open command palette" },
-          { key: "/", description: "Open command palette" },
-          { key: "?", description: "Show keyboard shortcuts" },
+          { description: "Go home", key: "H" },
+          { description: "Open command palette", key: "Mod+K" },
+          { description: "Open command palette", key: "/" },
+          { description: "Show keyboard shortcuts", key: "?" },
         ],
         title: "Navigation",
       },
       {
         shortcuts: [
-          { key: "M", description: "Focus member input" },
-          { key: "R", description: "Toggle rename group" },
-          { key: "Escape", description: "Close dialog/cancel sequence" },
+          { description: "Focus member input", key: "M" },
+          { description: "Toggle rename group", key: "R" },
+          { description: "Close dialog/cancel sequence", key: "Escape" },
         ],
         title: "Actions",
       },
@@ -318,8 +340,8 @@ export default function Admin({
     if (members.length > 0) {
       shortcuts.push({
         shortcuts: members.slice(0, 9).map((member, index) => ({
-          key: `C ${index + 1}`,
           description: `Copy invite link for ${member.name}`,
+          key: `C ${index + 1}`,
         })),
         title: "Member Invites",
       });
@@ -331,7 +353,7 @@ export default function Admin({
   // Show success toast when expense is added
   useEffect(() => {
     if (actionData?.success) {
-      const {formData} = navigation;
+      const { formData } = navigation;
       if (formData?.get("intent") === "add-expense") {
         sileo.success({
           description: "Expense added successfully",

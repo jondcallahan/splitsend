@@ -12,12 +12,12 @@ import {
 import { Toaster } from "sileo";
 
 import type { Route } from "./+types/root";
-import { CommandPalette } from './components/CommandPalette';
-import type { Command } from './components/CommandPalette';
-import { HelpOverlay } from './components/HelpOverlay';
-import type { ShortcutGroup } from './components/HelpOverlay';
-import { Kbd } from "./components/Kbd";
-import { KeyboardContext } from "./contexts/KeyboardContext";
+import { CommandPalette } from "./components/command-palette";
+import type { Command } from "./components/command-palette";
+import { HelpOverlay } from "./components/help-overlay";
+import type { ShortcutGroup } from "./components/help-overlay";
+import { Kbd } from "./components/kbd";
+import { KeyboardContext } from "./contexts/keyboard-context";
 
 import "sileo/styles.css";
 import "@knadh/oat/oat.min.css";

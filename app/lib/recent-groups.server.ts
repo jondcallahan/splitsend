@@ -9,9 +9,13 @@ const COOKIE_NAME = "splitsend_recent";
 const MAX_GROUPS = 10;
 
 export function parseRecentGroups(cookieHeader: string | null): RecentGroup[] {
-  if (!cookieHeader) {return [];}
+  if (!cookieHeader) {
+    return [];
+  }
   const match = cookieHeader.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
-  if (!match) {return [];}
+  if (!match) {
+    return [];
+  }
   try {
     return JSON.parse(decodeURIComponent(match[1])) as RecentGroup[];
   } catch {

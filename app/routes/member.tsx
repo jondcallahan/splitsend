@@ -5,10 +5,10 @@ import { useEffect, useRef } from "react";
 import { data, Form, useNavigation } from "react-router";
 import { sileo } from "sileo";
 
-import type { Command } from "~/components/CommandPalette";
-import type { ShortcutGroup } from "~/components/HelpOverlay";
-import { Kbd } from "~/components/Kbd";
-import { useKeyboard } from "~/contexts/KeyboardContext";
+import type { Command } from "~/components/command-palette";
+import type { ShortcutGroup } from "~/components/help-overlay";
+import { Kbd } from "~/components/kbd";
+import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
 import { MemberDAO } from "~/dao/member.dao.server";
@@ -30,10 +30,14 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ request, params }: Route.ActionArgs) {
   const group = GroupDAO.findBySlug(params.slug);
-  if (!group) {throw new Response("Not Found", { status: 404 });}
+  if (!group) {
+    throw new Response("Not Found", { status: 404 });
+  }
 
   const member = MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
-  if (!member) {throw new Response("Not Found", { status: 404 });}
+  if (!member) {
+    throw new Response("Not Found", { status: 404 });
+  }
 
   const formData = await request.formData();
   const intent = formData.get("intent");
@@ -44,14 +48,23 @@ export async function action({ request, params }: Route.ActionArgs) {
     const paidBy = Number(formData.get("paidBy"));
     const splitAmong = formData.getAll("splitAmong").map(Number);
 
-    if (!description) {return { error: "Description is required" };}
-    if (!amountStr) {return { error: "Amount is required" };}
-    if (!paidBy) {return { error: "Select who paid" };}
-    if (splitAmong.length === 0)
-      {return { error: "Select at least one person to split with" };}
+    if (!description) {
+      return { error: "Description is required" };
+    }
+    if (!amountStr) {
+      return { error: "Amount is required" };
+    }
+    if (!paidBy) {
+      return { error: "Select who paid" };
+    }
+    if (splitAmong.length === 0) {
+      return { error: "Select at least one person to split with" };
+    }
 
     const amountCents = currency(amountStr).intValue;
-    if (amountCents <= 0) {return { error: "Amount must be greater than 0" };}
+    if (amountCents <= 0) {
+      return { error: "Amount must be greater than 0" };
+    }
 
     ExpenseDAO.create(
       group.id,
@@ -152,10 +165,10 @@ export default function MemberView({
     const shortcuts: ShortcutGroup[] = [
       {
         shortcuts: [
-          { key: "H", description: "Go home" },
-          { key: "Mod+K", description: "Open command palette" },
-          { key: "/", description: "Open command palette" },
-          { key: "?", description: "Show keyboard shortcuts" },
+          { description: "Go home", key: "H" },
+          { description: "Open command palette", key: "Mod+K" },
+          { description: "Open command palette", key: "/" },
+          { description: "Show keyboard shortcuts", key: "?" },
         ],
         title: "Navigation",
       },
@@ -163,7 +176,7 @@ export default function MemberView({
 
     if (members.length >= 2) {
       shortcuts.push({
-        shortcuts: [{ key: "E", description: "Focus expense input" }],
+        shortcuts: [{ description: "Focus expense input", key: "E" }],
         title: "Actions",
       });
     }
@@ -174,7 +187,7 @@ export default function MemberView({
   // Show success toast when expense is added
   useEffect(() => {
     if (actionData?.success) {
-      const {formData} = navigation;
+      const { formData } = navigation;
       if (formData?.get("intent") === "add-expense") {
         sileo.success({
           description: "Expense added successfully",
