@@ -16,7 +16,7 @@ import { CommandPalette } from "./components/command-palette";
 import type { Command } from "./components/command-palette";
 import { HelpOverlay } from "./components/help-overlay";
 import type { ShortcutGroup } from "./components/help-overlay";
-import { Kbd } from "./components/kbd";
+
 import { KeyboardContext } from "./contexts/keyboard-context";
 
 import "sileo/styles.css";
@@ -105,26 +105,23 @@ export default function App() {
       <Toaster position="top-right" />
       <Outlet />
 
-      {/* Keyboard hints */}
+      {/* Keyboard hints — only visible on non-touch devices via CSS */}
       <div className="keyboard-hints">
         <button
           type="button"
           onClick={() => setCommandPaletteOpen(true)}
           className="outline small"
-          title="Open command palette"
+          title="Open command palette (⌘K or /)"
         >
-          <span style={{ fontSize: "0.85rem", marginRight: "0.25rem" }}>
-            Search
-          </span>
-          <Kbd shortcut="Mod+K" style={{ fontSize: "0.75rem" }} />
+          Search
         </button>
         <button
           type="button"
           onClick={() => setHelpOverlayOpen(true)}
           className="outline small"
-          title="Show keyboard shortcuts"
+          title="Show keyboard shortcuts (?)"
         >
-          <Kbd shortcut="?" style={{ fontSize: "0.75rem" }} />
+          ?
         </button>
       </div>
 

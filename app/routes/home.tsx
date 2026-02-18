@@ -1,4 +1,5 @@
 import { useHotkey } from "@tanstack/react-hotkeys";
+import type { RegisterableHotkey } from "@tanstack/react-hotkeys";
 import {
   Wallet,
   Shield,
@@ -13,7 +14,7 @@ import { Form, redirect, useNavigation } from "react-router";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Kbd } from "~/components/kbd";
+
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
 import { parseRecentGroups } from "~/lib/recent-groups.server";
@@ -61,14 +62,16 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
   });
 
   // Navigate to recent groups with number keys
-  recentGroups.forEach((group, index) => {
-    const key = String(index + 1) as any;
-    if (index < 9) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useHotkey(key, () => {
+  (
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as RegisterableHotkey[]
+  ).forEach((key, i) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useHotkey(key, () => {
+      const group = recentGroups[i];
+      if (group) {
         window.location.href = group.url;
-      });
-    }
+      }
+    });
   });
 
   // Set up commands for command palette
@@ -160,11 +163,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         <Form method="post">
           <fieldset disabled={isSubmitting}>
             <label htmlFor="name">
-              Name your group{" "}
-              <Kbd
-                shortcut="N"
-                style={{ marginLeft: "0.5rem", opacity: 0.6 }}
-              />
+              Name your group
             </label>
             <input
               ref={inputRef}
@@ -188,7 +187,6 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               style={{ marginTop: "1rem", width: "100%" }}
             >
               {isSubmitting ? "Creating…" : "Create Group — it's free"}
-              <Kbd shortcut="Mod+Enter" style={{ opacity: 0.6 }} />
             </button>
           </fieldset>
         </Form>
@@ -235,9 +233,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                     {g.role === "admin" ? "Admin" : `Member · ${g.memberName}`}
                   </div>
                 </div>
-                {index < 9 && (
-                  <Kbd shortcut={String(index + 1)} style={{ opacity: 0.5 }} />
-                )}
+
               </a>
             ))}
           </div>

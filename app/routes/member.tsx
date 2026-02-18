@@ -7,7 +7,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Kbd } from "~/components/kbd";
+
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
@@ -215,8 +215,9 @@ export default function MemberView({
       </div>
 
       {/* My Balances */}
-      <section className="card" style={{ marginBottom: "1.5rem" }}>
+      <section className="card" aria-labelledby="balances-heading" style={{ marginBottom: "1.5rem" }}>
         <h2
+          id="balances-heading"
           style={{
             alignItems: "center",
             display: "flex",
@@ -276,8 +277,9 @@ export default function MemberView({
       </section>
 
       {/* Members */}
-      <section className="card" style={{ marginBottom: "1.5rem" }}>
+      <section className="card" aria-labelledby="members-heading" style={{ marginBottom: "1.5rem" }}>
         <h2
+          id="members-heading"
           style={{
             alignItems: "center",
             display: "flex",
@@ -310,8 +312,8 @@ export default function MemberView({
 
       {/* Add Expense */}
       {members.length >= 2 && (
-        <section className="card" style={{ marginBottom: "1.5rem" }}>
-          <h2 style={{ marginTop: 0 }}>Add Expense</h2>
+        <section className="card" aria-labelledby="add-expense-heading" style={{ marginBottom: "1.5rem" }}>
+          <h2 id="add-expense-heading" style={{ marginTop: 0 }}>Add Expense</h2>
 
           {actionData?.error && (
             <p style={{ color: "var(--danger)" }}>{actionData.error}</p>
@@ -322,7 +324,7 @@ export default function MemberView({
 
             <div>
               <label htmlFor="description" className="flex items-center gap-2">
-                What was it for? <Kbd shortcut="E" style={{ opacity: 0.6 }} />
+                What was it for?
               </label>
               <input
                 ref={expenseDescriptionRef}
@@ -388,7 +390,6 @@ export default function MemberView({
               style={{ width: "100%" }}
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
-              <Kbd shortcut="Mod+Enter" style={{ opacity: 0.6 }} />
             </button>
           </Form>
         </section>
@@ -396,8 +397,9 @@ export default function MemberView({
 
       {/* Expenses */}
       {expenses.length > 0 && (
-        <section className="card">
+        <section className="card" aria-labelledby="expenses-heading">
           <h2
+            id="expenses-heading"
             style={{
               alignItems: "center",
               display: "flex",
@@ -422,7 +424,7 @@ export default function MemberView({
                   justifyContent: "space-between",
                 }}
               >
-                <strong>{e.description}</strong>
+                <h3 style={{ fontSize: "inherit", lineHeight: "inherit", margin: 0 }}>{e.description}</h3>
                 <span style={{ fontWeight: 700 }}>{cents(e.amount)}</span>
               </div>
               <div

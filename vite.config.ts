@@ -4,4 +4,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [reactRouter(), tsconfigPaths()],
+  server: {
+    host: !!process.env.PORT,
+    port: Number(process.env.PORT) || 5173,
+    strictPort: !!process.env.PORT,
+  },
 });

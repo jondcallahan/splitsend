@@ -2,15 +2,23 @@ import { Database } from "bun:sqlite";
 import { readFileSync, readdirSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
-const DB_PATH = join(import.meta.dirname, "..", "data", "splitsend.db");
+const DB_PATH =
+  process.env.DATABASE_PATH ??
+  join(import.meta.dirname, "..", "data", "splitsend.db");
 
-// Ensure data directory exists
-mkdirSync(join(import.meta.dirname, "..", "data"), { recursive: true });
+const inMemory = DB_PATH === ":memory:";
+
+// Ensure data directory exists (not needed for in-memory databases)
+if (!inMemory) {
+  mkdirSync(join(import.meta.dirname, "..", "data"), { recursive: true });
+}
 
 const db = new Database(DB_PATH, { create: true });
 
-// Enable WAL mode for better concurrent read performance
-db.exec("PRAGMA journal_mode=WAL");
+// WAL mode is not applicable to in-memory databases
+if (!inMemory) {
+  db.exec("PRAGMA journal_mode=WAL");
+}
 db.exec("PRAGMA foreign_keys=ON");
 
 // Create migrations table

@@ -1,4 +1,5 @@
 import { useHotkey } from "@tanstack/react-hotkeys";
+import type { RegisterableHotkey } from "@tanstack/react-hotkeys";
 import currency from "currency.js";
 import {
   Copy,
@@ -14,7 +15,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Kbd } from "~/components/kbd";
+
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
@@ -221,7 +222,6 @@ export default function Admin({
       copyToastRef.current = sileo.info({
         description: "Press 1-9 to select member, Escape to cancel",
         duration: 3000,
-        id: "copy-mode",
         title: "Copy invite link",
       });
       setCopyMode(true);
@@ -229,12 +229,17 @@ export default function Admin({
     }
   });
 
-  members.slice(0, 9).forEach((member, index) => {
-    const num = String(index + 1);
+  (
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as RegisterableHotkey[]
+  ).forEach((num, i) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useHotkey(
       num,
       () => {
+        const member = members[i];
+        if (!member) {
+          return;
+        }
         const link = `${baseUrl}/g/${group.slug}/m/${member.token}`;
         copyLink(link, member.name);
         exitCopyMode();
@@ -262,7 +267,8 @@ export default function Admin({
       },
       {
         action: () => {
-          const dialog = document.querySelector("#rename-dialog"
+          const dialog = document.querySelector(
+            "#rename-dialog"
           ) as HTMLDialogElement;
           dialog?.showModal();
         },
@@ -378,8 +384,9 @@ export default function Admin({
               type="button"
               commandfor="rename-dialog"
               command="show-modal"
-              className="outline small"
+              aria-label="Rename group"
               title="Rename group (R)"
+              className="outline small"
             >
               <Pencil size={14} />
             </button>
@@ -389,10 +396,10 @@ export default function Admin({
       </div>
 
       {/* Rename Dialog */}
-      <dialog key={group.name} id="rename-dialog" closedby="any">
+      <dialog key={group.name} id="rename-dialog" aria-labelledby="rename-dialog-heading" closedby="any">
         <Form method="post">
           <header>
-            <h3>Rename Group</h3>
+            <h3 id="rename-dialog-heading">Rename Group</h3>
           </header>
           <div>
             <input type="hidden" name="intent" value="update-name" />
@@ -428,8 +435,8 @@ export default function Admin({
       )}
 
       {/* Members Section */}
-      <section className="card mb-6">
-        <h2>
+      <section className="card mb-6" aria-labelledby="members-heading">
+        <h2 id="members-heading">
           Members{" "}
           {members.length > 0 && (
             <span className="text-light">({members.length})</span>
@@ -441,7 +448,7 @@ export default function Admin({
             No members yet. Add someone to get started!
           </p>
         ) : (
-          <table className="w-100 mb-4">
+          <table className="w-100 mb-4" aria-label="Members">
             <thead>
               <tr>
                 <th className="text-left">Name</th>
@@ -461,12 +468,6 @@ export default function Admin({
                         className="small flex items-center gap-1"
                       >
                         <Copy size={14} /> Copy link
-                        {index < 9 && (
-                          <Kbd
-                            shortcut={`C then ${index + 1}`}
-                            style={{ opacity: 0.7 }}
-                          />
-                        )}
                       </button>
                     </td>
                   </tr>
@@ -480,6 +481,7 @@ export default function Admin({
           <input type="hidden" name="intent" value="add-member" />
           <input
             ref={memberInputRef}
+            aria-label="Member name"
             name="memberName"
             type="text"
             placeholder="Name"
@@ -492,21 +494,21 @@ export default function Admin({
             disabled={isSubmitting}
             className="flex items-center gap-1"
           >
-            Add <Kbd shortcut="M" style={{ opacity: 0.7 }} />
+            Add
           </button>
         </Form>
       </section>
 
       {/* Add Expense */}
       {members.length >= 2 && (
-        <section className="card mb-6">
-          <h2>Add Expense</h2>
+        <section className="card mb-6" aria-labelledby="add-expense-heading">
+          <h2 id="add-expense-heading">Add Expense</h2>
           <Form method="post" key={expenses.length} className="form-stack">
             <input type="hidden" name="intent" value="add-expense" />
 
             <div>
               <label htmlFor="description" className="flex items-center gap-2">
-                What was it for? <Kbd shortcut="E" style={{ opacity: 0.6 }} />
+                What was it for?
               </label>
               <input
                 ref={expenseDescriptionRef}
@@ -564,7 +566,6 @@ export default function Admin({
               className="w-100 flex items-center justify-center gap-2"
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
-              <Kbd shortcut="Mod+Enter" style={{ opacity: 0.6 }} />
             </button>
           </Form>
         </section>
@@ -572,8 +573,8 @@ export default function Admin({
 
       {/* Balances */}
       {balances.length > 0 && (
-        <section className="card mb-6">
-          <h2 className="flex items-center gap-2">
+        <section className="card mb-6" aria-labelledby="settlements-heading">
+          <h2 id="settlements-heading" className="flex items-center gap-2">
             <ArrowRightLeft size={20} /> Settlements
           </h2>
           <ul className="unstyled" style={{ margin: 0 }}>
@@ -598,8 +599,8 @@ export default function Admin({
 
       {/* Expenses */}
       {expenses.length > 0 && (
-        <section className="card">
-          <h2 className="flex items-center gap-2">
+        <section className="card" aria-labelledby="expenses-heading">
+          <h2 id="expenses-heading" className="flex items-center gap-2">
             <Receipt size={20} /> Expenses
           </h2>
           {expenses.map((e, idx) => {
@@ -614,11 +615,12 @@ export default function Admin({
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <strong>{e.description}</strong>
+                  <h3 style={{ fontSize: "inherit", lineHeight: "inherit", margin: 0 }}>{e.description}</h3>
                   <div className="flex items-center gap-2">
                     <strong>{cents(e.amount)}</strong>
                     <button
                       type="button"
+                      aria-label={`Edit expense: ${e.description}`}
                       commandfor={dialogId}
                       command="show-modal"
                       className="outline small"
@@ -647,12 +649,12 @@ export default function Admin({
                 </small>
 
                 {/* Delete Confirmation Dialog */}
-                <dialog id={`delete-dialog-${e.id}`} closedby="any">
+                <dialog id={`delete-dialog-${e.id}`} aria-labelledby={`delete-dialog-${e.id}-heading`} closedby="any">
                   <Form method="post">
                     <input type="hidden" name="intent" value="delete-expense" />
                     <input type="hidden" name="expenseId" value={e.id} />
                     <header>
-                      <h3>Delete Expense?</h3>
+                      <h3 id={`delete-dialog-${e.id}-heading`}>Delete Expense?</h3>
                       <p>
                         Are you sure you want to delete "{e.description}"? This
                         action cannot be undone.
@@ -675,10 +677,10 @@ export default function Admin({
                 </dialog>
 
                 {/* Edit Dialog */}
-                <dialog id={dialogId} closedby="any">
+                <dialog id={dialogId} aria-labelledby={`${dialogId}-heading`} closedby="any">
                   <Form method="post" id={`edit-form-${e.id}`}>
                     <header>
-                      <h3>Edit Expense</h3>
+                      <h3 id={`${dialogId}-heading`}>Edit Expense</h3>
                     </header>
                     <div className="form-stack">
                       <input
@@ -776,7 +778,6 @@ export default function Admin({
                           className="flex items-center gap-2"
                         >
                           {isSubmitting ? "Saving…" : "Save"}
-                          <Kbd shortcut="Mod+Enter" style={{ opacity: 0.6 }} />
                         </button>
                       </div>
                     </footer>

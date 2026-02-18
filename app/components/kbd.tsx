@@ -11,7 +11,7 @@ interface KbdProps {
  */
 export function Kbd({ shortcut, className, style }: KbdProps) {
   return (
-    <kbd className={className} data-kbd style={style}>
+    <kbd aria-hidden="true" className={className} data-kbd style={style}>
       {formatForDisplay(shortcut)}
     </kbd>
   );
