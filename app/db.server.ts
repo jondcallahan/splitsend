@@ -104,7 +104,8 @@ export function runMigrations(dbInstance: Database.Database = db): void {
   }
 }
 
-// Run migrations on the default db instance
-runMigrations();
+// Note: Migrations are NOT run automatically on app launch.
+// For local dev, run `bun run migrate` when schema changes.
+// For production (Vercel), add `bun run migrate` to your build command.
 
 export { db };

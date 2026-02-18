@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
+    "migrate": "bun scripts/migrate.ts",
+    "build:with-migrations": "react-router build && bun run migrate",
     "dev": "portless splitsend bunx --bun react-router dev",
     "start": "bunx --bun react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
