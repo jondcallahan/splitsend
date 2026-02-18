@@ -17,7 +17,7 @@ export default defineConfig({
     url: "http://localhost:5174",
     reuseExistingServer: false,
     env: {
-      DATABASE_PATH: ":memory:",
+      PLAYWRIGHT_TEST: "1",
     },
   },
 });

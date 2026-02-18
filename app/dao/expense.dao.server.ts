@@ -77,7 +77,7 @@ export const ExpenseDAO = {
 
   findByGroupId(groupId: number): ExpenseWithDetails[] {
     const expenses = db
-      .query(
+      .prepare(
         `SELECT e.*, m.name as paid_by_name, m2.name as added_by_name
          FROM expenses e
          JOIN members m ON m.id = e.paid_by_member_id
@@ -92,7 +92,7 @@ export const ExpenseDAO = {
 
     return expenses.map((expense) => {
       const splits = db
-        .query(
+        .prepare(
           `SELECT es.*, m.name as member_name
            FROM expense_splits es
            JOIN members m ON m.id = es.member_id
@@ -154,7 +154,7 @@ export const ExpenseDAO = {
     // Calculate each member's net balance:
     // positive = they are owed money, negative = they owe money
     const rows = db
-      .query(
+      .prepare(
         `SELECT
           m.id as member_id,
           m.name,

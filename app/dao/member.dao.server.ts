@@ -21,28 +21,29 @@ export const MemberDAO = {
 
   findByGroupId(groupId: number): Member[] {
     return db
-      .query("SELECT * FROM members WHERE group_id = ? ORDER BY created_at")
+      .prepare("SELECT * FROM members WHERE group_id = ? ORDER BY created_at")
       .all(groupId) as Member[];
   },
 
   findByGroupIdAndToken(groupId: number, token: string): Member | null {
     return (
       (db
-        .query("SELECT * FROM members WHERE group_id = ? AND token = ?")
+        .prepare("SELECT * FROM members WHERE group_id = ? AND token = ?")
         .get(groupId, token) as Member) ?? null
     );
   },
 
   findById(id: number): Member | null {
     return (
-      (db.query("SELECT * FROM members WHERE id = ?").get(id) as Member) ?? null
+      (db.prepare("SELECT * FROM members WHERE id = ?").get(id) as Member) ??
+      null
     );
   },
 
   findByToken(token: string): Member | null {
     return (
       (db
-        .query("SELECT * FROM members WHERE token = ?")
+        .prepare("SELECT * FROM members WHERE token = ?")
         .get(token) as Member) ?? null
     );
   },

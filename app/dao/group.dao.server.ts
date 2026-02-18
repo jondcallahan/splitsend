@@ -14,7 +14,7 @@ export const GroupDAO = {
     let slug = generateSlug();
 
     // Retry on slug collision (unlikely but possible)
-    const existing = db.query("SELECT id FROM groups WHERE slug = ?");
+    const existing = db.prepare("SELECT id FROM groups WHERE slug = ?");
     let attempts = 0;
     while (existing.get(slug) && attempts < 10) {
       slug = generateSlug();
@@ -35,14 +35,14 @@ export const GroupDAO = {
   findByAdminToken(adminToken: string): Group | null {
     return (
       (db
-        .query("SELECT * FROM groups WHERE admin_token = ?")
+        .prepare("SELECT * FROM groups WHERE admin_token = ?")
         .get(adminToken) as Group) ?? null
     );
   },
 
   findBySlug(slug: string): Group | null {
     return (
-      (db.query("SELECT * FROM groups WHERE slug = ?").get(slug) as Group) ??
+      (db.prepare("SELECT * FROM groups WHERE slug = ?").get(slug) as Group) ??
       null
     );
   },
@@ -50,7 +50,7 @@ export const GroupDAO = {
   findBySlugAndAdminToken(slug: string, adminToken: string): Group | null {
     return (
       (db
-        .query("SELECT * FROM groups WHERE slug = ? AND admin_token = ?")
+        .prepare("SELECT * FROM groups WHERE slug = ? AND admin_token = ?")
         .get(slug, adminToken) as Group) ?? null
     );
   },
