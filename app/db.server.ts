@@ -1,6 +1,12 @@
 import { createClient, type Client } from "@libsql/client";
 import { mkdir, readdir } from "node:fs/promises";
 
+const isRemote = !!(
+  process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
+);
+const inMemory =
+  process.env.PLAYWRIGHT_TEST === "1" || process.env.NODE_ENV === "test";
+
 /**
  * Factory function to create a database client.
  * Supports three modes:
@@ -10,15 +16,15 @@ import { mkdir, readdir } from "node:fs/promises";
  */
 export function createDb(): Client {
   // Playwright tests → fresh in-memory DB every time
-  if (process.env.PLAYWRIGHT_TEST === "1" || process.env.NODE_ENV === "test") {
+  if (inMemory) {
     return createClient({ url: ":memory:" });
   }
 
   // Production / Preview (Vercel) → Turso
-  if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+  if (isRemote) {
     return createClient({
-      url: process.env.TURSO_DATABASE_URL,
-      authToken: process.env.TURSO_AUTH_TOKEN,
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
     });
   }
 
@@ -31,13 +37,6 @@ export function createDb(): Client {
 
 // Create singleton instance for normal use
 const db = createDb();
-
-// Detect connection type
-const isRemote = !!(
-  process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
-);
-const inMemory =
-  process.env.PLAYWRIGHT_TEST === "1" || process.env.NODE_ENV === "test";
 
 // Initialize database (WAL mode + foreign keys + migrations table)
 const _initPromise = (async () => {
@@ -67,7 +66,6 @@ const _initPromise = (async () => {
 
 /**
  * Ensure the database is initialized before use.
- * Call this at the top of loaders/actions if needed.
  */
 export async function ensureDbReady(): Promise<void> {
   await _initPromise;
@@ -80,7 +78,6 @@ export async function ensureDbReady(): Promise<void> {
 export async function runMigrations(
   dbInstance: Client = db
 ): Promise<void> {
-  // Ensure migrations table exists
   await dbInstance.execute(`
     CREATE TABLE IF NOT EXISTS _migrations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -112,7 +109,6 @@ export async function runMigrations(
     const sql = await Bun.file(`${migrationsDir}/${file}`).text();
     console.log(`Running migration: ${file}`);
 
-    // Split migration file into individual statements and run as a batch
     const statements = sql
       .split(";")
       .map((s) => s.trim())
@@ -130,9 +126,5 @@ export async function runMigrations(
     );
   }
 }
-
-// Note: Migrations are NOT run automatically on app launch.
-// For local dev, run `bun run migrate` when schema changes.
-// For production (Vercel), add `bun run migrate` to your build command.
 
 export { db };
