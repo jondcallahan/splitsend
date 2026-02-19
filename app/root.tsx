@@ -51,7 +51,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        <Analytics />
+        <Analytics
+          beforeSend={(event) => {
+            const url = new URL(event.url);
+            // Mask /g/:slug/admin/:adminToken and /g/:slug/m/:memberToken paths
+            url.pathname = url.pathname.replace(
+              /^\/g\/[^/]+\/admin\/[^/]+/,
+              "/g/[slug]/admin/[adminToken]"
+            ).replace(
+              /^\/g\/[^/]+\/m\/[^/]+/,
+              "/g/[slug]/m/[memberToken]"
+            );
+            return { ...event, url: url.toString() };
+          }}
+        />
         {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
