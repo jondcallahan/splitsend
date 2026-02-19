@@ -1,5 +1,6 @@
 import { useHotkey } from "@tanstack/react-hotkeys";
-import { useState, useEffect } from "react";
+import { Agentation } from "agentation";
+import { useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -49,6 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
   );
