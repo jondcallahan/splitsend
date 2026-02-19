@@ -36,13 +36,19 @@ export function createDb(): Database.Database {
 // Create singleton instance for normal use
 const db = createDb();
 
-// WAL mode and foreign keys
+// Detect connection type
+const isRemote = !!(
+  process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
+);
 const inMemory =
   process.env.PLAYWRIGHT_TEST === "1" || process.env.NODE_ENV === "test";
 
-if (!inMemory) {
+// WAL mode only for local file-based SQLite (not remote Turso or in-memory)
+if (!inMemory && !isRemote) {
   db.exec("PRAGMA journal_mode=WAL");
 }
+
+// Foreign keys work on both local and remote
 db.exec("PRAGMA foreign_keys=ON");
 
 // Create migrations table
