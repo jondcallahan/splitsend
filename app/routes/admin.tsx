@@ -2,10 +2,9 @@ import { useHotkey } from "@tanstack/react-hotkeys";
 import type { RegisterableHotkey } from "@tanstack/react-hotkeys";
 import currency from "currency.js";
 import {
-  Copy,
+  Share2,
   ArrowRightLeft,
   Receipt,
-  Users,
   Pencil,
   Trash2,
 } from "lucide-react";
@@ -176,6 +175,25 @@ export default function Admin({
       duration: 2000,
       title: "Link copied",
     });
+  }
+
+  async function shareOrCopyLink(link: string, name: string) {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${name}'s invite — ${group.name}`,
+          text: `Here's your SplitSend link for ${group.name}. No app needed, just open the link.`,
+          url: link,
+        });
+      } catch (err) {
+        // AbortError means the user dismissed the sheet — that's fine
+        if (err instanceof Error && err.name !== "AbortError") {
+          copyLink(link, name);
+        }
+      }
+    } else {
+      copyLink(link, name);
+    }
   }
 
   // M - Focus member input
@@ -464,10 +482,10 @@ export default function Admin({
                     <td>
                       <button
                         type="button"
-                        onClick={() => copyLink(link, m.name)}
+                        onClick={() => shareOrCopyLink(link, m.name)}
                         className="small flex items-center gap-1"
                       >
-                        <Copy size={14} /> Copy link
+                        <Share2 size={14} /> Share link
                       </button>
                     </td>
                   </tr>
