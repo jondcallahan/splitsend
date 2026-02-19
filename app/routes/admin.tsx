@@ -33,7 +33,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const group = GroupDAO.findBySlugAndAdminToken(
+  const group = await GroupDAO.findBySlugAndAdminToken(
     params.slug,
     params.adminToken
   );
@@ -41,9 +41,9 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const members = MemberDAO.findByGroupId(group.id);
-  const expenses = ExpenseDAO.findByGroupId(group.id);
-  const balances = ExpenseDAO.getBalances(group.id);
+  const members = await MemberDAO.findByGroupId(group.id);
+  const expenses = await ExpenseDAO.findByGroupId(group.id);
+  const balances = await ExpenseDAO.getBalances(group.id);
 
   const recent = parseRecentGroups(request.headers.get("Cookie"));
   const cookie = makeRecentGroupsCookie(recent, {
@@ -59,7 +59,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 }
 
 export async function action({ request, params }: Route.ActionArgs) {
-  const group = GroupDAO.findBySlugAndAdminToken(
+  const group = await GroupDAO.findBySlugAndAdminToken(
     params.slug,
     params.adminToken
   );
@@ -75,7 +75,7 @@ export async function action({ request, params }: Route.ActionArgs) {
     if (!name) {
       return { error: "Member name is required" };
     }
-    MemberDAO.create(group.id, name);
+    await MemberDAO.create(group.id, name);
     return { success: true };
   }
 
@@ -103,7 +103,7 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { error: "Amount must be greater than 0" };
     }
 
-    ExpenseDAO.create(group.id, paidBy, description, amountCents, splitAmong);
+    await ExpenseDAO.create(group.id, paidBy, description, amountCents, splitAmong);
     return { success: true };
   }
 
@@ -112,7 +112,7 @@ export async function action({ request, params }: Route.ActionArgs) {
     if (!name) {
       return { error: "Group name is required" };
     }
-    GroupDAO.updateName(group.id, name);
+    await GroupDAO.updateName(group.id, name);
     return { success: true };
   }
 
@@ -141,13 +141,13 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { error: "Amount must be greater than 0" };
     }
 
-    ExpenseDAO.update(expenseId, description, amountCents, paidBy, splitAmong);
+    await ExpenseDAO.update(expenseId, description, amountCents, paidBy, splitAmong);
     return { success: true };
   }
 
   if (intent === "delete-expense") {
     const expenseId = Number(formData.get("expenseId"));
-    ExpenseDAO.delete(expenseId);
+    await ExpenseDAO.delete(expenseId);
     return { success: true };
   }
 

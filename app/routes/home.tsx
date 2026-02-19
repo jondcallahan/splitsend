@@ -45,7 +45,7 @@ export async function action({ request }: Route.ActionArgs) {
     return { error: "Please enter a group name" };
   }
 
-  const group = GroupDAO.create(name);
+  const group = await GroupDAO.create(name);
   return redirect(`/g/${group.slug}/admin/${group.admin_token}`);
 }
 

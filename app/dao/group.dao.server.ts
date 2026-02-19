@@ -9,53 +9,79 @@ export interface Group {
   created_at: string;
 }
 
+function rowToGroup(row: Record<string, unknown>): Group {
+  return {
+    id: row.id as number,
+    name: row.name as string,
+    slug: row.slug as string,
+    admin_token: row.admin_token as string,
+    created_at: row.created_at as string,
+  };
+}
+
 export const GroupDAO = {
-  create(name: string): Group {
+  async create(name: string): Promise<Group> {
     let slug = generateSlug();
 
     // Retry on slug collision (unlikely but possible)
-    const existing = db.prepare("SELECT id FROM groups WHERE slug = ?");
     let attempts = 0;
-    while (existing.get(slug) && attempts < 10) {
+    while (attempts < 10) {
+      const existing = await db.execute({
+        sql: "SELECT id FROM groups WHERE slug = ?",
+        args: [slug],
+      });
+      if (existing.rows.length === 0) break;
       slug = generateSlug();
       attempts++;
     }
 
     const adminToken = crypto.randomUUID();
 
-    const result = db
-      .prepare(
-        "INSERT INTO groups (name, slug, admin_token) VALUES (?, ?, ?) RETURNING *"
-      )
-      .get(name, slug, adminToken) as Group;
+    const result = await db.execute({
+      sql: "INSERT INTO groups (name, slug, admin_token) VALUES (?, ?, ?) RETURNING *",
+      args: [name, slug, adminToken],
+    });
 
-    return result;
+    return rowToGroup(result.rows[0] as unknown as Record<string, unknown>);
   },
 
-  findByAdminToken(adminToken: string): Group | null {
-    return (
-      (db
-        .prepare("SELECT * FROM groups WHERE admin_token = ?")
-        .get(adminToken) as Group) ?? null
-    );
+  async findByAdminToken(adminToken: string): Promise<Group | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM groups WHERE admin_token = ?",
+      args: [adminToken],
+    });
+    return result.rows.length > 0
+      ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
   },
 
-  findBySlug(slug: string): Group | null {
-    return (
-      (db.prepare("SELECT * FROM groups WHERE slug = ?").get(slug) as Group) ??
-      null
-    );
+  async findBySlug(slug: string): Promise<Group | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM groups WHERE slug = ?",
+      args: [slug],
+    });
+    return result.rows.length > 0
+      ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
   },
 
-  findBySlugAndAdminToken(slug: string, adminToken: string): Group | null {
-    return (
-      (db
-        .prepare("SELECT * FROM groups WHERE slug = ? AND admin_token = ?")
-        .get(slug, adminToken) as Group) ?? null
-    );
+  async findBySlugAndAdminToken(
+    slug: string,
+    adminToken: string
+  ): Promise<Group | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM groups WHERE slug = ? AND admin_token = ?",
+      args: [slug, adminToken],
+    });
+    return result.rows.length > 0
+      ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
   },
 
-  updateName(id: number, name: string): void {
-    db.prepare("UPDATE groups SET name = ? WHERE id = ?").run(name, id);
+  async updateName(id: number, name: string): Promise<void> {
+    await db.execute({
+      sql: "UPDATE groups SET name = ? WHERE id = ?",
+      args: [name, id],
+    });
   },
 };

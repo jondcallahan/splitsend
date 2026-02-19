@@ -8,43 +8,68 @@ export interface Member {
   created_at: string;
 }
 
+function rowToMember(row: Record<string, unknown>): Member {
+  return {
+    id: row.id as number,
+    group_id: row.group_id as number,
+    name: row.name as string,
+    token: row.token as string,
+    created_at: row.created_at as string,
+  };
+}
+
 export const MemberDAO = {
-  create(groupId: number, name: string): Member {
+  async create(groupId: number, name: string): Promise<Member> {
     const token = crypto.randomUUID();
 
-    return db
-      .prepare(
-        "INSERT INTO members (group_id, name, token) VALUES (?, ?, ?) RETURNING *"
-      )
-      .get(groupId, name, token) as Member;
+    const result = await db.execute({
+      sql: "INSERT INTO members (group_id, name, token) VALUES (?, ?, ?) RETURNING *",
+      args: [groupId, name, token],
+    });
+
+    return rowToMember(result.rows[0] as unknown as Record<string, unknown>);
   },
 
-  findByGroupId(groupId: number): Member[] {
-    return db
-      .prepare("SELECT * FROM members WHERE group_id = ? ORDER BY created_at")
-      .all(groupId) as Member[];
-  },
-
-  findByGroupIdAndToken(groupId: number, token: string): Member | null {
-    return (
-      (db
-        .prepare("SELECT * FROM members WHERE group_id = ? AND token = ?")
-        .get(groupId, token) as Member) ?? null
+  async findByGroupId(groupId: number): Promise<Member[]> {
+    const result = await db.execute({
+      sql: "SELECT * FROM members WHERE group_id = ? ORDER BY created_at",
+      args: [groupId],
+    });
+    return result.rows.map((row) =>
+      rowToMember(row as unknown as Record<string, unknown>)
     );
   },
 
-  findById(id: number): Member | null {
-    return (
-      (db.prepare("SELECT * FROM members WHERE id = ?").get(id) as Member) ??
-      null
-    );
+  async findByGroupIdAndToken(
+    groupId: number,
+    token: string
+  ): Promise<Member | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM members WHERE group_id = ? AND token = ?",
+      args: [groupId, token],
+    });
+    return result.rows.length > 0
+      ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
   },
 
-  findByToken(token: string): Member | null {
-    return (
-      (db
-        .prepare("SELECT * FROM members WHERE token = ?")
-        .get(token) as Member) ?? null
-    );
+  async findById(id: number): Promise<Member | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM members WHERE id = ?",
+      args: [id],
+    });
+    return result.rows.length > 0
+      ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
+  },
+
+  async findByToken(token: string): Promise<Member | null> {
+    const result = await db.execute({
+      sql: "SELECT * FROM members WHERE token = ?",
+      args: [token],
+    });
+    return result.rows.length > 0
+      ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)
+      : null;
   },
 };

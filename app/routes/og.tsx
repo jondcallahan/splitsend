@@ -22,13 +22,13 @@ function getFontData(): Buffer {
 }
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-  const group = GroupDAO.findBySlug(params.slug);
+  const group = await GroupDAO.findBySlug(params.slug);
   if (!group) return new Response("Not Found", { status: 404 });
 
-  const member = MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
+  const member = await MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
   if (!member) return new Response("Not Found", { status: 404 });
 
-  const balances = ExpenseDAO.getBalances(group.id);
+  const balances = await ExpenseDAO.getBalances(group.id);
   const myBalances = balances.filter(
     (b) => b.from_member_id === member.id || b.to_member_id === member.id
   );

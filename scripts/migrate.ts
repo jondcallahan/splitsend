@@ -15,7 +15,7 @@ console.log("Running database migrations...");
 const db = createDb();
 
 try {
-  runMigrations(db);
+  await runMigrations(db);
   console.log("Migrations completed successfully");
 } catch (error) {
   console.error("Migration failed:", error);

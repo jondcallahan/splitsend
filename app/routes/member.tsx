@@ -37,12 +37,12 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ request, params }: Route.ActionArgs) {
-  const group = GroupDAO.findBySlug(params.slug);
+  const group = await GroupDAO.findBySlug(params.slug);
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const member = MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
+  const member = await MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
   if (!member) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -74,7 +74,7 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { error: "Amount must be greater than 0" };
     }
 
-    ExpenseDAO.create(
+    await ExpenseDAO.create(
       group.id,
       paidBy,
       description,
@@ -89,19 +89,19 @@ export async function action({ request, params }: Route.ActionArgs) {
 }
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const group = GroupDAO.findBySlug(params.slug);
+  const group = await GroupDAO.findBySlug(params.slug);
   if (!group) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const member = MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
+  const member = await MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
   if (!member) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const members = MemberDAO.findByGroupId(group.id);
-  const expenses = ExpenseDAO.findByGroupId(group.id);
-  const balances = ExpenseDAO.getBalances(group.id);
+  const members = await MemberDAO.findByGroupId(group.id);
+  const expenses = await ExpenseDAO.findByGroupId(group.id);
+  const balances = await ExpenseDAO.getBalances(group.id);
 
   const myBalances = balances.filter(
     (b) => b.from_member_id === member.id || b.to_member_id === member.id
