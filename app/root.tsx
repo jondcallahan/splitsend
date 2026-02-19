@@ -81,6 +81,7 @@ export default function App() {
   }); // ignoreInputs defaults to true for single keys (even with shift)
 
   // Escape blurs inputs/textareas to enable keyboard shortcuts
+  // Disable preventDefault/stopPropagation so native <dialog> Escape dismissal still works
   useHotkey(
     "Escape",
     (e) => {
@@ -88,7 +89,7 @@ export default function App() {
         e.target.blur();
       }
     },
-    { ignoreInputs: false } // Override default to work inside inputs
+    { ignoreInputs: false, preventDefault: false, stopPropagation: false }
   );
 
   return (

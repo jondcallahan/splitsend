@@ -8,16 +8,17 @@ import {
   UserPlus,
   ReceiptText,
   Zap,
+  X,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Form, redirect, useNavigation } from "react-router";
+import { Form, redirect, useNavigation, data } from "react-router";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
-import { parseRecentGroups } from "~/lib/recent-groups.server";
+import { parseRecentGroups, removeRecentGroup } from "~/lib/recent-groups.server";
 
 import type { Route } from "./+types/home";
 
@@ -37,8 +38,25 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { recentGroups };
 }
 
+function escapeUrlForId(url: string): string {
+  return url.replace(/[^a-zA-Z0-9]/g, "-");
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "remove-recent") {
+    const urlToRemove = String(formData.get("url"));
+    const recentGroups = parseRecentGroups(request.headers.get("Cookie"));
+    const cookie = removeRecentGroup(recentGroups, urlToRemove);
+    
+    return data(
+      { success: true },
+      { headers: { "Set-Cookie": cookie } }
+    );
+  }
+
   const name = String(formData.get("name")).trim();
 
   if (!name) {
@@ -212,30 +230,98 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               gap: "0.5rem",
             }}
           >
-            {recentGroups.map((g, index) => (
-              <a
-                key={g.url}
-                href={g.url}
-                className="card"
-                style={{
-                  alignItems: "center",
-                  color: "inherit",
-                  display: "flex",
-                  gap: "0.75rem",
-                  padding: "0.75rem 1rem",
-                  textDecoration: "none",
-                }}
-              >
-                {g.role === "admin" ? <Shield size={18} /> : <User size={18} />}
-                <div style={{ flex: 1 }}>
-                  <strong>{g.name}</strong>
-                  <div style={{ fontSize: "0.8rem", opacity: 0.5 }}>
-                    {g.role === "admin" ? "Admin" : `Member · ${g.memberName}`}
-                  </div>
+            {recentGroups.map((g, index) => {
+              const dialogId = `dismiss-dialog-${escapeUrlForId(g.url)}`;
+              return (
+                <div
+                  key={g.url}
+                  style={{
+                    position: "relative",
+                  }}
+                >
+                  <a
+                    href={g.url}
+                    className="card"
+                    style={{
+                      alignItems: "center",
+                      color: "inherit",
+                      display: "flex",
+                      gap: "0.75rem",
+                      padding: "0.75rem 1rem",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {g.role === "admin" ? <Shield size={18} /> : <User size={18} />}
+                    <div style={{ flex: 1 }}>
+                      <strong>{g.name}</strong>
+                      <div style={{ fontSize: "0.8rem", opacity: 0.5 }}>
+                        {g.role === "admin" ? "Admin" : `Member · ${g.memberName}`}
+                      </div>
+                    </div>
+                  </a>
+                  <button
+                    type="button"
+                    className="ghost small"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const dialog = document.querySelector(
+                        `#${dialogId}`
+                      ) as HTMLDialogElement;
+                      dialog?.showModal();
+                    }}
+                    style={{
+                      position: "absolute",
+                      right: "0.5rem",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      opacity: 0.5,
+                    }}
+                    aria-label={`Dismiss ${g.name}`}
+                  >
+                    <X size={16} />
+                  </button>
+                  <dialog
+                    id={dialogId}
+                    aria-labelledby={`${dialogId}-heading`}
+                    closedby="any"
+                  >
+                    <div style={{ padding: "1.5rem" }}>
+                      <div style={{ marginBottom: "1.5rem" }}>
+                        <h3 id={`${dialogId}-heading`} style={{ marginBottom: "0.5rem" }}>
+                          Remove from recent groups?
+                        </h3>
+                        <p style={{ opacity: 0.7, margin: 0 }}>
+                          This will remove "{g.name}" from your recent groups list. You can still access it via the original link.
+                        </p>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          className="outline"
+                          commandfor={dialogId}
+                          command="close"
+                        >
+                          Cancel
+                        </button>
+                        <Form method="post" style={{ display: "inline" }}>
+                          <input type="hidden" name="intent" value="remove-recent" />
+                          <input type="hidden" name="url" value={g.url} />
+                          <button type="submit" data-variant="danger">
+                            Remove
+                          </button>
+                        </Form>
+                      </div>
+                    </div>
+                  </dialog>
                 </div>
-
-              </a>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

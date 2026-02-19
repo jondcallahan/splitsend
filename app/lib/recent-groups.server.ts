@@ -33,3 +33,12 @@ export function makeRecentGroupsCookie(
   const value = encodeURIComponent(JSON.stringify(groups));
   return `${COOKIE_NAME}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 365}`;
 }
+
+export function removeRecentGroup(
+  existing: RecentGroup[],
+  urlToRemove: string
+): string {
+  const filtered = existing.filter((g) => g.url !== urlToRemove);
+  const value = encodeURIComponent(JSON.stringify(filtered));
+  return `${COOKIE_NAME}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 365}`;
+}
