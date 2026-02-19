@@ -5,5 +5,4 @@ export default [
   index("routes/home.tsx"),
   route("g/:slug/admin/:adminToken", "routes/admin.tsx"),
   route("g/:slug/m/:memberToken", "routes/member.tsx"),
-  route("g/:slug/m/:memberToken/og.png", "routes/og.tsx"),
 ] satisfies RouteConfig;
