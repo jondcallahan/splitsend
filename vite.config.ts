@@ -6,6 +6,13 @@ export default defineConfig(({ isSsrBuild, command }) => ({
   plugins: [reactRouter(), tsconfigPaths()],
   ssr: {
     noExternal: command === "build" && isSsrBuild ? true : undefined,
+    external: ["@vercel/og"],
+  },
+  resolve: {
+    alias:
+      command === "build" && isSsrBuild
+        ? { "@libsql/client": "@libsql/client/web" }
+        : undefined,
   },
 
   server: {
