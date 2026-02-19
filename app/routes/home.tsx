@@ -9,6 +9,9 @@ import {
   ReceiptText,
   Zap,
   X,
+  ArrowRightLeft,
+  Check,
+  Minus,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Form, redirect, useNavigation, data } from "react-router";
@@ -24,10 +27,10 @@ import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "SplitSend — Split expenses without the signup" },
+    { title: "SplitSend — The fastest way to split expenses" },
     {
       content:
-        "Split bills with friends in seconds. No accounts, no app downloads, no email required. Just create a group and share a link.",
+        "Split expenses with a link. No accounts, no app downloads, no nonsense. Create a group, share a link, settle up.",
       name: "description",
     },
   ];
@@ -168,11 +171,15 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             fontSize: "1.25rem",
             lineHeight: 1.5,
             margin: "0 auto",
-            maxWidth: 420,
+            maxWidth: 440,
             opacity: 0.7,
           }}
         >
-          Split expenses without the signup.
+          The fastest way to split expenses.
+          <br />
+          <span style={{ fontSize: "1rem" }}>
+            No accounts. No app downloads. Just a&nbsp;link.
+          </span>
         </p>
       </div>
 
@@ -204,7 +211,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               className="flex items-center justify-center gap-2"
               style={{ marginTop: "1rem", width: "100%" }}
             >
-              {isSubmitting ? "Creating…" : "Create Group — it's free"}
+              {isSubmitting ? "Creating…" : "Create Group — It's Free"}
             </button>
           </fieldset>
         </Form>
@@ -356,7 +363,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               1. Create a group
             </strong>
             <small style={{ opacity: 0.6 }}>
-              Takes two seconds. No account needed.
+              Pick a name. That's the whole setup.
             </small>
           </div>
           <div
@@ -371,7 +378,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               2. Share the link
             </strong>
             <small style={{ opacity: 0.6 }}>
-              Each member gets their own private link.
+              Each member gets a private link. Nothing to install.
             </small>
           </div>
           <div
@@ -386,13 +393,98 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               3. Add expenses
             </strong>
             <small style={{ opacity: 0.6 }}>
-              Anyone can add. We calculate who owes what.
+              Anyone can add. We handle the math.
             </small>
           </div>
         </div>
       </section>
 
-      {/* Why SplitSend */}
+      {/* Smart Settlements */}
+      <section
+        style={{
+          borderTop: "1px solid var(--border)",
+          marginBottom: "2.5rem",
+          paddingTop: "2rem",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <ArrowRightLeft size={28} style={{ opacity: 0.5, marginBottom: "0.5rem" }} />
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              letterSpacing: "-0.01em",
+              marginBottom: "0.5rem",
+            }}
+          >
+            Fewer payments. Less hassle.
+          </h2>
+          <p
+            style={{
+              fontSize: "1rem",
+              lineHeight: 1.6,
+              margin: "0 auto",
+              maxWidth: 460,
+              opacity: 0.6,
+            }}
+          >
+            When everyone owes everyone, things get messy fast. SplitSend
+            automatically simplifies the debts so your group settles up with the
+            fewest payments possible.
+          </p>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gap: "1rem",
+            gridTemplateColumns: "1fr 1fr",
+            margin: "0 auto",
+            maxWidth: 460,
+          }}
+        >
+          <div
+            className="card"
+            style={{ padding: "1rem", textAlign: "center" }}
+          >
+            <div style={{ fontSize: "0.75rem", opacity: 0.4, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>
+              Without simplification
+            </div>
+            <div style={{ fontSize: "2rem", fontWeight: 700, opacity: 0.4 }}>
+              6
+            </div>
+            <div style={{ fontSize: "0.85rem", opacity: 0.4 }}>
+              payments between 4 people
+            </div>
+          </div>
+          <div
+            className="card"
+            style={{ padding: "1rem", textAlign: "center" }}
+          >
+            <div style={{ fontSize: "0.75rem", opacity: 0.7, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>
+              With SplitSend
+            </div>
+            <div style={{ fontSize: "2rem", fontWeight: 700 }}>
+              3
+            </div>
+            <div style={{ fontSize: "0.85rem", opacity: 0.6 }}>
+              payments or fewer
+            </div>
+          </div>
+        </div>
+        <p
+          style={{
+            fontSize: "0.85rem",
+            margin: "1rem auto 0",
+            maxWidth: 460,
+            opacity: 0.4,
+            textAlign: "center",
+          }}
+        >
+          Instead of everyone paying everyone back individually, we figure out
+          the shortest path to settle all debts at once.
+        </p>
+      </section>
+
+      {/* SplitSend vs Splitwise */}
       <section
         style={{
           borderTop: "1px solid var(--border)",
@@ -408,97 +500,74 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          The other apps make you work for it
+          SplitSend vs Splitwise
         </h2>
         <div
           style={{
-            display: "grid",
-            gap: "0 2rem",
-            gridTemplateColumns: "1fr 1fr",
             margin: "0 auto",
             maxWidth: 520,
           }}
         >
-          <div>
-            <h3
-              style={{
-                fontSize: "0.85rem",
-                letterSpacing: "0.05em",
-                marginBottom: "0.75rem",
-                opacity: 0.4,
-                textTransform: "uppercase",
-              }}
-            >
-              Them
-            </h3>
-            <ul
-              style={{
-                listStyle: "none",
-                margin: 0,
-                opacity: 0.5,
-                padding: 0,
-              }}
-            >
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "0.9rem",
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", padding: "0.5rem 0.75rem", borderBottom: "2px solid var(--border)", opacity: 0.5 }}></th>
+                <th style={{ textAlign: "center", padding: "0.5rem 0.75rem", borderBottom: "2px solid var(--border)", fontWeight: 700 }}>SplitSend</th>
+                <th style={{ textAlign: "center", padding: "0.5rem 0.75rem", borderBottom: "2px solid var(--border)", opacity: 0.5 }}>Splitwise</th>
+              </tr>
+            </thead>
+            <tbody>
               {[
-                "Download the app",
-                "Create an account",
-                "Verify your email",
-                "Add your phone number",
-                "Find your friends",
-                "Hope they sign up too",
-              ].map((item) => (
-                <li
-                  key={item}
-                  style={{
-                    borderBottom: "1px solid var(--border)",
-                    padding: "0.4rem 0",
-                    textDecoration: "line-through",
-                  }}
-                >
-                  {item}
-                </li>
+                { feature: "Account required", splitsend: false, splitwise: true },
+                { feature: "App download needed", splitsend: false, splitwise: true },
+                { feature: "Free", splitsend: true, splitwise: "Freemium" },
+                { feature: "Smart debt simplification", splitsend: true, splitwise: "Pro only" },
+                { feature: "Works via shared link", splitsend: true, splitwise: false },
+                { feature: "Everyone must sign up", splitsend: false, splitwise: true },
+                { feature: "Ads", splitsend: false, splitwise: true },
+              ].map((row) => (
+                <tr key={row.feature}>
+                  <td style={{ padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--border)" }}>
+                    {row.feature}
+                  </td>
+                  <td style={{ textAlign: "center", padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--border)" }}>
+                    {row.splitsend === true ? (
+                      <Check size={16} style={{ color: "var(--color-success, #22c55e)" }} />
+                    ) : row.splitsend === false ? (
+                      <Minus size={16} style={{ opacity: 0.3 }} />
+                    ) : (
+                      <span style={{ fontSize: "0.8rem", opacity: 0.6 }}>{row.splitsend}</span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: "center", padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--border)" }}>
+                    {row.splitwise === true ? (
+                      <Check size={16} style={{ opacity: 0.4 }} />
+                    ) : row.splitwise === false ? (
+                      <Minus size={16} style={{ opacity: 0.3 }} />
+                    ) : (
+                      <span style={{ fontSize: "0.8rem", opacity: 0.4 }}>{row.splitwise}</span>
+                    )}
+                  </td>
+                </tr>
               ))}
-            </ul>
-          </div>
-          <div>
-            <h3
-              style={{
-                fontSize: "0.85rem",
-                letterSpacing: "0.05em",
-                marginBottom: "0.75rem",
-                opacity: 0.7,
-                textTransform: "uppercase",
-              }}
-            >
-              SplitSend
-            </h3>
-            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {["Name your group", "Add members", "Share the link", "Done"].map(
-                (item, i) => (
-                  <li
-                    key={item}
-                    style={{
-                      borderBottom: "1px solid var(--border)",
-                      fontWeight: i === 3 ? 700 : 400,
-                      padding: "0.4rem 0",
-                    }}
-                  >
-                    {item}
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+            </tbody>
+          </table>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", opacity: 0.6 }}>
-          No accounts. No app downloads. No email required.
+        <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem", opacity: 0.7 }}>
+          Free. Private. Instant.
         </p>
         <p style={{ fontSize: "0.85rem", opacity: 0.4 }}>
-          Just a link. That's it.
+          No accounts. No downloads. No nonsense.
         </p>
       </div>
     </main>
