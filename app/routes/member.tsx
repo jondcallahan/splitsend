@@ -21,10 +21,18 @@ import {
 import type { Route } from "./+types/member";
 
 export function meta({ data }: Route.MetaArgs) {
+  const title = `${data?.member?.name ?? "Member"} — ${data?.group?.name ?? "Group"} — SplitSend`;
+  const ogImage = data?.ogImage;
+
   return [
-    {
-      title: `${data?.member?.name ?? "Member"} — ${data?.group?.name ?? "Group"} — SplitSend`,
-    },
+    { title },
+    { property: "og:title", content: title },
+    { property: "og:image", content: ogImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:image", content: ogImage },
   ];
 }
 
@@ -107,8 +115,11 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     url: `/g/${group.slug}/m/${member.token}`,
   });
 
+  const url = new URL(request.url);
+  const ogImage = `${url.origin}/g/${group.slug}/m/${member.token}/og.png`;
+
   return data(
-    { balances: myBalances, expenses, group, member, members },
+    { balances: myBalances, expenses, group, member, members, ogImage },
     { headers: { "Set-Cookie": cookie } }
   );
 }
