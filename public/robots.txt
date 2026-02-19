@@ -1,0 +1,6 @@
+User-agent: *
+# Allow the home page
+Allow: /$
+
+# Block all group pages (includes member pages, admin pages, and OG images)
+Disallow: /g/
