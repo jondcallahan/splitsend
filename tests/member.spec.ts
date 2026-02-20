@@ -8,7 +8,9 @@ async function createGroupWithMembers(
   await homePage.goto();
   const url = await homePage.createGroup(`Member Test ${Date.now()}`);
   const match = url.match(/\/g\/([^/]+)\/admin\/([^/]+)/);
-  if (!match) {throw new Error(`Unexpected URL: ${url}`);}
+  if (!match) {
+    throw new Error(`Unexpected URL: ${url}`);
+  }
   adminPage.slug = match[1];
   adminPage.adminToken = match[2];
   await adminPage.addMember("Alice");

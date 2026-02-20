@@ -7,8 +7,15 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Button, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
-
+import {
+  Badge,
+  Button,
+  CardSection,
+  Checkbox,
+  Field,
+  SelectField,
+  SelectItem,
+} from "~/components/ui";
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
@@ -27,13 +34,13 @@ export function meta({ data }: Route.MetaArgs) {
 
   return [
     { title },
-    { property: "og:title", content: title },
-    { property: "og:image", content: ogImage },
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: title },
-    { name: "twitter:image", content: ogImage },
+    { content: title, property: "og:title" },
+    { content: ogImage, property: "og:image" },
+    { content: "1200", property: "og:image:width" },
+    { content: "630", property: "og:image:height" },
+    { content: "summary_large_image", name: "twitter:card" },
+    { content: title, name: "twitter:title" },
+    { content: ogImage, name: "twitter:image" },
   ];
 }
 
@@ -43,7 +50,10 @@ export async function action({ request, params }: Route.ActionArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const member = await MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
+  const member = await MemberDAO.findByGroupIdAndToken(
+    group.id,
+    params.memberToken
+  );
   if (!member) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -95,7 +105,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const member = await MemberDAO.findByGroupIdAndToken(group.id, params.memberToken);
+  const member = await MemberDAO.findByGroupIdAndToken(
+    group.id,
+    params.memberToken
+  );
   if (!member) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -210,72 +223,45 @@ export default function MemberView({
   }, [actionData, navigation.formData]);
 
   return (
-    <main className="container" style={{ marginTop: "2rem", maxWidth: 680 }}>
+    <main className="container mt-8">
       {/* Header */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <a
-          href="/"
-          style={{ fontSize: "0.85rem", opacity: 0.5, textDecoration: "none" }}
-        >
+      <div className="mb-6">
+        <a href="/" className="text-sm opacity-50 no-underline text-light">
           ← SplitSend
         </a>
-        <h1 style={{ margin: "0.25rem 0 0" }}>{group.name}</h1>
-        <p style={{ margin: "0.25rem 0 0", opacity: 0.6 }}>
+        <h1 className="mt-1">{group.name}</h1>
+        <p className="mt-1 opacity-60">
           Logged in as <strong>{member.name}</strong>
         </p>
       </div>
 
       {/* My Balances */}
-      <section className="card" aria-labelledby="balances-heading" style={{ marginBottom: "1.5rem" }}>
-        <h2
-          id="balances-heading"
-          style={{
-            alignItems: "center",
-            display: "flex",
-            gap: "0.5rem",
-            marginTop: 0,
-          }}
-        >
+      <CardSection className="mb-6" aria-labelledby="balances-heading">
+        <h2 id="balances-heading" className="flex items-center gap-2">
           <ArrowRightLeft size={20} /> Your Balances
         </h2>
         {balances.length === 0 ? (
-          <p style={{ opacity: 0.6 }}>You're all settled up! 🎉</p>
+          <p className="opacity-60">You're all settled up! 🎉</p>
         ) : (
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          <ul className="list-none m-0 p-0">
             {balances.map((b, i) => {
               const iOwe = b.from_member_id === member.id;
               return (
                 <li
                   key={i}
-                  style={{
-                    borderBottom:
-                      i < balances.length - 1
-                        ? "1px solid var(--color-border, #eee)"
-                        : "none",
-                    padding: "0.5rem 0",
-                  }}
+                  className={`py-2 ${i < balances.length - 1 ? "border-b border-mauve-200 dark:border-neutral-800" : ""}`}
                 >
                   {iOwe ? (
                     <span>
                       You owe <strong>{b.to_name}</strong>{" "}
-                      <span
-                        style={{
-                          color: "var(--color-error, #d32f2f)",
-                          fontWeight: 700,
-                        }}
-                      >
+                      <span className="text-red-600 dark:text-red-400 font-bold">
                         {cents(b.amount)}
                       </span>
                     </span>
                   ) : (
                     <span>
                       <strong>{b.from_name}</strong> owes you{" "}
-                      <span
-                        style={{
-                          color: "var(--color-success, #2e7d32)",
-                          fontWeight: 700,
-                        }}
-                      >
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold">
                         {cents(b.amount)}
                       </span>
                     </span>
@@ -285,49 +271,38 @@ export default function MemberView({
             })}
           </ul>
         )}
-      </section>
+      </CardSection>
 
       {/* Members */}
-      <section className="card" aria-labelledby="members-heading" style={{ marginBottom: "1.5rem" }}>
-        <h2
-          id="members-heading"
-          style={{
-            alignItems: "center",
-            display: "flex",
-            gap: "0.5rem",
-            marginTop: 0,
-          }}
-        >
+      <CardSection className="mb-6" aria-labelledby="members-heading">
+        <h2 id="members-heading" className="flex items-center gap-2">
           <Users size={20} /> Members{" "}
-          <span style={{ opacity: 0.5 }}>({members.length})</span>
+          <span className="opacity-50">({members.length})</span>
         </h2>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        <ul className="list-none m-0 p-0">
           {members.map((m) => (
             <li
               key={m.id}
-              style={{
-                fontWeight: m.id === member.id ? 700 : 400,
-                padding: "0.35rem 0",
-              }}
+              className={`py-1.5 ${m.id === member.id ? "font-bold" : ""}`}
             >
               {m.name}
               {m.id === member.id && (
-                <span style={{ marginLeft: "0.5rem", opacity: 0.5 }}>
-                  (you)
-                </span>
+                <span className="ml-2 opacity-50">(you)</span>
               )}
             </li>
           ))}
         </ul>
-      </section>
+      </CardSection>
 
       {/* Add Expense */}
       {members.length >= 2 && (
-        <section className="card" aria-labelledby="add-expense-heading" style={{ marginBottom: "1.5rem" }}>
-          <h2 id="add-expense-heading" style={{ marginTop: 0 }}>Add Expense</h2>
+        <CardSection className="mb-6" aria-labelledby="add-expense-heading">
+          <h2 id="add-expense-heading">Add Expense</h2>
 
           {actionData?.error && (
-            <p style={{ color: "var(--danger)" }}>{actionData.error}</p>
+            <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+              {actionData.error}
+            </p>
           )}
 
           <Form method="post" key={expenses.length} className="form-stack">
@@ -360,11 +335,15 @@ export default function MemberView({
               defaultValue={member.id}
               required
               placeholder="Select…"
-              options={members.map((m) => ({ value: m.id, label: `${m.name}${m.id === member.id ? " (you)" : ""}` }))}
+              options={members.map((m) => ({
+                label: `${m.name}${m.id === member.id ? " (you)" : ""}`,
+                value: m.id,
+              }))}
             >
               {members.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
-                  {m.name}{m.id === member.id ? " (you)" : ""}
+                  {m.name}
+                  {m.id === member.id ? " (you)" : ""}
                 </SelectItem>
               ))}
             </SelectField>
@@ -385,76 +364,50 @@ export default function MemberView({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center justify-center gap-2"
-              style={{ width: "100%" }}
+              className="w-full flex items-center justify-center gap-2"
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
             </Button>
           </Form>
-        </section>
+        </CardSection>
       )}
 
       {/* Expenses */}
       {expenses.length > 0 && (
-        <section className="card" aria-labelledby="expenses-heading">
-          <h2
-            id="expenses-heading"
-            style={{
-              alignItems: "center",
-              display: "flex",
-              gap: "0.5rem",
-              marginTop: 0,
-            }}
-          >
+        <CardSection aria-labelledby="expenses-heading">
+          <h2 id="expenses-heading" className="flex items-center gap-2">
             <Receipt size={20} /> Expenses
           </h2>
           {expenses.map((e) => (
             <div
               key={e.id}
-              style={{
-                borderBottom: "1px solid var(--color-border, #eee)",
-                padding: "0.75rem 0",
-              }}
+              className="border-b border-mauve-200 dark:border-neutral-800 py-3"
             >
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <h3 style={{ fontSize: "inherit", lineHeight: "inherit", margin: 0 }}>{e.description}</h3>
-                <span style={{ fontWeight: 700 }}>{cents(e.amount)}</span>
+              <div className="flex items-center justify-between">
+                <h3 className="text-base leading-relaxed m-0">
+                  {e.description}
+                </h3>
+                <span className="font-bold">{cents(e.amount)}</span>
               </div>
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "0.35rem",
-                  marginTop: "0.4rem",
-                }}
-              >
-                <span className="badge success">{e.paid_by_name} paid</span>
-                <span style={{ fontSize: "0.8rem", opacity: 0.4 }}>→</span>
+              <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
+                <Badge $variant="success">{e.paid_by_name} paid</Badge>
+                <span className="text-xs opacity-40">→</span>
                 {e.splits.map((s) => (
-                  <span key={s.member_id} className="badge outline">
+                  <Badge key={s.member_id} $variant="outline">
                     {s.member_name} {cents(s.amount)}
-                  </span>
+                  </Badge>
                 ))}
               </div>
-              <small
-                style={{ display: "block", marginTop: "0.25rem", opacity: 0.5 }}
-              >
+              <small className="block mt-1 opacity-50">
                 Added by {e.added_by_name ?? "admin"}
               </small>
             </div>
           ))}
-        </section>
+        </CardSection>
       )}
 
       {expenses.length === 0 && members.length < 2 && (
-        <p style={{ opacity: 0.5, textAlign: "center" }}>
+        <p className="opacity-50 text-center">
           No expenses yet. Waiting for more members to be added.
         </p>
       )}

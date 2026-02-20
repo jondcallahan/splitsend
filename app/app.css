@@ -56,21 +56,35 @@ body {
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */
 /* ------------------------------------------------------------------ */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   @apply font-display font-bold tracking-tight leading-tight m-0;
 }
 
-h1 { @apply text-4xl; }
-h2 { @apply text-2xl; }
-h3 { @apply text-lg; }
+h1 {
+  @apply text-4xl;
+}
+h2 {
+  @apply text-2xl;
+}
+h3 {
+  @apply text-lg;
+}
 
-p { @apply leading-relaxed; }
+p {
+  @apply leading-relaxed;
+}
 
 /* ------------------------------------------------------------------ */
 /* Layout                                                              */
 /* ------------------------------------------------------------------ */
-.container     { @apply mx-auto px-6 max-w-2xl; }
-.container.narrow { @apply max-w-xl; }
+.container {
+  @apply mx-auto px-6 max-w-2xl;
+}
+.container.narrow {
+  @apply max-w-xl;
+}
 
 /* ------------------------------------------------------------------ */
 /* Card                                                                */
@@ -82,7 +96,9 @@ p { @apply leading-relaxed; }
 /* ------------------------------------------------------------------ */
 /* Buttons (fallback for native buttons)                              */
 /* ------------------------------------------------------------------ */
-button:disabled { @apply opacity-50 pointer-events-none; }
+button:disabled {
+  @apply opacity-50 pointer-events-none;
+}
 
 /* ------------------------------------------------------------------ */
 /* Inputs                                                              */
@@ -99,11 +115,15 @@ textarea {
          transition-all duration-150 outline-none leading-normal;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   @apply border-olive-700 ring-3 ring-olive-700/8;
 }
 
-input::placeholder { @apply text-mauve-400 dark:text-neutral-500 font-normal; }
+input::placeholder {
+  @apply text-mauve-400 dark:text-neutral-500 font-normal;
+}
 
 label:not(.flex) {
   @apply block text-sm font-semibold text-mauve-500 dark:text-neutral-400 mb-1.5;
@@ -124,7 +144,9 @@ input[type="checkbox"] {
 /* ------------------------------------------------------------------ */
 /* Fieldset / Legend                                                    */
 /* ------------------------------------------------------------------ */
-fieldset { @apply border-none p-0 m-0; }
+fieldset {
+  @apply border-none p-0 m-0;
+}
 
 legend {
   @apply text-sm font-semibold text-mauve-500 dark:text-neutral-400 mb-3;
@@ -133,7 +155,9 @@ legend {
 /* ------------------------------------------------------------------ */
 /* Table                                                               */
 /* ------------------------------------------------------------------ */
-table { @apply w-full border-collapse; }
+table {
+  @apply w-full border-collapse;
+}
 
 th {
   @apply text-left text-xs font-bold uppercase tracking-widest
@@ -145,24 +169,14 @@ td {
 }
 
 /* ------------------------------------------------------------------ */
-/* Badges                                                              */
-/* ------------------------------------------------------------------ */
-.badge {
-  @apply inline-flex items-center gap-1 text-xs font-bold
-         py-1 px-3 rounded-full leading-snug;
-}
-
-.badge.success { @apply bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400; }
-.badge.outline { @apply bg-mauve-50 dark:bg-neutral-800 text-mauve-600 dark:text-neutral-300 border border-mauve-200 dark:border-neutral-700; }
-
-
-/* ------------------------------------------------------------------ */
 /* Utility compat                                                      */
 /* ------------------------------------------------------------------ */
-.text-light  { @apply text-mauve-500 dark:text-neutral-400; }
-.text-lighter { @apply text-mauve-400 dark:text-neutral-500; }
-.w-100       { @apply w-full; }
-.unstyled    { @apply list-none m-0 p-0; }
+.text-light {
+  @apply text-mauve-500 dark:text-neutral-400;
+}
+.text-lighter {
+  @apply text-mauve-400 dark:text-neutral-500;
+}
 
 /* ------------------------------------------------------------------ */
 /* Focus                                                               */
@@ -203,7 +217,9 @@ kbd {
 }
 
 @media (pointer: coarse), (max-width: 640px) {
-  .keyboard-hints { @apply hidden; }
+  .keyboard-hints {
+    @apply hidden;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -216,17 +232,21 @@ kbd {
 
 .command-palette-content {
   @apply bg-white dark:bg-neutral-900 rounded-3xl w-[90%] max-w-xl max-h-[70vh] flex flex-col overflow-hidden;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
 }
 
-.command-palette-search  { @apply py-4 px-6 border-b border-mauve-100 dark:border-neutral-800; }
+.command-palette-search {
+  @apply py-4 px-6 border-b border-mauve-100 dark:border-neutral-800;
+}
 
 .command-palette-input {
   @apply w-full border-none bg-transparent text-base font-sans font-medium
          py-1 outline-none text-mauve-950 dark:text-white;
 }
 
-.command-palette-results { @apply flex-1 overflow-y-auto p-2; }
+.command-palette-results {
+  @apply flex-1 overflow-y-auto p-2;
+}
 
 .command-palette-item {
   @apply flex items-center justify-between w-full
@@ -237,10 +257,16 @@ kbd {
 }
 
 .command-palette-item:hover,
-.command-palette-item.active { @apply bg-mauve-50 dark:bg-neutral-800; }
+.command-palette-item.active {
+  @apply bg-mauve-50 dark:bg-neutral-800;
+}
 
-.command-palette-label    { @apply flex-1; }
-.command-palette-shortcut { @apply ml-4 opacity-50; }
+.command-palette-label {
+  @apply flex-1;
+}
+.command-palette-shortcut {
+  @apply ml-4 opacity-50;
+}
 
 .command-palette-empty {
   @apply py-12 text-center text-mauve-400 dark:text-neutral-500 text-sm;
@@ -251,7 +277,9 @@ kbd {
          flex gap-6 justify-center text-xs text-mauve-400 dark:text-neutral-500;
 }
 
-.command-palette-footer span { @apply flex items-center gap-2; }
+.command-palette-footer span {
+  @apply flex items-center gap-2;
+}
 
 /* ------------------------------------------------------------------ */
 /* Help overlay                                                        */
@@ -263,14 +291,16 @@ kbd {
 
 .help-overlay-content {
   @apply bg-white dark:bg-neutral-900 rounded-3xl w-[90%] max-w-2xl max-h-[90vh] flex flex-col overflow-hidden;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
 }
 
 .help-overlay-header {
   @apply flex items-center justify-between py-4 px-6 border-b border-mauve-100 dark:border-neutral-800;
 }
 
-.help-overlay-header h2 { @apply m-0 text-lg dark:text-white; }
+.help-overlay-header h2 {
+  @apply m-0 text-lg dark:text-white;
+}
 
 .help-overlay-body {
   @apply flex-1 overflow-y-auto p-6 grid gap-8;
@@ -281,21 +311,31 @@ kbd {
   @apply m-0 mb-3 text-[0.7rem] uppercase tracking-widest text-mauve-400 dark:text-neutral-500 font-bold font-sans;
 }
 
-.help-overlay-list { @apply m-0 p-0; }
+.help-overlay-list {
+  @apply m-0 p-0;
+}
 
 .help-overlay-item {
   @apply flex items-center justify-between gap-4 py-2 border-b border-mauve-100 dark:border-neutral-800;
 }
 
-.help-overlay-item:last-child { @apply border-b-0; }
-.help-overlay-item dt { @apply shrink-0; }
-.help-overlay-item dd { @apply flex-1 m-0 text-sm text-mauve-500 dark:text-neutral-400; }
+.help-overlay-item:last-child {
+  @apply border-b-0;
+}
+.help-overlay-item dt {
+  @apply shrink-0;
+}
+.help-overlay-item dd {
+  @apply flex-1 m-0 text-sm text-mauve-500 dark:text-neutral-400;
+}
 
 .help-overlay-footer {
   @apply py-3 px-6 border-t border-mauve-100 dark:border-neutral-800 text-center text-xs text-mauve-400 dark:text-neutral-500;
 }
 
-.help-overlay-footer p { @apply m-0; }
+.help-overlay-footer p {
+  @apply m-0;
+}
 
 /* ------------------------------------------------------------------ */
 /* Expense animation                                                   */

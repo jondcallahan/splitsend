@@ -11,11 +11,11 @@ export interface Group {
 
 function rowToGroup(row: Record<string, unknown>): Group {
   return {
+    admin_token: row.admin_token as string,
+    created_at: row.created_at as string,
     id: row.id as number,
     name: row.name as string,
     slug: row.slug as string,
-    admin_token: row.admin_token as string,
-    created_at: row.created_at as string,
   };
 }
 
@@ -27,10 +27,10 @@ export const GroupDAO = {
     let attempts = 0;
     while (attempts < 10) {
       const existing = await db.execute({
-        sql: "SELECT id FROM groups WHERE slug = ?",
         args: [slug],
+        sql: "SELECT id FROM groups WHERE slug = ?",
       });
-      if (existing.rows.length === 0) break;
+      if (existing.rows.length === 0) {break;}
       slug = generateSlug();
       attempts++;
     }
@@ -38,8 +38,8 @@ export const GroupDAO = {
     const adminToken = crypto.randomUUID();
 
     const result = await db.execute({
-      sql: "INSERT INTO groups (name, slug, admin_token) VALUES (?, ?, ?) RETURNING *",
       args: [name, slug, adminToken],
+      sql: "INSERT INTO groups (name, slug, admin_token) VALUES (?, ?, ?) RETURNING *",
     });
 
     return rowToGroup(result.rows[0] as unknown as Record<string, unknown>);
@@ -47,8 +47,8 @@ export const GroupDAO = {
 
   async findByAdminToken(adminToken: string): Promise<Group | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM groups WHERE admin_token = ?",
       args: [adminToken],
+      sql: "SELECT * FROM groups WHERE admin_token = ?",
     });
     return result.rows.length > 0
       ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
@@ -57,8 +57,8 @@ export const GroupDAO = {
 
   async findBySlug(slug: string): Promise<Group | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM groups WHERE slug = ?",
       args: [slug],
+      sql: "SELECT * FROM groups WHERE slug = ?",
     });
     return result.rows.length > 0
       ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
@@ -70,8 +70,8 @@ export const GroupDAO = {
     adminToken: string
   ): Promise<Group | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM groups WHERE slug = ? AND admin_token = ?",
       args: [slug, adminToken],
+      sql: "SELECT * FROM groups WHERE slug = ? AND admin_token = ?",
     });
     return result.rows.length > 0
       ? rowToGroup(result.rows[0] as unknown as Record<string, unknown>)
@@ -80,8 +80,8 @@ export const GroupDAO = {
 
   async updateName(id: number, name: string): Promise<void> {
     await db.execute({
-      sql: "UPDATE groups SET name = ? WHERE id = ?",
       args: [name, id],
+      sql: "UPDATE groups SET name = ? WHERE id = ?",
     });
   },
 };

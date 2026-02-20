@@ -48,7 +48,6 @@ export const ExpenseDAO = {
 
     const statements: { sql: string; args: any[] }[] = [
       {
-        sql: "INSERT INTO expenses (group_id, paid_by_member_id, description, amount, added_by_member_id) VALUES (?, ?, ?, ?, ?) RETURNING *",
         args: [
           groupId,
           paidByMemberId,
@@ -56,12 +55,12 @@ export const ExpenseDAO = {
           amountCents,
           addedByMemberId ?? null,
         ],
+        sql: "INSERT INTO expenses (group_id, paid_by_member_id, description, amount, added_by_member_id) VALUES (?, ?, ?, ?, ?) RETURNING *",
       },
     ];
 
     // We need the expense ID from the first statement, so we use a two-step approach
     const expenseResult = await db.execute({
-      sql: "INSERT INTO expenses (group_id, paid_by_member_id, description, amount, added_by_member_id) VALUES (?, ?, ?, ?, ?) RETURNING *",
       args: [
         groupId,
         paidByMemberId,
@@ -69,17 +68,15 @@ export const ExpenseDAO = {
         amountCents,
         addedByMemberId ?? null,
       ],
+      sql: "INSERT INTO expenses (group_id, paid_by_member_id, description, amount, added_by_member_id) VALUES (?, ?, ?, ?, ?) RETURNING *",
     });
 
-    const expense = expenseResult.rows[0] as unknown as Record<
-      string,
-      unknown
-    >;
+    const expense = expenseResult.rows[0] as unknown as Record<string, unknown>;
     const expenseId = expense.id as number;
 
     const splitStatements = splitAmongMemberIds.map((memberId, i) => ({
-      sql: "INSERT INTO expense_splits (expense_id, member_id, amount) VALUES (?, ?, ?)",
       args: [expenseId, memberId, perPerson[i].intValue],
+      sql: "INSERT INTO expense_splits (expense_id, member_id, amount) VALUES (?, ?, ?)",
     }));
 
     if (splitStatements.length > 0) {
@@ -87,25 +84,25 @@ export const ExpenseDAO = {
     }
 
     return {
-      id: expenseId,
-      group_id: expense.group_id as number,
-      paid_by_member_id: expense.paid_by_member_id as number,
       added_by_member_id: (expense.added_by_member_id as number) ?? null,
-      description: expense.description as string,
       amount: expense.amount as number,
       created_at: expense.created_at as string,
+      description: expense.description as string,
+      group_id: expense.group_id as number,
+      id: expenseId,
+      paid_by_member_id: expense.paid_by_member_id as number,
     };
   },
 
   async findByGroupId(groupId: number): Promise<ExpenseWithDetails[]> {
     const expenseResult = await db.execute({
+      args: [groupId],
       sql: `SELECT e.*, m.name as paid_by_name, m2.name as added_by_name
             FROM expenses e
             JOIN members m ON m.id = e.paid_by_member_id
             LEFT JOIN members m2 ON m2.id = e.added_by_member_id
             WHERE e.group_id = ?
             ORDER BY e.created_at DESC`,
-      args: [groupId],
     });
 
     const expenses: ExpenseWithDetails[] = [];
@@ -113,34 +110,34 @@ export const ExpenseDAO = {
     for (const row of expenseResult.rows) {
       const r = row as unknown as Record<string, unknown>;
       const splitsResult = await db.execute({
+        args: [r.id as number],
         sql: `SELECT es.*, m.name as member_name
               FROM expense_splits es
               JOIN members m ON m.id = es.member_id
               WHERE es.expense_id = ?`,
-        args: [r.id as number],
       });
 
       const splits = splitsResult.rows.map((s) => {
         const sr = s as unknown as Record<string, unknown>;
         return {
-          id: sr.id as number,
-          expense_id: sr.expense_id as number,
-          member_id: sr.member_id as number,
           amount: sr.amount as number,
+          expense_id: sr.expense_id as number,
+          id: sr.id as number,
+          member_id: sr.member_id as number,
           member_name: sr.member_name as string,
         };
       });
 
       expenses.push({
-        id: r.id as number,
-        group_id: r.group_id as number,
-        paid_by_member_id: r.paid_by_member_id as number,
         added_by_member_id: (r.added_by_member_id as number) ?? null,
-        description: r.description as string,
+        added_by_name: (r.added_by_name as string) ?? null,
         amount: r.amount as number,
         created_at: r.created_at as string,
+        description: r.description as string,
+        group_id: r.group_id as number,
+        id: r.id as number,
+        paid_by_member_id: r.paid_by_member_id as number,
         paid_by_name: r.paid_by_name as string,
-        added_by_name: (r.added_by_name as string) ?? null,
         splits,
       });
     }
@@ -161,16 +158,16 @@ export const ExpenseDAO = {
     await db.batch(
       [
         {
-          sql: "UPDATE expenses SET description = ?, amount = ?, paid_by_member_id = ? WHERE id = ?",
           args: [description, amountCents, paidByMemberId, expenseId],
+          sql: "UPDATE expenses SET description = ?, amount = ?, paid_by_member_id = ? WHERE id = ?",
         },
         {
-          sql: "DELETE FROM expense_splits WHERE expense_id = ?",
           args: [expenseId],
+          sql: "DELETE FROM expense_splits WHERE expense_id = ?",
         },
         ...splitAmongMemberIds.map((memberId, i) => ({
-          sql: "INSERT INTO expense_splits (expense_id, member_id, amount) VALUES (?, ?, ?)",
           args: [expenseId, memberId, perPerson[i].intValue],
+          sql: "INSERT INTO expense_splits (expense_id, member_id, amount) VALUES (?, ?, ?)",
         })),
       ],
       "write"
@@ -181,12 +178,12 @@ export const ExpenseDAO = {
     await db.batch(
       [
         {
-          sql: "DELETE FROM expense_splits WHERE expense_id = ?",
           args: [expenseId],
+          sql: "DELETE FROM expense_splits WHERE expense_id = ?",
         },
         {
-          sql: "DELETE FROM expenses WHERE id = ?",
           args: [expenseId],
+          sql: "DELETE FROM expenses WHERE id = ?",
         },
       ],
       "write"
@@ -199,6 +196,7 @@ export const ExpenseDAO = {
    */
   async getBalances(groupId: number): Promise<Balance[]> {
     const result = await db.execute({
+      args: [groupId, groupId, groupId],
       sql: `SELECT
               m.id as member_id,
               m.name,
@@ -218,7 +216,6 @@ export const ExpenseDAO = {
               GROUP BY es.member_id
             ) owed ON owed.mid = m.id
             WHERE m.group_id = ?`,
-      args: [groupId, groupId, groupId],
     });
 
     // net = what they paid minus what they owe

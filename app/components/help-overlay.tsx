@@ -46,7 +46,12 @@ export function HelpOverlay({ isOpen, onClose, groups }: HelpOverlayProps) {
       <div className="help-overlay-content">
         <header className="help-overlay-header">
           <h2>Keyboard Shortcuts</h2>
-          <Button type="button" onClick={onClose} $variant="outline" $size="small">
+          <Button
+            type="button"
+            onClick={onClose}
+            $variant="outline"
+            $size="small"
+          >
             Close
           </Button>
         </header>

@@ -22,10 +22,12 @@ import { Form, redirect, useNavigation, data } from "react-router";
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
 import { AlertDialog, AlertDialogClose, Button } from "~/components/ui";
-
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
-import { parseRecentGroups, removeRecentGroup } from "~/lib/recent-groups.server";
+import {
+  parseRecentGroups,
+  removeRecentGroup,
+} from "~/lib/recent-groups.server";
 
 import type { Route } from "./+types/home";
 
@@ -34,32 +36,32 @@ import type { Route } from "./+types/home";
 // ---------------------------------------------------------------------------
 const FAQ_ITEMS = [
   {
-    q: "Do I need to create an account to use SplitSend?",
     a: "No. SplitSend requires no account or sign-up — not for you, and not for anyone in your group. Just create a group and share the link.",
+    q: "Do I need to create an account to use SplitSend?",
   },
   {
-    q: "Does anyone need to download an app?",
     a: "No. SplitSend is a web app. Every member accesses their private link in a browser. Nothing to install.",
+    q: "Does anyone need to download an app?",
   },
   {
-    q: "Is SplitSend free?",
     a: "Yes, completely free. No ads, no subscription, no freemium limits.",
+    q: "Is SplitSend free?",
   },
   {
-    q: "How does SplitSend simplify debts?",
     a: "When multiple people owe each other money, the naive approach requires everyone to pay everyone back individually. SplitSend calculates the minimum number of transfers needed to settle all balances — so a group of four might need 3 payments instead of 6.",
+    q: "How does SplitSend simplify debts?",
   },
   {
-    q: "Is SplitSend a good Splitwise alternative?",
     a: "Yes. Unlike Splitwise, SplitSend doesn't require accounts, has no ads, no transaction limits, and includes smart debt simplification for free — not as a paid upgrade.",
+    q: "Is SplitSend a good Splitwise alternative?",
   },
   {
-    q: "How does the shared link work?",
     a: "When you create a group, you get an admin link. You add your members by name, and each member gets their own private link that shows only their balances and lets them add expenses. No passwords, no email addresses needed.",
+    q: "How does the shared link work?",
   },
   {
-    q: "Is my data private?",
     a: "Group and member pages are never indexed by search engines. Each person's link is unique and unguessable — there's no public directory of groups.",
+    q: "Is my data private?",
   },
 ];
 
@@ -69,13 +71,12 @@ const FAQ_ITEMS = [
 export function meta({}: Route.MetaArgs) {
   return [
     {
-      title:
-        "SplitSend — Free Bill Splitter. No Account, No App, Just a Link.",
+      title: "SplitSend — Free Bill Splitter. No Account, No App, Just a Link.",
     },
     {
-      name: "description",
       content:
         "Split expenses with friends, roommates, or on a group trip — no account needed. Share a private link, track who owes what, and settle up in seconds. Free forever.",
+      name: "description",
     },
   ];
 }
@@ -117,30 +118,30 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        width: 210,
-        flexShrink: 0,
         background: "#1c1c1e",
         borderRadius: 40,
-        padding: "10px",
         boxShadow:
           "0 30px 70px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
+        flexShrink: 0,
+        padding: "10px",
+        width: 210,
       }}
     >
       {/* Dynamic island */}
       <div
         style={{
-          height: 22,
-          display: "flex",
-          justifyContent: "center",
           alignItems: "center",
+          display: "flex",
+          height: 22,
+          justifyContent: "center",
         }}
       >
         <div
           style={{
-            width: 68,
-            height: 10,
             background: "#111",
             borderRadius: 8,
+            height: 10,
+            width: 68,
           }}
         />
       </div>
@@ -150,11 +151,11 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
         style={{
           background: "var(--background, #f8f9fa)",
           borderRadius: 28,
-          overflow: "hidden",
-          minHeight: 400,
-          padding: "0.75rem 0.6rem",
           fontSize: "0.68rem",
           lineHeight: 1.4,
+          minHeight: 400,
+          overflow: "hidden",
+          padding: "0.75rem 0.6rem",
         }}
       >
         {children}
@@ -163,18 +164,18 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
       {/* Home indicator */}
       <div
         style={{
-          height: 22,
-          display: "flex",
-          justifyContent: "center",
           alignItems: "center",
+          display: "flex",
+          height: 22,
+          justifyContent: "center",
         }}
       >
         <div
           style={{
-            width: 64,
-            height: 3,
             background: "#444",
             borderRadius: 3,
+            height: 3,
+            width: 64,
           }}
         />
       </div>
@@ -277,8 +278,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             "@type": "FAQPage",
             mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
               "@type": "Question",
-              name: q,
               acceptedAnswer: { "@type": "Answer", text: a },
+              name: q,
             })),
           }),
         }}
@@ -370,9 +371,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             style={{
               fontSize: "0.9rem",
               letterSpacing: "0.05em",
+              marginBottom: "1rem",
               opacity: 0.6,
               textTransform: "uppercase",
-              marginBottom: "1rem",
             }}
           >
             Your recent groups
@@ -385,67 +386,79 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             }}
           >
             {recentGroups.map((g) => (
-                <div key={g.url} style={{ position: "relative" }}>
-                  <a
-                    href={g.url}
-                    className="card"
-                    style={{
-                      alignItems: "center",
-                      color: "inherit",
-                      display: "flex",
-                      gap: "0.75rem",
-                      padding: "0.75rem 1rem",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {g.role === "admin" ? (
-                      <Shield size={18} />
-                    ) : (
-                      <User size={18} />
-                    )}
-                    <div style={{ flex: 1 }}>
-                      <strong>{g.name}</strong>
-                      <div style={{ fontSize: "0.8rem", opacity: 0.5 }}>
-                        {g.role === "admin"
-                          ? "Admin"
-                          : `Member · ${g.memberName}`}
-                      </div>
+              <div key={g.url} style={{ position: "relative" }}>
+                <a
+                  href={g.url}
+                  className="card"
+                  style={{
+                    alignItems: "center",
+                    color: "inherit",
+                    display: "flex",
+                    gap: "0.75rem",
+                    padding: "0.75rem 1rem",
+                    textDecoration: "none",
+                  }}
+                >
+                  {g.role === "admin" ? (
+                    <Shield size={18} />
+                  ) : (
+                    <User size={18} />
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <strong>{g.name}</strong>
+                    <div style={{ fontSize: "0.8rem", opacity: 0.5 }}>
+                      {g.role === "admin"
+                        ? "Admin"
+                        : `Member · ${g.memberName}`}
                     </div>
-                  </a>
-                  <Button
-                    type="button"
-                    $variant="ghost"
-                    $size="small"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setDismissingUrl(g.url);
-                    }}
-                    style={{
-                      position: "absolute",
-                      right: "0.5rem",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      opacity: 0.5,
-                    }}
-                    aria-label={`Dismiss ${g.name}`}
-                  >
-                    <X size={16} />
-                  </Button>
-                </div>
+                  </div>
+                </a>
+                <Button
+                  type="button"
+                  $variant="ghost"
+                  $size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDismissingUrl(g.url);
+                  }}
+                  style={{
+                    opacity: 0.5,
+                    position: "absolute",
+                    right: "0.5rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                  aria-label={`Dismiss ${g.name}`}
+                >
+                  <X size={16} />
+                </Button>
+              </div>
             ))}
             {/* Remove group confirmation — single AlertDialog driven by state */}
             {(() => {
-              const dismissing = recentGroups.find((g) => g.url === dismissingUrl);
+              const dismissing = recentGroups.find(
+                (g) => g.url === dismissingUrl
+              );
               return (
                 <AlertDialog
                   title="Remove from recent groups?"
-                  description={dismissing ? `This will remove "${dismissing.name}" from your recent groups list. You can still access it via the original link.` : ""}
+                  description={
+                    dismissing
+                      ? `This will remove "${dismissing.name}" from your recent groups list. You can still access it via the original link.`
+                      : ""
+                  }
                   open={dismissingUrl !== null}
-                  onOpenChange={(open) => { if (!open) setDismissingUrl(null); }}
+                  onOpenChange={(open) => {
+                    if (!open) {setDismissingUrl(null);}
+                  }}
                 >
                   <Form method="post">
                     <input type="hidden" name="intent" value="remove-recent" />
-                    <input type="hidden" name="url" value={dismissingUrl ?? ""} />
+                    <input
+                      type="hidden"
+                      name="url"
+                      value={dismissingUrl ?? ""}
+                    />
                     <div className="flex gap-3 justify-end">
                       <AlertDialogClose $variant="outline">
                         Cancel
@@ -469,11 +482,11 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         <p
           style={{
             fontSize: "0.78rem",
-            opacity: 0.4,
-            textTransform: "uppercase",
             letterSpacing: "0.08em",
-            textAlign: "center",
             marginBottom: "1.75rem",
+            opacity: 0.4,
+            textAlign: "center",
+            textTransform: "uppercase",
           }}
         >
           What your group members see
@@ -482,43 +495,46 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         <div
           style={{
             display: "flex",
+            flexWrap: "wrap",
             gap: "1.5rem",
             justifyContent: "center",
-            flexWrap: "wrap",
           }}
         >
           {/* Phone 1 — Balance view */}
           <PhoneMockup>
             <a
               style={{
+                color: "inherit",
                 fontSize: "0.65rem",
                 opacity: 0.45,
                 textDecoration: "none",
-                color: "inherit",
               }}
             >
               ← SplitSend
             </a>
             <div
               style={{
-                fontWeight: 700,
                 fontSize: "0.95rem",
+                fontWeight: 700,
                 marginTop: "0.2rem",
               }}
             >
               Ski Trip 2026
             </div>
-            <div style={{ opacity: 0.55, marginBottom: "0.75rem" }}>
+            <div style={{ marginBottom: "0.75rem", opacity: 0.55 }}>
               Logged in as Alex
             </div>
 
-            <div className="card" style={{ padding: "0.6rem", marginBottom: "0.5rem" }}>
+            <div
+              className="card"
+              style={{ marginBottom: "0.5rem", padding: "0.6rem" }}
+            >
               <div
                 style={{
-                  display: "flex",
                   alignItems: "center",
-                  gap: "0.3rem",
+                  display: "flex",
                   fontWeight: 700,
+                  gap: "0.3rem",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -526,8 +542,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               </div>
               <div
                 style={{
-                  padding: "0.3rem 0",
                   borderBottom: "1px solid var(--border)",
+                  padding: "0.3rem 0",
                 }}
               >
                 <span>
@@ -552,18 +568,18 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                 Expenses
               </div>
               {[
-                { label: "Hotel", amount: "$320.00", paidBy: "Alex" },
-                { label: "Lift tickets", amount: "$180.00", paidBy: "Mike" },
-                { label: "Dinner", amount: "$95.00", paidBy: "Sarah" },
+                { amount: "$320.00", label: "Hotel", paidBy: "Alex" },
+                { amount: "$180.00", label: "Lift tickets", paidBy: "Mike" },
+                { amount: "$95.00", label: "Dinner", paidBy: "Sarah" },
               ].map((e) => (
                 <div
                   key={e.label}
                   style={{
+                    borderBottom: "1px solid var(--border)",
                     display: "flex",
                     justifyContent: "space-between",
-                    padding: "0.25rem 0",
-                    borderBottom: "1px solid var(--border)",
                     opacity: 0.75,
+                    padding: "0.25rem 0",
                   }}
                 >
                   <span>{e.label}</span>
@@ -577,34 +593,37 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
           <PhoneMockup>
             <a
               style={{
+                color: "inherit",
                 fontSize: "0.65rem",
                 opacity: 0.45,
                 textDecoration: "none",
-                color: "inherit",
               }}
             >
               ← SplitSend
             </a>
             <div
               style={{
-                fontWeight: 700,
                 fontSize: "0.95rem",
+                fontWeight: 700,
                 marginTop: "0.2rem",
               }}
             >
               Ski Trip 2026
             </div>
-            <div style={{ opacity: 0.55, marginBottom: "0.75rem" }}>
+            <div style={{ marginBottom: "0.75rem", opacity: 0.55 }}>
               Logged in as Mike
             </div>
 
-            <div className="card" style={{ padding: "0.6rem", marginBottom: "0.5rem" }}>
+            <div
+              className="card"
+              style={{ marginBottom: "0.5rem", padding: "0.6rem" }}
+            >
               <div
                 style={{
-                  display: "flex",
                   alignItems: "center",
-                  gap: "0.3rem",
+                  display: "flex",
                   fontWeight: 700,
+                  gap: "0.3rem",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -620,51 +639,75 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                 Add Expense
               </div>
               <div style={{ marginBottom: "0.35rem" }}>
-                <div style={{ opacity: 0.5, fontSize: "0.6rem", marginBottom: "0.2rem" }}>
+                <div
+                  style={{
+                    fontSize: "0.6rem",
+                    marginBottom: "0.2rem",
+                    opacity: 0.5,
+                  }}
+                >
                   What was it for?
                 </div>
                 <div
                   style={{
                     background: "var(--muted, #f5f5f5)",
                     borderRadius: 6,
-                    padding: "0.35rem 0.5rem",
                     opacity: 0.8,
+                    padding: "0.35rem 0.5rem",
                   }}
                 >
                   Après-ski drinks
                 </div>
               </div>
               <div style={{ marginBottom: "0.35rem" }}>
-                <div style={{ opacity: 0.5, fontSize: "0.6rem", marginBottom: "0.2rem" }}>
+                <div
+                  style={{
+                    fontSize: "0.6rem",
+                    marginBottom: "0.2rem",
+                    opacity: 0.5,
+                  }}
+                >
                   Amount
                 </div>
                 <div
                   style={{
                     background: "var(--muted, #f5f5f5)",
                     borderRadius: 6,
-                    padding: "0.35rem 0.5rem",
                     opacity: 0.8,
+                    padding: "0.35rem 0.5rem",
                   }}
                 >
                   $62.00
                 </div>
               </div>
               <div style={{ marginBottom: "0.5rem" }}>
-                <div style={{ opacity: 0.5, fontSize: "0.6rem", marginBottom: "0.2rem" }}>
+                <div
+                  style={{
+                    fontSize: "0.6rem",
+                    marginBottom: "0.2rem",
+                    opacity: 0.5,
+                  }}
+                >
                   Who paid?
                 </div>
                 <div
                   style={{
                     background: "var(--muted, #f5f5f5)",
                     borderRadius: 6,
-                    padding: "0.35rem 0.5rem",
                     opacity: 0.8,
+                    padding: "0.35rem 0.5rem",
                   }}
                 >
                   Mike (you)
                 </div>
               </div>
-              <Button style={{ width: "100%", fontSize: "0.65rem", padding: "0.4rem 0" }}>
+              <Button
+                style={{
+                  fontSize: "0.65rem",
+                  padding: "0.4rem 0",
+                  width: "100%",
+                }}
+              >
                 Add Expense
               </Button>
             </div>
@@ -763,14 +806,14 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         <p
           style={{
             fontSize: "0.95rem",
-            opacity: 0.55,
-            textAlign: "center",
             margin: "0 auto 1.5rem",
             maxWidth: 420,
+            opacity: 0.55,
+            textAlign: "center",
           }}
         >
-          No matter the occasion, everyone gets their own link — no accounts,
-          no app downloads required.
+          No matter the occasion, everyone gets their own link — no accounts, no
+          app downloads required.
         </p>
         <div
           style={{
@@ -781,24 +824,24 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         >
           {[
             {
+              body: "Track shared groceries, utilities, and rent month to month without a spreadsheet or awkward conversations.",
               icon: <HomeIcon size={20} style={{ opacity: 0.6 }} />,
               title: "Splitting rent and bills with roommates",
-              body: "Track shared groceries, utilities, and rent month to month without a spreadsheet or awkward conversations.",
             },
             {
+              body: "Hotels, restaurants, activities — log as you go, settle when you're back. No one needs to download a thing.",
               icon: <Plane size={20} style={{ opacity: 0.6 }} />,
               title: "Group trips and vacations",
-              body: "Hotels, restaurants, activities — log as you go, settle when you're back. No one needs to download a thing.",
             },
             {
+              body: "Bachelorette parties, ski weekends, birthday dinners. One link for the whole crew.",
               icon: <PartyPopper size={20} style={{ opacity: 0.6 }} />,
               title: "Group events",
-              body: "Bachelorette parties, ski weekends, birthday dinners. One link for the whole crew.",
             },
             {
+              body: "Keep track of shared costs without a subscription or asking your partner to sign up for yet another app.",
               icon: <Heart size={20} style={{ opacity: 0.6 }} />,
               title: "Couples and households",
-              body: "Keep track of shared costs without a subscription or asking your partner to sign up for yet another app.",
             },
           ].map((item) => (
             <div
@@ -808,8 +851,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             >
               <div
                 style={{
-                  display: "flex",
                   alignItems: "center",
+                  display: "flex",
                   gap: "0.5rem",
                   marginBottom: "0.4rem",
                 }}
@@ -819,10 +862,10 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               </div>
               <p
                 style={{
-                  margin: 0,
                   fontSize: "0.85rem",
-                  opacity: 0.6,
                   lineHeight: 1.5,
+                  margin: 0,
+                  opacity: 0.6,
                 }}
               >
                 {item.body}
@@ -842,10 +885,10 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
           paddingTop: "2rem",
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
           <ArrowRightLeft
             size={28}
-            style={{ opacity: 0.5, marginBottom: "0.5rem" }}
+            style={{ marginBottom: "0.5rem", opacity: 0.5 }}
           />
           <h2
             style={{
@@ -887,10 +930,10 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             <div
               style={{
                 fontSize: "0.75rem",
-                opacity: 0.4,
-                textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: "0.5rem",
+                opacity: 0.4,
+                textTransform: "uppercase",
               }}
             >
               Without simplification
@@ -909,10 +952,10 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             <div
               style={{
                 fontSize: "0.75rem",
-                opacity: 0.7,
-                textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: "0.5rem",
+                opacity: 0.7,
+                textTransform: "uppercase",
               }}
             >
               With SplitSend
@@ -974,37 +1017,37 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         <div style={{ margin: "0 auto", maxWidth: 520 }}>
           <table
             style={{
-              width: "100%",
               borderCollapse: "collapse",
               fontSize: "0.9rem",
+              width: "100%",
             }}
           >
             <thead>
               <tr>
                 <th
                   style={{
-                    textAlign: "left",
-                    padding: "0.5rem 0.75rem",
                     borderBottom: "2px solid var(--border)",
                     opacity: 0.5,
+                    padding: "0.5rem 0.75rem",
+                    textAlign: "left",
                   }}
                 />
                 <th
                   style={{
-                    textAlign: "center",
-                    padding: "0.5rem 0.75rem",
                     borderBottom: "2px solid var(--border)",
                     fontWeight: 700,
+                    padding: "0.5rem 0.75rem",
+                    textAlign: "center",
                   }}
                 >
                   SplitSend
                 </th>
                 <th
                   style={{
-                    textAlign: "center",
-                    padding: "0.5rem 0.75rem",
                     borderBottom: "2px solid var(--border)",
                     opacity: 0.5,
+                    padding: "0.5rem 0.75rem",
+                    textAlign: "center",
                   }}
                 >
                   Splitwise
@@ -1044,49 +1087,61 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                 <tr key={row.feature}>
                   <td
                     style={{
-                      padding: "0.5rem 0.75rem",
                       borderBottom: "1px solid var(--border)",
+                      padding: "0.5rem 0.75rem",
                     }}
                   >
                     {row.feature}
                   </td>
                   <td
                     style={{
-                      padding: "0.5rem 0.75rem",
                       borderBottom: "1px solid var(--border)",
+                      padding: "0.5rem 0.75rem",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    {row.splitsend === true ? (
-                      <Check
-                        size={16}
-                        style={{ color: "var(--color-success, #22c55e)" }}
-                      />
-                    ) : row.splitsend === false ? (
-                      <Minus size={16} style={{ opacity: 0.3 }} />
-                    ) : (
-                      <span style={{ fontSize: "0.8rem", opacity: 0.6 }}>
-                        {row.splitsend}
-                      </span>
-                    )}
+                    <div
+                      style={{
+                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {row.splitsend === true ? (
+                        <Check
+                          size={16}
+                          style={{ color: "var(--color-success, #22c55e)" }}
+                        />
+                      ) : (row.splitsend === false ? (
+                        <Minus size={16} style={{ opacity: 0.3 }} />
+                      ) : (
+                        <span style={{ fontSize: "0.8rem", opacity: 0.6 }}>
+                          {row.splitsend}
+                        </span>
+                      ))}
                     </div>
                   </td>
                   <td
                     style={{
-                      padding: "0.5rem 0.75rem",
                       borderBottom: "1px solid var(--border)",
+                      padding: "0.5rem 0.75rem",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    {row.splitwise === true ? (
-                      <Check size={16} style={{ opacity: 0.4 }} />
-                    ) : row.splitwise === false ? (
-                      <Minus size={16} style={{ opacity: 0.3 }} />
-                    ) : (
-                      <span style={{ fontSize: "0.8rem", opacity: 0.4 }}>
-                        {row.splitwise}
-                      </span>
-                    )}
+                    <div
+                      style={{
+                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {row.splitwise === true ? (
+                        <Check size={16} style={{ opacity: 0.4 }} />
+                      ) : (row.splitwise === false ? (
+                        <Minus size={16} style={{ opacity: 0.3 }} />
+                      ) : (
+                        <span style={{ fontSize: "0.8rem", opacity: 0.4 }}>
+                          {row.splitwise}
+                        </span>
+                      ))}
                     </div>
                   </td>
                 </tr>
@@ -1128,9 +1183,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               key={q}
               style={{
                 borderBottom:
-                  i < FAQ_ITEMS.length - 1
-                    ? "1px solid var(--border)"
-                    : "none",
+                  i < FAQ_ITEMS.length - 1 ? "1px solid var(--border)" : "none",
                 padding: "1rem 0",
               }}
             >
@@ -1145,9 +1198,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               </h3>
               <p
                 style={{
-                  margin: 0,
                   fontSize: "0.88rem",
                   lineHeight: 1.6,
+                  margin: 0,
                   opacity: 0.6,
                 }}
               >

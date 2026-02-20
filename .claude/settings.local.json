@@ -5,7 +5,9 @@
       "Bash(npm run typecheck:*)",
       "Bash(npm exec:*)",
       "Bash(agent-browser:*)",
-      "Bash(bun run test:*)"
+      "Bash(bun run test:*)",
+      "Bash(xargs:*)",
+      "Bash(npx playwright test:*)"
     ]
   }
 }

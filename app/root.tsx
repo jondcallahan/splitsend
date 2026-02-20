@@ -18,7 +18,6 @@ import type { Command } from "./components/command-palette";
 import { HelpOverlay } from "./components/help-overlay";
 import type { ShortcutGroup } from "./components/help-overlay";
 import { Button } from "./components/ui";
-
 import { KeyboardContext } from "./contexts/keyboard-context";
 
 import "sileo/styles.css";
@@ -55,13 +54,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
           beforeSend={(event) => {
             const url = new URL(event.url);
             // Mask /g/:slug/admin/:adminToken and /g/:slug/m/:memberToken paths
-            url.pathname = url.pathname.replace(
-              /^\/g\/[^/]+\/admin\/[^/]+/,
-              "/g/[slug]/admin/[adminToken]"
-            ).replace(
-              /^\/g\/[^/]+\/m\/[^/]+/,
-              "/g/[slug]/m/[memberToken]"
-            );
+            url.pathname = url.pathname
+              .replace(
+                /^\/g\/[^/]+\/admin\/[^/]+/,
+                "/g/[slug]/admin/[adminToken]"
+              )
+              .replace(/^\/g\/[^/]+\/m\/[^/]+/, "/g/[slug]/m/[memberToken]");
             return { ...event, url: url.toString() };
           }}
         />
@@ -123,8 +121,8 @@ export default function App() {
         options={{
           fill: "var(--sileo-bg, #ffffff)",
           styles: {
+            description: "text-mauve-500 dark:text-neutral-400!",
             title: "text-mauve-950 dark:text-white",
-            description: "text-mauve-500 dark:text-neutral-400!"
           },
         }}
       />
