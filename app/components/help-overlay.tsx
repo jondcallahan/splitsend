@@ -1,3 +1,4 @@
+import { Button } from "~/components/ui";
 import { formatForDisplay } from "~/lib/keyboard";
 
 export interface ShortcutGroup {
@@ -45,14 +46,9 @@ export function HelpOverlay({ isOpen, onClose, groups }: HelpOverlayProps) {
       <div className="help-overlay-content">
         <header className="help-overlay-header">
           <h2>Keyboard Shortcuts</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="outline"
-            style={{ fontSize: "0.85rem", padding: "0.3rem 0.6rem" }}
-          >
+          <Button type="button" onClick={onClose} $variant="outline" $size="small">
             Close
-          </button>
+          </Button>
         </header>
 
         <div className="help-overlay-body">

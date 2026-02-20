@@ -70,51 +70,9 @@ p { @apply leading-relaxed; }
 }
 
 /* ------------------------------------------------------------------ */
-/* Buttons                                                             */
+/* Buttons (fallback for native buttons)                              */
 /* ------------------------------------------------------------------ */
-button, [type="submit"] {
-  @apply font-sans font-bold text-sm rounded-full border-none cursor-pointer
-         py-3 px-6
-         transition-all duration-150 ease-out
-         inline-flex items-center justify-center gap-2 leading-snug;
-}
-
-button:not(.ghost):not(.outline):not(.small-icon) {
-  @apply bg-olive-800 text-white;
-}
-button:not(.ghost):not(.outline):not(.small-icon):hover {
-  @apply bg-olive-900;
-}
-
 button:disabled { @apply opacity-50 pointer-events-none; }
-
-button.outline {
-  @apply bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white;
-}
-button.outline:hover {
-  @apply bg-mauve-50 dark:bg-neutral-800 border-mauve-400 dark:border-neutral-600;
-}
-
-button.ghost {
-  @apply bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3;
-}
-button.ghost:hover {
-  @apply bg-mauve-100 dark:bg-neutral-800 text-mauve-900 dark:text-white;
-}
-
-button.small {
-  @apply text-xs py-2 px-4;
-}
-
-button.small-icon {
-  @apply bg-transparent text-mauve-400 dark:text-neutral-500 p-2 rounded-xl;
-}
-button.small-icon:hover {
-  @apply bg-mauve-100 dark:bg-neutral-800 text-mauve-900 dark:text-white;
-}
-
-button[data-variant="danger"] { @apply bg-red-600 text-white; }
-button[data-variant="danger"]:hover { @apply bg-red-700; }
 
 /* ------------------------------------------------------------------ */
 /* Inputs                                                              */

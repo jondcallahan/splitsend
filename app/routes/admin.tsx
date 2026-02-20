@@ -14,7 +14,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
+import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Button, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -393,15 +393,16 @@ export default function Admin({
           </a>
           <div className="flex items-center gap-2 mt-2">
             <h1 style={{ margin: 0 }}>{group.name}</h1>
-            <button
+            <Button
               type="button"
               onClick={() => setRenameOpen(true)}
               aria-label="Rename group"
               title="Rename group (R)"
-              className="outline small"
+              $variant="outline"
+              $size="small"
             >
               <Pencil size={14} />
-            </button>
+            </Button>
           </div>
         </div>
         <small className="text-light">Admin</small>
@@ -425,12 +426,12 @@ export default function Admin({
             />
           </Field>
           <div className="mt-6 flex gap-3 justify-end">
-            <DialogClose className="outline">
+            <DialogClose $variant="outline">
               Cancel
             </DialogClose>
-            <button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving…" : "Save"}
-            </button>
+            </Button>
           </div>
         </Form>
       </Dialog>
@@ -469,13 +470,14 @@ export default function Admin({
                   <tr key={m.id}>
                     <td>{m.name}</td>
                     <td>
-                      <button
+                      <Button
                         type="button"
                         onClick={() => shareOrCopyLink(link, m.name)}
-                        className="small flex items-center gap-1"
+                        $size="small"
+                        className="flex items-center gap-1"
                       >
                         <Share2 size={14} /> Share link
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 );
@@ -618,14 +620,15 @@ export default function Admin({
                   <h3 style={{ fontSize: "inherit", lineHeight: "inherit", margin: 0 }}>{e.description}</h3>
                   <div className="flex items-center gap-2">
                     <strong>{cents(e.amount)}</strong>
-                    <button
+                    <Button
                       type="button"
                       aria-label={`Edit expense: ${e.description}`}
                       onClick={() => setEditingExpenseId(e.id)}
-                      className="outline small"
+                      $variant="outline"
+                      $size="small"
                     >
                       <Pencil size={14} />
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div
@@ -711,24 +714,24 @@ export default function Admin({
                       </fieldset>
                     </div>
                     <div className="mt-6 flex items-center justify-between">
-                      <button
+                      <Button
                         type="button"
                         onClick={() => {
                           setEditingExpenseId(null);
                           setDeletingExpenseId(e.id);
                         }}
-                        data-variant="danger"
-                        className="ghost"
+                        $variant="ghost"
+                        className="text-red-600 dark:text-red-400"
                       >
                         <Trash2 size={14} /> Delete
-                      </button>
+                      </Button>
                       <div className="flex gap-3">
-                        <DialogClose className="outline">
+                        <DialogClose $variant="outline">
                           Cancel
                         </DialogClose>
-                        <button type="submit" disabled={isSubmitting}>
+                        <Button type="submit" disabled={isSubmitting}>
                           {isSubmitting ? "Saving…" : "Save"}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </Form>
@@ -745,12 +748,12 @@ export default function Admin({
                     <input type="hidden" name="intent" value="delete-expense" />
                     <input type="hidden" name="expenseId" value={e.id} />
                     <div className="flex gap-3 justify-end">
-                      <AlertDialogClose className="outline">
+                      <AlertDialogClose $variant="outline">
                         Cancel
                       </AlertDialogClose>
-                      <button type="submit" data-variant="danger">
+                      <Button type="submit" $variant="danger">
                         Delete
-                      </button>
+                      </Button>
                     </div>
                   </Form>
                 </AlertDialog>

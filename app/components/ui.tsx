@@ -38,6 +38,36 @@ type BadgeProps = TwcComponentProps<"span"> & VariantProps<typeof badge>;
 export const Badge = twc.span<BadgeProps>(({ $variant }) => badge({ $variant }));
 
 /* ------------------------------------------------------------------ */
+/* Button                                                              */
+/* ------------------------------------------------------------------ */
+const button = cva(
+  "font-sans font-bold text-sm rounded-full border-none cursor-pointer py-3 px-6 transition-all duration-150 ease-out inline-flex items-center justify-center gap-2 leading-snug disabled:opacity-50 disabled:pointer-events-none",
+  {
+    variants: {
+      $variant: {
+        primary: "bg-olive-800 text-white hover:bg-olive-900",
+        outline: "bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white hover:bg-mauve-50 dark:hover:bg-neutral-800 hover:border-mauve-400 dark:hover:border-neutral-600",
+        ghost: "bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3 hover:bg-mauve-100 dark:hover:bg-neutral-800 hover:text-mauve-900 dark:hover:text-white",
+        danger: "bg-red-600 text-white hover:bg-red-700",
+      },
+      $size: {
+        default: "py-3 px-6",
+        small: "text-xs py-2 px-4",
+        icon: "p-2 rounded-xl",
+      },
+    },
+    defaultVariants: {
+      $variant: "primary",
+      $size: "default",
+    },
+  }
+);
+
+type ButtonProps = TwcComponentProps<"button"> & VariantProps<typeof button>;
+
+export const Button = twc.button<ButtonProps>(({ $variant, $size }) => button({ $variant, $size }));
+
+/* ------------------------------------------------------------------ */
 /* Dialog styles                                                       */
 /* ------------------------------------------------------------------ */
 const BACKDROP_CLASS =
@@ -123,12 +153,16 @@ export function Dialog({
 export function DialogClose({
   children,
   className,
+  $variant,
+  $size,
 }: {
   children: ReactNode;
   className?: string;
+  $variant?: VariantProps<typeof button>["$variant"];
+  $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseDialog.Close className={className}>
+    <BaseDialog.Close className={className ?? button({ $variant, $size })}>
       {children}
     </BaseDialog.Close>
   );
@@ -176,12 +210,16 @@ export function AlertDialog({
 export function AlertDialogClose({
   children,
   className,
+  $variant,
+  $size,
 }: {
   children: ReactNode;
   className?: string;
+  $variant?: VariantProps<typeof button>["$variant"];
+  $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseAlertDialog.Close className={className}>
+    <BaseAlertDialog.Close className={className ?? button({ $variant, $size })}>
       {children}
     </BaseAlertDialog.Close>
   );

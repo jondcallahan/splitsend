@@ -17,6 +17,7 @@ import { CommandPalette } from "./components/command-palette";
 import type { Command } from "./components/command-palette";
 import { HelpOverlay } from "./components/help-overlay";
 import type { ShortcutGroup } from "./components/help-overlay";
+import { Button } from "./components/ui";
 
 import { KeyboardContext } from "./contexts/keyboard-context";
 
@@ -125,22 +126,24 @@ export default function App() {
 
       {/* Keyboard hints — only visible on non-touch devices via CSS */}
       <div className="keyboard-hints">
-        <button
+        <Button
           type="button"
           onClick={() => setCommandPaletteOpen(true)}
-          className="outline small"
+          $variant="outline"
+          $size="small"
           title="Open command palette (⌘K or /)"
         >
           Search
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => setHelpOverlayOpen(true)}
-          className="outline small"
+          $variant="outline"
+          $size="small"
           title="Show keyboard shortcuts (?)"
         >
           ?
-        </button>
+        </Button>
       </div>
 
       <CommandPalette
