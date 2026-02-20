@@ -332,7 +332,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
       {/* ------------------------------------------------------------------ */}
       {/* Create Group — the main action                                      */}
       {/* ------------------------------------------------------------------ */}
-      <div className="card" style={{ marginBottom: "2rem" }}>
+      <div className="card" style={{ marginBottom: "3rem" }}>
         <Form method="post">
           <fieldset disabled={isSubmitting}>
             <label htmlFor="name">Name your group</label>
@@ -374,6 +374,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               letterSpacing: "0.05em",
               opacity: 0.6,
               textTransform: "uppercase",
+              marginBottom: "1rem",
             }}
           >
             Your recent groups
@@ -1080,11 +1081,11 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   </td>
                   <td
                     style={{
-                      textAlign: "center",
                       padding: "0.5rem 0.75rem",
                       borderBottom: "1px solid var(--border)",
                     }}
                   >
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {row.splitsend === true ? (
                       <Check
                         size={16}
@@ -1097,14 +1098,15 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                         {row.splitsend}
                       </span>
                     )}
+                    </div>
                   </td>
                   <td
                     style={{
-                      textAlign: "center",
                       padding: "0.5rem 0.75rem",
                       borderBottom: "1px solid var(--border)",
                     }}
                   >
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {row.splitwise === true ? (
                       <Check size={16} style={{ opacity: 0.4 }} />
                     ) : row.splitwise === false ? (
@@ -1114,6 +1116,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                         {row.splitwise}
                       </span>
                     )}
+                    </div>
                   </td>
                 </tr>
               ))}

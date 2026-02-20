@@ -1,305 +1,362 @@
-/* Oat UI is imported in root.tsx via JS imports */
+@import "tailwindcss";
 
-/* Override Oat's default font with Google Sans Flex */
-:root {
-  --font-family: "Google Sans Flex", system-ui, sans-serif;
+/* ================================================================== */
+/* DESIGN SYSTEM                                                       */
+/*                                                                     */
+/* Spacing scale (multiples of 4px):                                   */
+/*   4  · micro gaps, icon padding                                     */
+/*   8  · inline gaps, small padding                                   */
+/*   12 · label-to-input, tight stacking                               */
+/*   16 · element gaps within a card, form field spacing               */
+/*   24 · card padding, section header to content                      */
+/*   32 · card-to-card / section gaps                                  */
+/*   48 · major page sections                                          */
+/*   64 · page top margin                                              */
+/*                                                                     */
+/* Radius scale:                                                       */
+/*   full · buttons, badges, pills                                     */
+/*   2xl (16px) · inputs, selects                                      */
+/*   3xl (24px) · cards, dialogs                                       */
+/*                                                                     */
+/* Font weight:                                                        */
+/*   400 · body text                                                   */
+/*   500 · secondary labels, metadata                                  */
+/*   600 · labels, table headers, legend                               */
+/*   700 · headings, buttons, badges                                   */
+/* ================================================================== */
+
+@theme {
+  --font-sans: "Google Sans Flex", system-ui, sans-serif;
+  --font-display: "Google Sans Flex", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  font-family: var(--font-family);
-  padding-bottom: var(--space-16);
+  @apply font-sans bg-mauve-50 text-mauve-950 leading-relaxed pb-16;
 }
 
-/* Keyboard shortcut display */
-[data-kbd],
-kbd {
-  display: inline-block;
-  padding: var(--space-1) var(--space-2);
-  font-size: 0.85em;
-  font-family: var(--font-mono);
-  line-height: 1.2;
-  color: var(--foreground);
-  background-color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-small);
-  box-shadow: var(--shadow-small);
-  white-space: nowrap;
+/* ------------------------------------------------------------------ */
+/* Typography                                                          */
+/* ------------------------------------------------------------------ */
+h1, h2, h3 {
+  @apply font-display font-bold tracking-tight leading-tight m-0;
 }
 
-/* Better keyboard focus indicators */
+h1 { @apply text-4xl; }
+h2 { @apply text-2xl; }
+h3 { @apply text-lg; }
+
+p { @apply leading-relaxed; }
+
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+.container     { @apply mx-auto px-6 max-w-2xl; }
+.container.narrow { @apply max-w-xl; }
+
+/* ------------------------------------------------------------------ */
+/* Card                                                                */
+/* ------------------------------------------------------------------ */
+.card {
+  @apply bg-white border border-mauve-200 rounded-3xl p-6;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+button, [type="submit"] {
+  @apply font-sans font-bold text-sm rounded-full border-none cursor-pointer
+         py-3 px-6
+         transition-all duration-150 ease-out
+         inline-flex items-center justify-center gap-2 leading-snug;
+}
+
+button:not(.ghost):not(.outline):not(.small-icon) {
+  @apply bg-olive-800 text-white;
+}
+button:not(.ghost):not(.outline):not(.small-icon):hover {
+  @apply bg-olive-900;
+}
+
+button:disabled { @apply opacity-50 pointer-events-none; }
+
+button.outline {
+  @apply bg-transparent border border-mauve-200 text-mauve-900;
+}
+button.outline:hover {
+  @apply bg-mauve-50 border-mauve-400;
+}
+
+button.ghost {
+  @apply bg-transparent text-mauve-500 py-2 px-3;
+}
+button.ghost:hover {
+  @apply bg-mauve-100 text-mauve-900;
+}
+
+button.small {
+  @apply text-xs py-2 px-4;
+}
+
+button.small-icon {
+  @apply bg-transparent text-mauve-400 p-2 rounded-xl;
+}
+button.small-icon:hover {
+  @apply bg-mauve-100 text-mauve-900;
+}
+
+button[data-variant="danger"] { @apply bg-red-600 text-white; }
+button[data-variant="danger"]:hover { @apply bg-red-700; }
+
+/* ------------------------------------------------------------------ */
+/* Inputs                                                              */
+/* ------------------------------------------------------------------ */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  @apply font-sans font-medium text-base
+         py-3 px-4
+         border border-mauve-200 rounded-2xl
+         bg-white text-mauve-950 w-full
+         transition-all duration-150 outline-none leading-normal;
+}
+
+input:focus, select:focus, textarea:focus {
+  @apply border-olive-700 ring-3 ring-olive-700/8;
+}
+
+input::placeholder { @apply text-mauve-400 font-normal; }
+
+label {
+  @apply block text-sm font-semibold text-mauve-500 mb-1.5;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239a9a9a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  @apply pr-10;
+}
+
+input[type="checkbox"] {
+  @apply w-5 h-5 accent-olive-800 rounded-lg;
+}
+
+/* ------------------------------------------------------------------ */
+/* Fieldset / Legend                                                    */
+/* ------------------------------------------------------------------ */
+fieldset { @apply border-none p-0 m-0; }
+
+legend {
+  @apply text-sm font-semibold text-mauve-500 mb-3;
+}
+
+/* ------------------------------------------------------------------ */
+/* Table                                                               */
+/* ------------------------------------------------------------------ */
+table { @apply w-full border-collapse; }
+
+th {
+  @apply text-left text-xs font-bold uppercase tracking-widest
+         text-mauve-400 py-3 border-b border-mauve-200;
+}
+
+td {
+  @apply py-3 border-b border-mauve-100 text-sm;
+}
+
+/* ------------------------------------------------------------------ */
+/* Badges                                                              */
+/* ------------------------------------------------------------------ */
+.badge {
+  @apply inline-flex items-center gap-1 text-xs font-bold
+         py-1 px-3 rounded-full leading-snug;
+}
+
+.badge.success { @apply bg-emerald-50 text-emerald-700; }
+.badge.outline { @apply bg-mauve-50 text-mauve-600 border border-mauve-200; }
+
+/* ------------------------------------------------------------------ */
+/* Dialog (native)                                                     */
+/* ------------------------------------------------------------------ */
+dialog {
+  @apply border-none rounded-3xl p-0 max-w-md w-[90%] bg-white;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+dialog::backdrop {
+  @apply bg-black/40;
+  backdrop-filter: blur(6px);
+}
+
+dialog > form, dialog > div { @apply p-6; }
+
+dialog header    { @apply mb-6; }
+dialog header h3 { @apply m-0; }
+dialog header p  { @apply mt-2 mb-0 text-mauve-500 text-sm leading-relaxed; }
+
+dialog footer {
+  @apply mt-8 flex gap-3 justify-end;
+}
+
+/* ------------------------------------------------------------------ */
+/* Utility compat                                                      */
+/* ------------------------------------------------------------------ */
+.text-light  { @apply text-mauve-500; }
+.text-lighter { @apply text-mauve-400; }
+.w-100       { @apply w-full; }
+.unstyled    { @apply list-none m-0 p-0; }
+
+/* ------------------------------------------------------------------ */
+/* Focus                                                               */
+/* ------------------------------------------------------------------ */
 *:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  @apply outline-2 outline-olive-700 outline-offset-2;
 }
 
-/* Command Palette */
-.command-palette-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 15vh;
-  z-index: var(--z-modal, 1000);
+/* ------------------------------------------------------------------ */
+/* Form stack — consistent 16px between fields                         */
+/* ------------------------------------------------------------------ */
+.form-stack {
+  @apply flex flex-col gap-4;
 }
 
-.command-palette-content {
-  background-color: var(--background, #fff);
-  border-radius: var(--radius-large, 0.75rem);
-  box-shadow: var(--shadow-large);
-  width: 90%;
-  max-width: 640px;
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+/* ------------------------------------------------------------------ */
+/* Kbd                                                                 */
+/* ------------------------------------------------------------------ */
+kbd {
+  @apply inline-block py-0.5 px-2 text-xs font-mono leading-snug
+         text-mauve-500 bg-mauve-100 border border-mauve-200
+         rounded-lg whitespace-nowrap;
 }
 
-.command-palette-search {
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--border);
-}
-
-.command-palette-input {
-  width: 100%;
-  border: none;
-  background: transparent;
-  font-size: var(--text-4);
-  padding: var(--space-2) 0;
-  outline: none;
-  color: var(--foreground);
-}
-
-.command-palette-results {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-2);
-}
-
-.command-palette-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: none;
-  background: transparent;
-  border-radius: var(--radius-medium);
-  cursor: pointer;
-  font-size: var(--text-6);
-  text-align: left;
-  color: var(--foreground);
-  transition: background-color var(--transition-fast);
-}
-
-.command-palette-item:hover,
-.command-palette-item.active {
-  background-color: var(--muted);
-}
-
-.command-palette-label {
-  flex: 1;
-}
-
-.command-palette-shortcut {
-  margin-left: var(--space-4);
-  opacity: 0.6;
-}
-
-.command-palette-empty {
-  padding: var(--space-8);
-  text-align: center;
-  color: var(--muted-foreground);
-  font-size: var(--text-7);
-}
-
-.command-palette-footer {
-  padding: var(--space-3) var(--space-4);
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: var(--space-6);
-  justify-content: center;
-  font-size: var(--text-8);
-  color: var(--muted-foreground);
-}
-
-.command-palette-footer span {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* Help Overlay */
-.help-overlay-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-8);
-  z-index: var(--z-modal, 1000);
-  overflow-y: auto;
-}
-
-.help-overlay-content {
-  background-color: var(--background, #fff);
-  border-radius: var(--radius-large, 0.75rem);
-  box-shadow: var(--shadow-large);
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.help-overlay-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-6);
-  border-bottom: 1px solid var(--border);
-}
-
-.help-overlay-header h2 {
-  margin: 0;
-  font-size: var(--text-2);
-}
-
-.help-overlay-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-6);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-8);
-}
-
-.help-overlay-group h3 {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-7);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted-foreground);
-  font-weight: var(--font-semibold);
-}
-
-.help-overlay-list {
-  margin: 0;
-  padding: 0;
-}
-
-.help-overlay-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--faint);
-}
-
-.help-overlay-item:last-child {
-  border-bottom: none;
-}
-
-.help-overlay-item dt {
-  flex-shrink: 0;
-}
-
-.help-overlay-item dd {
-  flex: 1;
-  margin: 0;
-  font-size: var(--text-7);
-  color: var(--muted-foreground);
-}
-
-.help-overlay-footer {
-  padding: var(--space-4) var(--space-6);
-  border-top: 1px solid var(--border);
-  text-align: center;
-  font-size: var(--text-7);
-  color: var(--muted-foreground);
-}
-
-.help-overlay-footer p {
-  margin: 0;
-}
-
-/* Keyboard Hints (floating buttons) */
+/* ------------------------------------------------------------------ */
+/* Keyboard hints (floating)                                           */
+/* ------------------------------------------------------------------ */
 .keyboard-hints {
-  position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
-  display: flex;
-  gap: var(--space-2);
-  z-index: 100;
+  @apply fixed bottom-6 right-6 flex gap-2 z-50;
 }
 
 .keyboard-hints button {
-  box-shadow: var(--shadow-medium);
-  transition: all var(--transition);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  @apply shadow-md bg-white text-mauve-500 border border-mauve-200 text-xs;
 }
 
 .keyboard-hints button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-large);
+  @apply shadow-lg bg-white text-mauve-900;
 }
 
-.keyboard-hints button kbd {
-  margin: 0;
-}
-
-/* Hide hints on touch devices or small screens */
 @media (pointer: coarse), (max-width: 640px) {
-  .keyboard-hints {
-    display: none;
-  }
+  .keyboard-hints { @apply hidden; }
 }
 
-/* Narrow container for forms/content pages */
-.container.narrow {
-  --container-max: 680px;
+/* ------------------------------------------------------------------ */
+/* Command palette                                                     */
+/* ------------------------------------------------------------------ */
+.command-palette-backdrop {
+  @apply fixed inset-0 bg-black/40 flex items-start justify-center pt-[15vh] z-[1000];
+  backdrop-filter: blur(6px);
 }
 
-/* Card header styles */
-.card > h2:first-child,
-.card > h3:first-child {
-  margin-top: 0;
+.command-palette-content {
+  @apply bg-white rounded-3xl w-[90%] max-w-xl max-h-[70vh] flex flex-col overflow-hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
 }
 
-/* Form with consistent vertical spacing between groups */
-.form-stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+.command-palette-search  { @apply py-4 px-6 border-b border-mauve-100; }
+
+.command-palette-input {
+  @apply w-full border-none bg-transparent text-base font-sans font-medium
+         py-1 outline-none text-mauve-950;
 }
 
-.form-stack label {
-  margin-bottom: var(--space-1);
+.command-palette-results { @apply flex-1 overflow-y-auto p-2; }
+
+.command-palette-item {
+  @apply flex items-center justify-between w-full
+         py-3 px-4
+         border-none bg-transparent rounded-2xl cursor-pointer
+         text-sm font-sans font-medium text-left text-mauve-900
+         transition-colors duration-100;
 }
 
-.form-stack input,
-.form-stack select {
-  margin-bottom: 0;
+.command-palette-item:hover,
+.command-palette-item.active { @apply bg-mauve-50; }
+
+.command-palette-label    { @apply flex-1; }
+.command-palette-shortcut { @apply ml-4 opacity-50; }
+
+.command-palette-empty {
+  @apply py-12 text-center text-mauve-400 text-sm;
 }
 
-/* Checkbox/Radio group fieldset */
-fieldset.checkbox-group {
-  border: none;
-  padding: 0;
-  margin: 0;
+.command-palette-footer {
+  @apply py-3 px-6 border-t border-mauve-100
+         flex gap-6 justify-center text-xs text-mauve-400;
 }
 
-/* Expense item animations */
+.command-palette-footer span { @apply flex items-center gap-2; }
+
+/* ------------------------------------------------------------------ */
+/* Help overlay                                                        */
+/* ------------------------------------------------------------------ */
+.help-overlay-backdrop {
+  @apply fixed inset-0 bg-black/40 flex items-center justify-center p-8 z-[1000] overflow-y-auto;
+  backdrop-filter: blur(6px);
+}
+
+.help-overlay-content {
+  @apply bg-white rounded-3xl w-[90%] max-w-2xl max-h-[90vh] flex flex-col overflow-hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+}
+
+.help-overlay-header {
+  @apply flex items-center justify-between py-4 px-6 border-b border-mauve-100;
+}
+
+.help-overlay-header h2 { @apply m-0 text-lg; }
+
+.help-overlay-body {
+  @apply flex-1 overflow-y-auto p-6 grid gap-8;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.help-overlay-group h3 {
+  @apply m-0 mb-3 text-[0.7rem] uppercase tracking-widest text-mauve-400 font-bold font-sans;
+}
+
+.help-overlay-list { @apply m-0 p-0; }
+
+.help-overlay-item {
+  @apply flex items-center justify-between gap-4 py-2 border-b border-mauve-100;
+}
+
+.help-overlay-item:last-child { @apply border-b-0; }
+.help-overlay-item dt { @apply shrink-0; }
+.help-overlay-item dd { @apply flex-1 m-0 text-sm text-mauve-500; }
+
+.help-overlay-footer {
+  @apply py-3 px-6 border-t border-mauve-100 text-center text-xs text-mauve-400;
+}
+
+.help-overlay-footer p { @apply m-0; }
+
+/* ------------------------------------------------------------------ */
+/* Expense animation                                                   */
+/* ------------------------------------------------------------------ */
 @keyframes highlightNew {
   0% {
-    background-color: rgb(from var(--success) r g b / 0.15);
+    background-color: oklch(0.97 0.02 166);
     transform: translateX(-4px);
   }
   100% {
@@ -311,5 +368,3 @@ fieldset.checkbox-group {
 .expense-item {
   animation: highlightNew 0.6s ease-out;
 }
-
-/* Use Oat's built-in animations instead of custom ones */

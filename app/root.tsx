@@ -21,7 +21,6 @@ import type { ShortcutGroup } from "./components/help-overlay";
 import { KeyboardContext } from "./contexts/keyboard-context";
 
 import "sileo/styles.css";
-import "@knadh/oat/oat.min.css";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
