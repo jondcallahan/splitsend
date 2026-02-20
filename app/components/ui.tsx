@@ -1,9 +1,10 @@
+import { AlertDialog as BaseAlertDialog } from "@base-ui-components/react/alert-dialog";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import { Field as BaseField } from "@base-ui-components/react/field";
 import { Select as BaseSelect } from "@base-ui-components/react/select";
 import { Check } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { twc } from "react-twc";
 
 /* ------------------------------------------------------------------ */
@@ -19,6 +20,15 @@ export const SectionLabel = twc.p`text-xs font-bold text-mauve-400 uppercase tra
 /** Badges */
 export const BadgeSuccess = twc.span`inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-emerald-50 text-emerald-700`;
 export const BadgeOutline = twc.span`inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-mauve-50 text-mauve-600 border border-mauve-200`;
+
+/* ------------------------------------------------------------------ */
+/* Shared dialog styling constants                                     */
+/* ------------------------------------------------------------------ */
+const BACKDROP_CLASS =
+  "fixed inset-0 bg-black/40 backdrop-blur-sm z-[999] transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0";
+
+const POPUP_CLASS =
+  "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1000] bg-white rounded-3xl w-[90%] max-w-md p-6 shadow-2xl focus:outline-none transition-all duration-150 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:scale-95";
 
 /* ------------------------------------------------------------------ */
 /* Checkbox                                                            */
@@ -56,7 +66,7 @@ export function Checkbox({
 }
 
 /* ------------------------------------------------------------------ */
-/* Dialog                                                              */
+/* Dialog (dismissible — click outside / Escape to close)              */
 /* ------------------------------------------------------------------ */
 export function Dialog({
   trigger,
@@ -77,15 +87,8 @@ export function Dialog({
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       {trigger && <BaseDialog.Trigger render={trigger} />}
       <BaseDialog.Portal>
-        <BaseDialog.Backdrop
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[999]
-                     transition-opacity duration-150"
-        />
-        <BaseDialog.Popup
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1000]
-                     bg-white rounded-3xl shadow-2xl w-[90%] max-w-md p-6
-                     focus:outline-none"
-        >
+        <BaseDialog.Backdrop className={BACKDROP_CLASS} />
+        <BaseDialog.Popup className={POPUP_CLASS}>
           <BaseDialog.Title className="text-xl font-display font-bold tracking-tight m-0">
             {title}
           </BaseDialog.Title>
@@ -94,7 +97,6 @@ export function Dialog({
               {description}
             </BaseDialog.Description>
           )}
-          {/* 24px gap between header and content */}
           <div className="mt-6">{children}</div>
         </BaseDialog.Popup>
       </BaseDialog.Portal>
@@ -102,15 +104,70 @@ export function Dialog({
   );
 }
 
-export function DialogClose({ children, ...props }: ComponentProps<"button">) {
+export function DialogClose({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <BaseDialog.Close
-      render={
-        <button type="button" {...props}>
-          {children}
-        </button>
-      }
-    />
+    <BaseDialog.Close className={className}>
+      {children}
+    </BaseDialog.Close>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* AlertDialog (requires explicit action — no outside click dismiss)   */
+/* ------------------------------------------------------------------ */
+export function AlertDialog({
+  trigger,
+  title,
+  description,
+  children,
+  open,
+  onOpenChange,
+}: {
+  trigger?: ReactNode;
+  title: string;
+  description?: string;
+  children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  return (
+    <BaseAlertDialog.Root open={open} onOpenChange={onOpenChange}>
+      {trigger && <BaseAlertDialog.Trigger render={trigger} />}
+      <BaseAlertDialog.Portal>
+        <BaseAlertDialog.Backdrop className={BACKDROP_CLASS} />
+        <BaseAlertDialog.Popup className={POPUP_CLASS}>
+          <BaseAlertDialog.Title className="text-xl font-display font-bold tracking-tight m-0">
+            {title}
+          </BaseAlertDialog.Title>
+          {description && (
+            <BaseAlertDialog.Description className="mt-2 text-sm text-mauve-500 leading-relaxed">
+              {description}
+            </BaseAlertDialog.Description>
+          )}
+          <div className="mt-6">{children}</div>
+        </BaseAlertDialog.Popup>
+      </BaseAlertDialog.Portal>
+    </BaseAlertDialog.Root>
+  );
+}
+
+export function AlertDialogClose({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <BaseAlertDialog.Close className={className}>
+      {children}
+    </BaseAlertDialog.Close>
   );
 }
 

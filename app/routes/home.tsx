@@ -16,11 +16,12 @@ import {
   PartyPopper,
   Heart,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, redirect, useNavigation, data } from "react-router";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
+import { AlertDialog, AlertDialogClose } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
@@ -85,10 +86,6 @@ export function meta({}: Route.MetaArgs) {
 export async function loader({ request }: Route.LoaderArgs) {
   const recentGroups = parseRecentGroups(request.headers.get("Cookie"));
   return { recentGroups };
-}
-
-function escapeUrlForId(url: string): string {
-  return url.replace(/[^a-zA-Z0-9]/g, "-");
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -194,6 +191,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
   const { recentGroups } = loaderData;
   const inputRef = useRef<HTMLInputElement>(null);
   const { setCommands, setShortcutGroups } = useKeyboard();
+  const [dismissingUrl, setDismissingUrl] = useState<string | null>(null);
 
   // Focus name input on N key
   useHotkey("N", () => {
@@ -386,9 +384,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               gap: "0.5rem",
             }}
           >
-            {recentGroups.map((g) => {
-              const dialogId = `dismiss-dialog-${escapeUrlForId(g.url)}`;
-              return (
+            {recentGroups.map((g) => (
                 <div key={g.url} style={{ position: "relative" }}>
                   <a
                     href={g.url}
@@ -421,10 +417,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                     className="ghost small"
                     onClick={(e) => {
                       e.preventDefault();
-                      const dialog = document.querySelector(
-                        `#${dialogId}`
-                      ) as HTMLDialogElement;
-                      dialog?.showModal();
+                      setDismissingUrl(g.url);
                     }}
                     style={{
                       position: "absolute",
@@ -437,47 +430,33 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   >
                     <X size={16} />
                   </button>
-                  <dialog
-                    id={dialogId}
-                    aria-labelledby={`${dialogId}-heading`}
-                    closedby="any"
-                  >
-                    <div>
-                      <header>
-                        <h3 id={`${dialogId}-heading`}>
-                          Remove from recent groups?
-                        </h3>
-                        <p>
-                          This will remove "{g.name}" from your recent groups
-                          list. You can still access it via the original link.
-                        </p>
-                      </header>
-                      <footer>
-                        <button
-                          type="button"
-                          className="outline"
-                          commandfor={dialogId}
-                          command="close"
-                        >
-                          Cancel
-                        </button>
-                        <Form method="post" style={{ display: "inline" }}>
-                          <input
-                            type="hidden"
-                            name="intent"
-                            value="remove-recent"
-                          />
-                          <input type="hidden" name="url" value={g.url} />
-                          <button type="submit" data-variant="danger">
-                            Remove
-                          </button>
-                        </Form>
-                      </footer>
-                    </div>
-                  </dialog>
                 </div>
+            ))}
+            {/* Remove group confirmation — single AlertDialog driven by state */}
+            {(() => {
+              const dismissing = recentGroups.find((g) => g.url === dismissingUrl);
+              return (
+                <AlertDialog
+                  title="Remove from recent groups?"
+                  description={dismissing ? `This will remove "${dismissing.name}" from your recent groups list. You can still access it via the original link.` : ""}
+                  open={dismissingUrl !== null}
+                  onOpenChange={(open) => { if (!open) setDismissingUrl(null); }}
+                >
+                  <Form method="post">
+                    <input type="hidden" name="intent" value="remove-recent" />
+                    <input type="hidden" name="url" value={dismissingUrl ?? ""} />
+                    <div className="flex gap-3 justify-end">
+                      <AlertDialogClose className="outline">
+                        Cancel
+                      </AlertDialogClose>
+                      <button type="submit" data-variant="danger">
+                        Remove
+                      </button>
+                    </div>
+                  </Form>
+                </AlertDialog>
               );
-            })}
+            })()}
           </div>
         </section>
       )}

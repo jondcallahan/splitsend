@@ -187,32 +187,6 @@ td {
 .badge.success { @apply bg-emerald-50 text-emerald-700; }
 .badge.outline { @apply bg-mauve-50 text-mauve-600 border border-mauve-200; }
 
-/* ------------------------------------------------------------------ */
-/* Dialog (native)                                                     */
-/* ------------------------------------------------------------------ */
-dialog {
-  @apply border-none rounded-3xl p-0 m-auto max-w-md w-[90%] bg-white;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.03);
-}
-
-dialog::backdrop {
-  @apply bg-black/40;
-  backdrop-filter: blur(6px);
-}
-
-dialog > form, dialog > div { @apply p-6; }
-
-dialog header    { @apply mb-6; }
-dialog header h3 { @apply m-0; }
-dialog header p  { @apply mt-2 mb-0 text-mauve-500 text-sm leading-relaxed; }
-
-dialog footer {
-  @apply mt-6 flex gap-3 justify-end;
-}
-
-dialog button {
-  @apply text-sm py-2.5 px-5;
-}
 
 /* ------------------------------------------------------------------ */
 /* Utility compat                                                      */
