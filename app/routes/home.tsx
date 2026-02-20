@@ -350,13 +350,13 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               </p>
             )}
 
-            <button
+            <Button
               type="submit"
               className="flex items-center justify-center gap-2"
               style={{ marginTop: "1rem", width: "100%" }}
             >
               {isSubmitting ? "Creating…" : "Create Group — It's Free"}
-            </button>
+            </Button>
           </fieldset>
         </Form>
       </div>
@@ -664,9 +664,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   Mike (you)
                 </div>
               </div>
-              <button style={{ width: "100%", fontSize: "0.65rem", padding: "0.4rem 0" }}>
+              <Button style={{ width: "100%", fontSize: "0.65rem", padding: "0.4rem 0" }}>
                 Add Expense
-              </button>
+              </Button>
             </div>
           </PhoneMockup>
         </div>

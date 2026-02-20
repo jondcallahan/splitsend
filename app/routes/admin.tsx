@@ -498,13 +498,13 @@ export default function Admin({
             autoComplete="off"
             style={{ flex: 1 }}
           />
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting}
             className="flex items-center gap-1"
           >
             Add
-          </button>
+          </Button>
         </Form>
       </section>
 
@@ -563,13 +563,13 @@ export default function Admin({
               ))}
             </fieldset>
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
               className="w-100 flex items-center justify-center gap-2"
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
-            </button>
+            </Button>
           </Form>
         </section>
       )}

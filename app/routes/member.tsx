@@ -7,7 +7,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
+import { Button, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -382,14 +382,14 @@ export default function MemberView({
               ))}
             </fieldset>
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
               className="flex items-center justify-center gap-2"
               style={{ width: "100%" }}
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
-            </button>
+            </Button>
           </Form>
         </section>
       )}
