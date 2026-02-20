@@ -8,7 +8,9 @@ export class HomePage {
   }
 
   async createGroup(name: string): Promise<string> {
-    await this.page.getByRole("textbox", { name: /name your group/i }).fill(name);
+    await this.page
+      .getByRole("textbox", { name: /name your group/i })
+      .fill(name);
     await this.page.getByRole("button", { name: /create group/i }).click();
     await this.page.waitForURL(/\/g\/.+\/admin\/.+/);
     return this.page.url();

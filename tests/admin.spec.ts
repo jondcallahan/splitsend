@@ -4,7 +4,9 @@ test.beforeEach(async ({ homePage, adminPage }) => {
   await homePage.goto();
   const url = await homePage.createGroup(`Admin Test ${Date.now()}`);
   const match = url.match(/\/g\/([^/]+)\/admin\/([^/]+)/);
-  if (!match) {throw new Error(`Unexpected URL: ${url}`);}
+  if (!match) {
+    throw new Error(`Unexpected URL: ${url}`);
+  }
   adminPage.slug = match[1];
   adminPage.adminToken = match[2];
 });
@@ -21,7 +23,9 @@ test("add expense form appears with 2+ members", async ({
 }) => {
   await adminPage.addMember("Alice");
   await adminPage.addMember("Bob");
-  await expect(page.getByRole("heading", { name: /add expense/i })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /add expense/i })
+  ).toBeVisible();
 });
 
 test("add expense shows in list with correct splits", async ({ adminPage }) => {

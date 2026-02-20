@@ -14,8 +14,19 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Button, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
-
+import {
+  Dialog,
+  DialogClose,
+  AlertDialog,
+  AlertDialogClose,
+  Badge,
+  Button,
+  CardSection,
+  Checkbox,
+  Field,
+  SelectField,
+  SelectItem,
+} from "~/components/ui";
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
 import { GroupDAO } from "~/dao/group.dao.server";
@@ -103,7 +114,13 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { error: "Amount must be greater than 0" };
     }
 
-    await ExpenseDAO.create(group.id, paidBy, description, amountCents, splitAmong);
+    await ExpenseDAO.create(
+      group.id,
+      paidBy,
+      description,
+      amountCents,
+      splitAmong
+    );
     return { success: true };
   }
 
@@ -141,7 +158,13 @@ export async function action({ request, params }: Route.ActionArgs) {
       return { error: "Amount must be greater than 0" };
     }
 
-    await ExpenseDAO.update(expenseId, description, amountCents, paidBy, splitAmong);
+    await ExpenseDAO.update(
+      expenseId,
+      description,
+      amountCents,
+      paidBy,
+      splitAmong
+    );
     return { success: true };
   }
 
@@ -166,7 +189,9 @@ export default function Admin({
   // Dialog state
   const [renameOpen, setRenameOpen] = useState(false);
   const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
-  const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
+  const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(
+    null
+  );
 
   // Refs for keyboard navigation
   const memberInputRef = useRef<HTMLInputElement>(null);
@@ -187,13 +212,13 @@ export default function Admin({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${name}'s invite — ${group.name}`,
           text: `Here's your SplitSend link for ${group.name}. No app needed, just open the link.`,
+          title: `${name}'s invite — ${group.name}`,
           url: link,
         });
-      } catch (err) {
+      } catch (error) {
         // AbortError means the user dismissed the sheet — that's fine
-        if (err instanceof Error && err.name !== "AbortError") {
+        if (error instanceof Error && error.name !== "AbortError") {
           copyLink(link, name);
         }
       }
@@ -388,11 +413,11 @@ export default function Admin({
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <a href="/" className="text-light" style={{ textDecoration: "none" }}>
+          <a href="/" className="text-light no-underline">
             <small>← SplitSend</small>
           </a>
           <div className="flex items-center gap-2 mt-2">
-            <h1 style={{ margin: 0 }}>{group.name}</h1>
+            <h1>{group.name}</h1>
             <Button
               type="button"
               onClick={() => setRenameOpen(true)}
@@ -426,9 +451,7 @@ export default function Admin({
             />
           </Field>
           <div className="mt-6 flex gap-3 justify-end">
-            <DialogClose $variant="outline">
-              Cancel
-            </DialogClose>
+            <DialogClose $variant="outline">Cancel</DialogClose>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving…" : "Save"}
             </Button>
@@ -437,13 +460,13 @@ export default function Admin({
       </Dialog>
 
       {actionData?.error && (
-        <p className="card p-4 mb-4" style={{ color: "var(--danger)" }}>
+        <p className="text-sm text-red-600 dark:text-red-400 mb-4">
           {actionData.error}
         </p>
       )}
 
       {/* Members Section */}
-      <section className="card mb-6" aria-labelledby="members-heading">
+      <CardSection className="mb-6" aria-labelledby="members-heading">
         <h2 id="members-heading">
           Members{" "}
           {members.length > 0 && (
@@ -456,7 +479,7 @@ export default function Admin({
             No members yet. Add someone to get started!
           </p>
         ) : (
-          <table className="w-100 mb-4" aria-label="Members">
+          <table className="w-full mb-4" aria-label="Members">
             <thead>
               <tr>
                 <th className="text-left">Name</th>
@@ -496,7 +519,7 @@ export default function Admin({
             placeholder="Name"
             required
             autoComplete="off"
-            style={{ flex: 1 }}
+            className="flex-1"
           />
           <Button
             type="submit"
@@ -506,11 +529,11 @@ export default function Admin({
             Add
           </Button>
         </Form>
-      </section>
+      </CardSection>
 
       {/* Add Expense */}
       {members.length >= 2 && (
-        <section className="card mb-6" aria-labelledby="add-expense-heading">
+        <CardSection className="mb-6" aria-labelledby="add-expense-heading">
           <h2 id="add-expense-heading">Add Expense</h2>
           <Form method="post" key={expenses.length} className="form-stack">
             <input type="hidden" name="intent" value="add-expense" />
@@ -541,7 +564,7 @@ export default function Admin({
               name="paidBy"
               required
               placeholder="Select…"
-              options={members.map((m) => ({ value: m.id, label: m.name }))}
+              options={members.map((m) => ({ label: m.name, value: m.id }))}
             >
               {members.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
@@ -566,200 +589,193 @@ export default function Admin({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-100 flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2"
             >
               {isSubmitting ? "Adding…" : "Add Expense"}
             </Button>
           </Form>
-        </section>
+        </CardSection>
       )}
 
       {/* Balances */}
       {balances.length > 0 && (
-        <section className="card mb-6" aria-labelledby="settlements-heading">
+        <CardSection className="mb-6" aria-labelledby="settlements-heading">
           <h2 id="settlements-heading" className="flex items-center gap-2">
             <ArrowRightLeft size={20} /> Settlements
           </h2>
-          <ul className="unstyled" style={{ margin: 0 }}>
+          <ul className="list-none m-0 p-0">
             {balances.map((b, i) => (
               <li
                 key={i}
-                style={{
-                  borderBottom:
-                    i < balances.length - 1
-                      ? "1px solid var(--border)"
-                      : "none",
-                  padding: "var(--space-2) 0",
-                }}
+                className={`py-2 ${i < balances.length - 1 ? "border-b border-mauve-200 dark:border-neutral-800" : ""}`}
               >
                 <strong>{b.from_name}</strong> owes <strong>{b.to_name}</strong>{" "}
                 <strong>{cents(b.amount)}</strong>
               </li>
             ))}
           </ul>
-        </section>
+        </CardSection>
       )}
 
       {/* Expenses */}
       {expenses.length > 0 && (
-        <section className="card" aria-labelledby="expenses-heading">
+        <CardSection aria-labelledby="expenses-heading">
           <h2 id="expenses-heading" className="flex items-center gap-2">
             <Receipt size={20} /> Expenses
           </h2>
-          {expenses.map((e, idx) => {
-            return (
-              <div
-                key={`${e.id}-${e.description}-${e.amount}-${e.paid_by_member_id}`}
-                className={idx === 0 ? "expense-item" : ""}
-                style={{
-                  borderBottom: "1px solid var(--border)",
-                  padding: "var(--space-4) 0",
+          {expenses.map((e, idx) => (
+            <div
+              key={`${e.id}-${e.description}-${e.amount}-${e.paid_by_member_id}`}
+              className={`border-b border-mauve-200 dark:border-neutral-800 py-4 ${idx === 0 ? "expense-item" : ""}`}
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="text-base leading-relaxed m-0">
+                  {e.description}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <strong>{cents(e.amount)}</strong>
+                  <Button
+                    type="button"
+                    aria-label={`Edit expense: ${e.description}`}
+                    onClick={() => setEditingExpenseId(e.id)}
+                    $variant="outline"
+                    $size="small"
+                  >
+                    <Pencil size={14} />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex items-center flex-wrap gap-1 mt-2">
+                <Badge $variant="success">{e.paid_by_name} paid</Badge>
+                <small className="text-lighter">→</small>
+                {e.splits.map((s) => (
+                  <Badge key={s.member_id} $variant="outline">
+                    {s.member_name} {cents(s.amount)}
+                  </Badge>
+                ))}
+              </div>
+              <small className="text-lighter mt-2 block">
+                Added by {e.added_by_name ?? "admin"}
+              </small>
+
+              {/* Edit Dialog */}
+              <Dialog
+                title="Edit Expense"
+                open={editingExpenseId === e.id}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setEditingExpenseId(null);
+                  }
                 }}
               >
-                <div className="flex justify-between items-center">
-                  <h3 style={{ fontSize: "inherit", lineHeight: "inherit", margin: 0 }}>{e.description}</h3>
-                  <div className="flex items-center gap-2">
-                    <strong>{cents(e.amount)}</strong>
+                <Form method="post">
+                  <div className="form-stack">
+                    <input type="hidden" name="intent" value="update-expense" />
+                    <input type="hidden" name="expenseId" value={e.id} />
+
+                    <Field label="Description">
+                      <input
+                        name="description"
+                        type="text"
+                        defaultValue={e.description}
+                        required
+                        autoComplete="off"
+                      />
+                    </Field>
+
+                    <Field label="Amount ($)">
+                      <input
+                        name="amount"
+                        type="text"
+                        inputMode="decimal"
+                        pattern="[0-9]*\.?[0-9]*"
+                        defaultValue={
+                          currency(e.amount, { fromCents: true }).value
+                        }
+                        required
+                      />
+                    </Field>
+
+                    <SelectField
+                      label="Who paid?"
+                      name="paidBy"
+                      defaultValue={e.paid_by_member_id}
+                      required
+                      options={members.map((m) => ({
+                        label: m.name,
+                        value: m.id,
+                      }))}
+                    >
+                      {members.map((m) => (
+                        <SelectItem key={m.id} value={m.id}>
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectField>
+
+                    <fieldset className="checkbox-group">
+                      <legend>Split among</legend>
+                      {members.map((m) => (
+                        <Checkbox
+                          key={m.id}
+                          name="splitAmong"
+                          value={m.id}
+                          label={m.name}
+                          defaultChecked={e.splits.some(
+                            (s) => s.member_id === m.id
+                          )}
+                        />
+                      ))}
+                    </fieldset>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between">
                     <Button
                       type="button"
-                      aria-label={`Edit expense: ${e.description}`}
-                      onClick={() => setEditingExpenseId(e.id)}
-                      $variant="outline"
-                      $size="small"
+                      onClick={() => {
+                        setEditingExpenseId(null);
+                        setDeletingExpenseId(e.id);
+                      }}
+                      $variant="danger-ghost"
                     >
-                      <Pencil size={14} />
+                      <Trash2 size={14} /> Delete
+                    </Button>
+                    <div className="flex gap-3">
+                      <DialogClose $variant="outline">Cancel</DialogClose>
+                      <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Saving…" : "Save"}
+                      </Button>
+                    </div>
+                  </div>
+                </Form>
+              </Dialog>
+
+              {/* Delete Confirmation AlertDialog */}
+              <AlertDialog
+                title="Delete Expense?"
+                description={`Are you sure you want to delete "${e.description}"? This action cannot be undone.`}
+                open={deletingExpenseId === e.id}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setDeletingExpenseId(null);
+                  }
+                }}
+              >
+                <Form method="post">
+                  <input type="hidden" name="intent" value="delete-expense" />
+                  <input type="hidden" name="expenseId" value={e.id} />
+                  <div className="flex gap-3 justify-end">
+                    <AlertDialogClose $variant="outline">
+                      Cancel
+                    </AlertDialogClose>
+                    <Button type="submit" $variant="danger">
+                      Delete
                     </Button>
                   </div>
-                </div>
-                <div
-                  className="flex items-center gap-1 mt-2"
-                  style={{ flexWrap: "wrap" }}
-                >
-                  <span className="badge success">{e.paid_by_name} paid</span>
-                  <small className="text-lighter">→</small>
-                  {e.splits.map((s) => (
-                    <span key={s.member_id} className="badge outline">
-                      {s.member_name} {cents(s.amount)}
-                    </span>
-                  ))}
-                </div>
-                <small
-                  className="text-lighter mt-2"
-                  style={{ display: "block" }}
-                >
-                  Added by {e.added_by_name ?? "admin"}
-                </small>
-
-                {/* Edit Dialog */}
-                <Dialog
-                  title="Edit Expense"
-                  open={editingExpenseId === e.id}
-                  onOpenChange={(open) => { if (!open) setEditingExpenseId(null); }}
-                >
-                  <Form method="post">
-                    <div className="form-stack">
-                      <input type="hidden" name="intent" value="update-expense" />
-                      <input type="hidden" name="expenseId" value={e.id} />
-
-                      <Field label="Description">
-                        <input
-                          name="description"
-                          type="text"
-                          defaultValue={e.description}
-                          required
-                          autoComplete="off"
-                        />
-                      </Field>
-
-                      <Field label="Amount ($)">
-                        <input
-                          name="amount"
-                          type="text"
-                          inputMode="decimal"
-                          pattern="[0-9]*\.?[0-9]*"
-                          defaultValue={
-                            currency(e.amount, { fromCents: true }).value
-                          }
-                          required
-                        />
-                      </Field>
-
-                      <SelectField
-                        label="Who paid?"
-                        name="paidBy"
-                        defaultValue={e.paid_by_member_id}
-                        required
-                        options={members.map((m) => ({ value: m.id, label: m.name }))}
-                      >
-                        {members.map((m) => (
-                          <SelectItem key={m.id} value={m.id}>
-                            {m.name}
-                          </SelectItem>
-                        ))}
-                      </SelectField>
-
-                      <fieldset className="checkbox-group">
-                        <legend>Split among</legend>
-                        {members.map((m) => (
-                          <Checkbox
-                            key={m.id}
-                            name="splitAmong"
-                            value={m.id}
-                            label={m.name}
-                            defaultChecked={e.splits.some(
-                              (s) => s.member_id === m.id
-                            )}
-                          />
-                        ))}
-                      </fieldset>
-                    </div>
-                    <div className="mt-6 flex items-center justify-between">
-                      <Button
-                        type="button"
-                        onClick={() => {
-                          setEditingExpenseId(null);
-                          setDeletingExpenseId(e.id);
-                        }}
-                        $variant="danger-ghost"
-                      >
-                        <Trash2 size={14} /> Delete
-                      </Button>
-                      <div className="flex gap-3">
-                        <DialogClose $variant="outline">
-                          Cancel
-                        </DialogClose>
-                        <Button type="submit" disabled={isSubmitting}>
-                          {isSubmitting ? "Saving…" : "Save"}
-                        </Button>
-                      </div>
-                    </div>
-                  </Form>
-                </Dialog>
-
-                {/* Delete Confirmation AlertDialog */}
-                <AlertDialog
-                  title="Delete Expense?"
-                  description={`Are you sure you want to delete "${e.description}"? This action cannot be undone.`}
-                  open={deletingExpenseId === e.id}
-                  onOpenChange={(open) => { if (!open) setDeletingExpenseId(null); }}
-                >
-                  <Form method="post">
-                    <input type="hidden" name="intent" value="delete-expense" />
-                    <input type="hidden" name="expenseId" value={e.id} />
-                    <div className="flex gap-3 justify-end">
-                      <AlertDialogClose $variant="outline">
-                        Cancel
-                      </AlertDialogClose>
-                      <Button type="submit" $variant="danger">
-                        Delete
-                      </Button>
-                    </div>
-                  </Form>
-                </AlertDialog>
-              </div>
-            );
-          })}
-        </section>
+                </Form>
+              </AlertDialog>
+            </div>
+          ))}
+        </CardSection>
       )}
     </main>
   );

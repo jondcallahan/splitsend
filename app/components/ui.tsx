@@ -3,15 +3,21 @@ import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import { Field as BaseField } from "@base-ui-components/react/field";
 import { Select as BaseSelect } from "@base-ui-components/react/select";
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import { Check } from "lucide-react";
 import type { ReactNode } from "react";
-import { twc, type TwcComponentProps } from "react-twc";
+import { twc } from "react-twc";
+import type { TwcComponentProps } from "react-twc";
 
 /* ------------------------------------------------------------------ */
 /* Card                                                                */
 /* ------------------------------------------------------------------ */
-export const Card = twc.div`bg-white dark:bg-neutral-900 border border-mauve-200 dark:border-neutral-800 rounded-3xl p-6`;
+const cardStyles =
+  "bg-white dark:bg-neutral-900 border border-mauve-200 dark:border-neutral-800 rounded-3xl p-6" as const;
+
+export const Card = twc.div`${cardStyles}`;
+export const CardSection = twc.section`${cardStyles}`;
 
 /* ------------------------------------------------------------------ */
 /* Section label                                                       */
@@ -21,21 +27,28 @@ export const SectionLabel = twc.p`text-xs font-bold text-mauve-400 uppercase tra
 /* ------------------------------------------------------------------ */
 /* Badge                                                               */
 /* ------------------------------------------------------------------ */
-const badge = cva("inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full", {
-  variants: {
-    $variant: {
-      success: "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400",
-      outline: "bg-mauve-50 dark:bg-neutral-800 text-mauve-600 dark:text-neutral-300 border border-mauve-200 dark:border-neutral-700",
+const badge = cva(
+  "inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full",
+  {
+    defaultVariants: {
+      $variant: "outline",
     },
-  },
-  defaultVariants: {
-    $variant: "outline",
-  },
-});
+    variants: {
+      $variant: {
+        outline:
+          "bg-mauve-50 dark:bg-neutral-800 text-mauve-600 dark:text-neutral-300 border border-mauve-200 dark:border-neutral-700",
+        success:
+          "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400",
+      },
+    },
+  }
+);
 
 type BadgeProps = TwcComponentProps<"span"> & VariantProps<typeof badge>;
 
-export const Badge = twc.span<BadgeProps>(({ $variant }) => badge({ $variant }));
+export const Badge = twc.span<BadgeProps>(({ $variant }) =>
+  badge({ $variant })
+);
 
 /* ------------------------------------------------------------------ */
 /* Button                                                              */
@@ -43,30 +56,35 @@ export const Badge = twc.span<BadgeProps>(({ $variant }) => badge({ $variant }))
 const button = cva(
   "font-sans font-bold text-sm rounded-full border-none cursor-pointer py-3 px-6 transition-all duration-150 ease-out inline-flex items-center justify-center gap-2 leading-snug disabled:opacity-50 disabled:pointer-events-none",
   {
+    defaultVariants: {
+      $size: "default",
+      $variant: "primary",
+    },
     variants: {
-      $variant: {
-        primary: "bg-olive-800 text-white hover:bg-olive-900",
-        outline: "bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white hover:bg-mauve-50 dark:hover:bg-neutral-800 hover:border-mauve-400 dark:hover:border-neutral-600",
-        ghost: "bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3 hover:bg-mauve-100 dark:hover:bg-neutral-800 hover:text-mauve-900 dark:hover:text-white",
-        "danger-ghost": "bg-transparent text-red-600 dark:text-red-400 py-2 px-3 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-800 dark:hover:text-red-300",
-        danger: "bg-red-600 text-white hover:bg-red-700",
-      },
       $size: {
         default: "py-3 px-6",
         small: "text-xs py-2 px-4",
         icon: "p-2 rounded-xl",
       },
-    },
-    defaultVariants: {
-      $variant: "primary",
-      $size: "default",
+      $variant: {
+        primary: "bg-olive-800 text-white hover:bg-olive-900",
+        outline:
+          "bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white hover:bg-mauve-50 dark:hover:bg-neutral-800 hover:border-mauve-400 dark:hover:border-neutral-600",
+        ghost:
+          "bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3 hover:bg-mauve-100 dark:hover:bg-neutral-800 hover:text-mauve-900 dark:hover:text-white",
+        "danger-ghost":
+          "bg-transparent text-red-600 dark:text-red-400 py-2 px-3 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-800 dark:hover:text-red-300",
+        danger: "bg-red-600 text-white hover:bg-red-700",
+      },
     },
   }
 );
 
 type ButtonProps = TwcComponentProps<"button"> & VariantProps<typeof button>;
 
-export const Button = twc.button<ButtonProps>(({ $variant, $size }) => button({ $variant, $size }));
+export const Button = twc.button<ButtonProps>(({ $variant, $size }) =>
+  button({ $size, $variant })
+);
 
 /* ------------------------------------------------------------------ */
 /* Dialog styles                                                       */
@@ -107,7 +125,9 @@ export function Checkbox({
           <Check size={13} strokeWidth={3} />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
-      <span className="text-sm font-medium text-mauve-700 dark:text-neutral-300 select-none">{label}</span>
+      <span className="text-sm font-medium text-mauve-700 dark:text-neutral-300 select-none">
+        {label}
+      </span>
     </label>
   );
 }
@@ -163,7 +183,7 @@ export function DialogClose({
   $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseDialog.Close className={className ?? button({ $variant, $size })}>
+    <BaseDialog.Close className={className ?? button({ $size, $variant })}>
       {children}
     </BaseDialog.Close>
   );
@@ -220,7 +240,7 @@ export function AlertDialogClose({
   $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseAlertDialog.Close className={className ?? button({ $variant, $size })}>
+    <BaseAlertDialog.Close className={className ?? button({ $size, $variant })}>
       {children}
     </BaseAlertDialog.Close>
   );
@@ -245,7 +265,10 @@ export function Field({
       </BaseField.Label>
       {children}
       {error && (
-        <BaseField.Error className="text-sm font-medium text-red-600 dark:text-red-400" forceShow>
+        <BaseField.Error
+          className="text-sm font-medium text-red-600 dark:text-red-400"
+          forceShow
+        >
           {error}
         </BaseField.Error>
       )}
@@ -297,14 +320,28 @@ export function SelectField({
         >
           <BaseSelect.Value>
             {(value: string | null) => {
-              if (!value) return <span className="text-mauve-400 font-normal">{placeholder ?? "Select…"}</span>;
-              if (labelMap && labelMap[value]) return labelMap[value];
+              if (!value) {
+                return (
+                  <span className="text-mauve-400 font-normal">
+                    {placeholder ?? "Select…"}
+                  </span>
+                );
+              }
+              if (labelMap && labelMap[value]) {
+                return labelMap[value];
+              }
               return value;
             }}
           </BaseSelect.Value>
           <BaseSelect.Icon className="text-mauve-400">
             <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M1 1.5L6 6.5L11 1.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </BaseSelect.Icon>
         </BaseSelect.Trigger>

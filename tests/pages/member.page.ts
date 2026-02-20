@@ -18,11 +18,16 @@ export class MemberPage {
   }
 
   async memberLoggedInAs(): Promise<string> {
-    return this.page.locator("p").filter({ hasText: "Logged in as" }).innerText();
+    return this.page
+      .locator("p")
+      .filter({ hasText: "Logged in as" })
+      .textContent();
   }
 
   async balances(): Promise<string> {
-    return this.page.getByRole("region", { name: /your balances/i }).innerText();
+    return this.page
+      .getByRole("region", { name: /your balances/i })
+      .textContent();
   }
 
   async addExpense({
@@ -70,7 +75,9 @@ export class MemberPage {
       this.waitForPost(),
       section.getByRole("button", { name: /add expense/i }).click(),
     ]);
-    await this.page.getByRole("heading", { level: 3, name: description }).waitFor();
+    await this.page
+      .getByRole("heading", { level: 3, name: description })
+      .waitFor();
   }
 
   async expenseDescriptions(): Promise<string[]> {

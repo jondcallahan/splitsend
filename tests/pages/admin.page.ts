@@ -35,7 +35,9 @@ export class AdminPage {
       .locator("tbody")
       .getByRole("row")
       .all();
-    return Promise.all(rows.map((row) => row.getByRole("cell").first().innerText()));
+    return Promise.all(
+      rows.map((row) => row.getByRole("cell").first().textContent())
+    );
   }
 
   async addExpense({
@@ -63,7 +65,9 @@ export class AdminPage {
         await checkboxes.nth(i).uncheck();
       }
       for (const memberName of splitAmong) {
-        await group.getByRole("checkbox", { name: new RegExp(memberName) }).check();
+        await group
+          .getByRole("checkbox", { name: new RegExp(memberName) })
+          .check();
       }
     }
 
@@ -71,7 +75,9 @@ export class AdminPage {
       this.waitForPost(),
       section.getByRole("button", { name: /add expense/i }).click(),
     ]);
-    await this.page.getByRole("heading", { level: 3, name: description }).waitFor();
+    await this.page
+      .getByRole("heading", { level: 3, name: description })
+      .waitFor();
   }
 
   async editExpense(
@@ -93,7 +99,7 @@ export class AdminPage {
     }
 
     await this.page.evaluate((id) => {
-      (document.getElementById(id) as HTMLDialogElement)?.showModal();
+      (document.querySelector(`#${id}`) as HTMLDialogElement)?.showModal();
     }, dialogId);
 
     // Dialog now open → getByRole finds it in the accessibility tree
@@ -112,7 +118,9 @@ export class AdminPage {
       this.waitForPost(),
       dialog.getByRole("button", { name: /save/i }).click(),
     ]);
-    await this.page.getByRole("heading", { level: 3, name: finalDescription }).waitFor();
+    await this.page
+      .getByRole("heading", { level: 3, name: finalDescription })
+      .waitFor();
   }
 
   async deleteExpense(description: string): Promise<void> {
@@ -129,7 +137,7 @@ export class AdminPage {
     }
 
     await this.page.evaluate((id) => {
-      (document.getElementById(id) as HTMLDialogElement)?.showModal();
+      (document.querySelector(`#${id}`) as HTMLDialogElement)?.showModal();
     }, dialogId);
 
     const dialog = this.page.getByRole("dialog", { name: "Delete Expense?" });
@@ -146,7 +154,9 @@ export class AdminPage {
 
   async renameGroup(newName: string): Promise<void> {
     await this.page.evaluate(() => {
-      (document.getElementById("rename-dialog") as HTMLDialogElement)?.showModal();
+      (
+        document.querySelector("#rename-dialog") as HTMLDialogElement
+      )?.showModal();
     });
     const dialog = this.page.getByRole("dialog", { name: "Rename Group" });
     await dialog.waitFor({ state: "visible" });
@@ -155,11 +165,14 @@ export class AdminPage {
       this.waitForPost(),
       dialog.getByRole("button", { name: /save/i }).click(),
     ]);
-    await this.page.getByRole("heading", { level: 1 }).filter({ hasText: newName }).waitFor();
+    await this.page
+      .getByRole("heading", { level: 1 })
+      .filter({ hasText: newName })
+      .waitFor();
   }
 
   async groupHeading(): Promise<string> {
-    return this.page.getByRole("heading", { level: 1 }).innerText();
+    return this.page.getByRole("heading", { level: 1 }).textContent();
   }
 
   async settlements(): Promise<{ from: string; to: string; amount: string }[]> {

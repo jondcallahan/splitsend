@@ -10,11 +10,11 @@ export interface Member {
 
 function rowToMember(row: Record<string, unknown>): Member {
   return {
-    id: row.id as number,
+    created_at: row.created_at as string,
     group_id: row.group_id as number,
+    id: row.id as number,
     name: row.name as string,
     token: row.token as string,
-    created_at: row.created_at as string,
   };
 }
 
@@ -23,8 +23,8 @@ export const MemberDAO = {
     const token = crypto.randomUUID();
 
     const result = await db.execute({
-      sql: "INSERT INTO members (group_id, name, token) VALUES (?, ?, ?) RETURNING *",
       args: [groupId, name, token],
+      sql: "INSERT INTO members (group_id, name, token) VALUES (?, ?, ?) RETURNING *",
     });
 
     return rowToMember(result.rows[0] as unknown as Record<string, unknown>);
@@ -32,8 +32,8 @@ export const MemberDAO = {
 
   async findByGroupId(groupId: number): Promise<Member[]> {
     const result = await db.execute({
-      sql: "SELECT * FROM members WHERE group_id = ? ORDER BY created_at",
       args: [groupId],
+      sql: "SELECT * FROM members WHERE group_id = ? ORDER BY created_at",
     });
     return result.rows.map((row) =>
       rowToMember(row as unknown as Record<string, unknown>)
@@ -45,8 +45,8 @@ export const MemberDAO = {
     token: string
   ): Promise<Member | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM members WHERE group_id = ? AND token = ?",
       args: [groupId, token],
+      sql: "SELECT * FROM members WHERE group_id = ? AND token = ?",
     });
     return result.rows.length > 0
       ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)
@@ -55,8 +55,8 @@ export const MemberDAO = {
 
   async findById(id: number): Promise<Member | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM members WHERE id = ?",
       args: [id],
+      sql: "SELECT * FROM members WHERE id = ?",
     });
     return result.rows.length > 0
       ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)
@@ -65,8 +65,8 @@ export const MemberDAO = {
 
   async findByToken(token: string): Promise<Member | null> {
     const result = await db.execute({
-      sql: "SELECT * FROM members WHERE token = ?",
       args: [token],
+      sql: "SELECT * FROM members WHERE token = ?",
     });
     return result.rows.length > 0
       ? rowToMember(result.rows[0] as unknown as Record<string, unknown>)

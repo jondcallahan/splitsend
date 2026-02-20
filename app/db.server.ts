@@ -1,5 +1,7 @@
-import { createClient, type Client } from "@libsql/client";
 import { mkdir, readdir } from "node:fs/promises";
+
+import { createClient } from '@libsql/client';
+import type { Client } from '@libsql/client';
 
 const isRemote = !!(
   process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
@@ -23,8 +25,8 @@ export function createDb(): Client {
   // Production / Preview (Vercel) → Turso
   if (isRemote) {
     return createClient({
-      url: process.env.TURSO_DATABASE_URL!,
       authToken: process.env.TURSO_AUTH_TOKEN!,
+      url: process.env.TURSO_DATABASE_URL!,
     });
   }
 
@@ -75,9 +77,7 @@ export async function ensureDbReady(): Promise<void> {
  * Run pending migrations from the migrations directory.
  * Safe to call multiple times — only applies new migrations.
  */
-export async function runMigrations(
-  dbInstance: Client = db
-): Promise<void> {
+export async function runMigrations(dbInstance: Client = db): Promise<void> {
   await dbInstance.execute(`
     CREATE TABLE IF NOT EXISTS _migrations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -116,10 +116,10 @@ export async function runMigrations(
 
     await dbInstance.batch(
       [
-        ...statements.map((s) => ({ sql: s, args: [] as any[] })),
+        ...statements.map((s) => ({ args: [] as any[], sql: s })),
         {
-          sql: "INSERT INTO _migrations (name) VALUES (?)",
           args: [file],
+          sql: "INSERT INTO _migrations (name) VALUES (?)",
         },
       ],
       "write"
