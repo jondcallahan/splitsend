@@ -39,6 +39,16 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  --sileo-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sileo-bg: #171717; /* match tailwind neutral-900 */
+  }
+}
+
 body {
   @apply font-sans bg-mauve-50 dark:bg-neutral-950 text-mauve-950 dark:text-white leading-relaxed pb-16;
 }

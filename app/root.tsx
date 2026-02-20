@@ -118,7 +118,16 @@ export default function App() {
         shortcutGroups,
       }}
     >
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        options={{
+          fill: "var(--sileo-bg, #ffffff)",
+          styles: {
+            title: "text-mauve-950 dark:text-white",
+            description: "text-mauve-500 dark:text-neutral-400!"
+          },
+        }}
+      />
       <Outlet />
 
       {/* Keyboard hints — only visible on non-touch devices via CSS */}
