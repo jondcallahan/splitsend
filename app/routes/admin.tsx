@@ -2,11 +2,11 @@ import { useHotkey } from "@tanstack/react-hotkeys";
 import type { RegisterableHotkey } from "@tanstack/react-hotkeys";
 import currency from "currency.js";
 import {
-  Share2,
   ArrowRightLeft,
   Receipt,
   Pencil,
   Trash2,
+  ShareIcon,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Form, redirect, useNavigation, data } from "react-router";
@@ -476,7 +476,7 @@ export default function Admin({
                         $size="small"
                         className="flex items-center gap-1"
                       >
-                        <Share2 size={14} /> Share link
+                        <ShareIcon size={14} /> Share link
                       </Button>
                     </td>
                   </tr>
