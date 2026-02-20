@@ -14,7 +14,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Checkbox, SelectField, SelectItem } from "~/components/ui";
+import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -416,14 +416,14 @@ export default function Admin({
       >
         <Form method="post">
           <input type="hidden" name="intent" value="update-name" />
-          <label htmlFor="rename-input">Group name</label>
-          <input
-            id="rename-input"
-            name="groupName"
-            type="text"
-            defaultValue={group.name}
-            required
-          />
+          <Field label="Group name">
+            <input
+              name="groupName"
+              type="text"
+              defaultValue={group.name}
+              required
+            />
+          </Field>
           <div className="mt-6 flex gap-3 justify-end">
             <DialogClose className="outline">
               Cancel
@@ -513,32 +513,26 @@ export default function Admin({
           <Form method="post" key={expenses.length} className="form-stack">
             <input type="hidden" name="intent" value="add-expense" />
 
-            <div>
-              <label htmlFor="description" className="flex items-center gap-2">
-                What was it for?
-              </label>
+            <Field label="What was it for?">
               <input
                 ref={expenseDescriptionRef}
-                id="description"
                 name="description"
                 type="text"
                 placeholder="e.g. Dinner, Groceries, Uber"
                 required
                 autoComplete="off"
               />
-            </div>
+            </Field>
 
-            <div>
-              <label htmlFor="amount">Amount ($)</label>
+            <Field label="Amount ($)">
               <input
-                id="amount"
                 name="amount"
                 type="text"
                 inputMode="decimal"
                 placeholder="0.00"
                 required
               />
-            </div>
+            </Field>
 
             <SelectField
               label="Who paid?"
@@ -664,22 +658,18 @@ export default function Admin({
                       <input type="hidden" name="intent" value="update-expense" />
                       <input type="hidden" name="expenseId" value={e.id} />
 
-                      <div>
-                        <label htmlFor={`desc-${e.id}`}>Description</label>
+                      <Field label="Description">
                         <input
-                          id={`desc-${e.id}`}
                           name="description"
                           type="text"
                           defaultValue={e.description}
                           required
                           autoComplete="off"
                         />
-                      </div>
+                      </Field>
 
-                      <div>
-                        <label htmlFor={`amt-${e.id}`}>Amount ($)</label>
+                      <Field label="Amount ($)">
                         <input
-                          id={`amt-${e.id}`}
                           name="amount"
                           type="text"
                           inputMode="decimal"
@@ -689,7 +679,7 @@ export default function Admin({
                           }
                           required
                         />
-                      </div>
+                      </Field>
 
                       <SelectField
                         label="Who paid?"

@@ -7,7 +7,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Checkbox, SelectField, SelectItem } from "~/components/ui";
+import { Checkbox, Field, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -333,32 +333,26 @@ export default function MemberView({
           <Form method="post" key={expenses.length} className="form-stack">
             <input type="hidden" name="intent" value="add-expense" />
 
-            <div>
-              <label htmlFor="description" className="flex items-center gap-2">
-                What was it for?
-              </label>
+            <Field label="What was it for?">
               <input
                 ref={expenseDescriptionRef}
-                id="description"
                 name="description"
                 type="text"
                 placeholder="e.g. Dinner, Groceries, Uber"
                 required
                 autoComplete="off"
               />
-            </div>
+            </Field>
 
-            <div>
-              <label htmlFor="amount">Amount ($)</label>
+            <Field label="Amount ($)">
               <input
-                id="amount"
                 name="amount"
                 type="text"
                 inputMode="decimal"
                 placeholder="0.00"
                 required
               />
-            </div>
+            </Field>
 
             <SelectField
               label="Who paid?"
