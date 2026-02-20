@@ -188,7 +188,7 @@ td {
 .badge.outline { @apply bg-mauve-50 text-mauve-600 border border-mauve-200; }
 
 /* ------------------------------------------------------------------ */
-/* Dialog (native) — centered modal for confirmations                  */
+/* Dialog (native)                                                     */
 /* ------------------------------------------------------------------ */
 dialog {
   @apply border-none rounded-3xl p-0 m-auto max-w-md w-[90%] bg-white;
@@ -207,74 +207,11 @@ dialog header h3 { @apply m-0; }
 dialog header p  { @apply mt-2 mb-0 text-mauve-500 text-sm leading-relaxed; }
 
 dialog footer {
-  @apply mt-8 flex gap-3 justify-end;
+  @apply mt-6 flex gap-3 justify-end;
 }
 
-/* ------------------------------------------------------------------ */
-/* Drawer (native dialog, bottom-sheet style)                          */
-/* ------------------------------------------------------------------ */
-dialog.drawer {
-  @apply fixed rounded-t-3xl rounded-b-none
-         max-w-lg w-full m-0 p-0 bg-white;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) translateY(100%);
-  max-height: 90dvh;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1),
-              overlay 0.35s cubic-bezier(0.32, 0.72, 0, 1) allow-discrete,
-              display 0.35s cubic-bezier(0.32, 0.72, 0, 1) allow-discrete;
-  box-shadow: 0 -8px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.03);
-}
-
-dialog.drawer[open] {
-  transform: translateX(-50%) translateY(0);
-}
-
-@starting-style {
-  dialog.drawer[open] {
-    transform: translateX(-50%) translateY(100%);
-  }
-}
-
-dialog.drawer::backdrop {
-  @apply bg-black/0;
-  backdrop-filter: blur(0px);
-  transition: background-color 0.35s ease, backdrop-filter 0.35s ease,
-              overlay 0.35s allow-discrete, display 0.35s allow-discrete;
-}
-
-dialog.drawer[open]::backdrop {
-  @apply bg-black/40;
-  backdrop-filter: blur(6px);
-}
-
-@starting-style {
-  dialog.drawer[open]::backdrop {
-    @apply bg-black/0;
-    backdrop-filter: blur(0px);
-  }
-}
-
-/* Drawer handle pill */
-dialog.drawer .drawer-handle {
-  @apply flex justify-center pt-3 pb-1;
-}
-dialog.drawer .drawer-handle::after {
-  content: "";
-  @apply block w-10 h-1 rounded-full bg-mauve-300;
-}
-
-dialog.drawer > form,
-dialog.drawer > div {
-  @apply p-6 pt-0;
-}
-
-/* Safe area padding at bottom for mobile */
-dialog.drawer > form,
-dialog.drawer > div {
-  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+dialog button {
+  @apply text-sm py-2.5 px-5;
 }
 
 /* ------------------------------------------------------------------ */

@@ -412,12 +412,11 @@ export default function Admin({
         <small className="text-light">Admin</small>
       </div>
 
-      {/* Rename Drawer */}
-      <dialog key={group.name} id="rename-dialog" className="drawer" aria-labelledby="rename-dialog-heading" closedby="any">
-        <div className="drawer-handle" />
+      {/* Rename Dialog */}
+      <dialog key={group.name} id="rename-dialog" aria-labelledby="rename-dialog-heading" closedby="any">
         <Form method="post">
           <header>
-            <h3 id="rename-dialog-heading" tabIndex={-1} autoFocus>Rename Group</h3>
+            <h3 id="rename-dialog-heading">Rename Group</h3>
           </header>
           <div>
             <input type="hidden" name="intent" value="update-name" />
@@ -430,7 +429,7 @@ export default function Admin({
               required
             />
           </div>
-          <footer className="flex gap-2">
+          <footer>
             <button
               type="button"
               commandfor="rename-dialog"
@@ -678,7 +677,7 @@ export default function Admin({
                         action cannot be undone.
                       </p>
                     </header>
-                    <footer className="flex gap-2 justify-between">
+                    <footer>
                       <button
                         type="button"
                         commandfor={`delete-dialog-${e.id}`}
@@ -694,12 +693,11 @@ export default function Admin({
                   </Form>
                 </dialog>
 
-                {/* Edit Drawer */}
-                <dialog id={dialogId} className="drawer" aria-labelledby={`${dialogId}-heading`} closedby="any">
-                  <div className="drawer-handle" />
+                {/* Edit Dialog */}
+                <dialog id={dialogId} aria-labelledby={`${dialogId}-heading`} closedby="any">
                   <Form method="post" id={`edit-form-${e.id}`}>
                     <header>
-                      <h3 id={`${dialogId}-heading`} tabIndex={-1} autoFocus>Edit Expense</h3>
+                      <h3 id={`${dialogId}-heading`}>Edit Expense</h3>
                     </header>
                     <div className="form-stack">
                       <input
@@ -772,17 +770,17 @@ export default function Admin({
                         ))}
                       </fieldset>
                     </div>
-                    <footer className="flex items-center justify-between">
+                    <footer className="justify-between">
                       <button
                         type="button"
                         commandfor={`delete-dialog-${e.id}`}
                         command="show-modal"
                         data-variant="danger"
-                        className="ghost small"
+                        className="ghost"
                       >
                         <Trash2 size={14} /> Delete
                       </button>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <button
                           type="button"
                           commandfor={dialogId}
@@ -794,7 +792,6 @@ export default function Admin({
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="flex items-center gap-2"
                         >
                           {isSubmitting ? "Saving…" : "Save"}
                         </button>

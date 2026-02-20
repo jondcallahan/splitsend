@@ -439,33 +439,20 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   </button>
                   <dialog
                     id={dialogId}
-                    className="drawer"
                     aria-labelledby={`${dialogId}-heading`}
                     closedby="any"
                   >
-                    <div className="drawer-handle" />
-                    <div style={{ padding: "1.5rem" }}>
-                      <div style={{ marginBottom: "1.5rem" }}>
-                        <h3
-                          id={`${dialogId}-heading`}
-                          style={{ marginBottom: "0.5rem" }}
-                          tabIndex={-1}
-                          autoFocus
-                        >
+                    <div>
+                      <header>
+                        <h3 id={`${dialogId}-heading`}>
                           Remove from recent groups?
                         </h3>
-                        <p style={{ opacity: 0.7, margin: 0 }}>
+                        <p>
                           This will remove "{g.name}" from your recent groups
                           list. You can still access it via the original link.
                         </p>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.5rem",
-                          justifyContent: "flex-end",
-                        }}
-                      >
+                      </header>
+                      <footer>
                         <button
                           type="button"
                           className="outline"
@@ -485,7 +472,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                             Remove
                           </button>
                         </Form>
-                      </div>
+                      </footer>
                     </div>
                   </dialog>
                 </div>
