@@ -14,7 +14,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
-import { Dialog, DialogClose, AlertDialog, AlertDialogClose } from "~/components/ui";
+import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Checkbox, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -540,30 +540,24 @@ export default function Admin({
               />
             </div>
 
-            <div>
-              <label htmlFor="paidBy">Who paid?</label>
-              <select id="paidBy" name="paidBy" required>
-                <option value="">Select…</option>
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectField label="Who paid?" name="paidBy" required placeholder="Select…">
+              {members.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.name}
+                </SelectItem>
+              ))}
+            </SelectField>
 
             <fieldset className="checkbox-group">
               <legend>Split among</legend>
               {members.map((m) => (
-                <label key={m.id} className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    name="splitAmong"
-                    value={m.id}
-                    defaultChecked
-                  />
-                  {m.name}
-                </label>
+                <Checkbox
+                  key={m.id}
+                  name="splitAmong"
+                  value={m.id}
+                  label={m.name}
+                  defaultChecked
+                />
               ))}
             </fieldset>
 
@@ -691,39 +685,31 @@ export default function Admin({
                         />
                       </div>
 
-                      <div>
-                        <label htmlFor={`paid-${e.id}`}>Who paid?</label>
-                        <select
-                          id={`paid-${e.id}`}
-                          name="paidBy"
-                          defaultValue={e.paid_by_member_id}
-                          required
-                        >
-                          {members.map((m) => (
-                            <option key={m.id} value={m.id}>
-                              {m.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      <SelectField
+                        label="Who paid?"
+                        name="paidBy"
+                        defaultValue={e.paid_by_member_id}
+                        required
+                      >
+                        {members.map((m) => (
+                          <SelectItem key={m.id} value={m.id}>
+                            {m.name}
+                          </SelectItem>
+                        ))}
+                      </SelectField>
 
                       <fieldset className="checkbox-group">
                         <legend>Split among</legend>
                         {members.map((m) => (
-                          <label
+                          <Checkbox
                             key={m.id}
-                            className="flex items-center gap-2 mb-2"
-                          >
-                            <input
-                              type="checkbox"
-                              name="splitAmong"
-                              value={m.id}
-                              defaultChecked={e.splits.some(
-                                (s) => s.member_id === m.id
-                              )}
-                            />
-                            {m.name}
-                          </label>
+                            name="splitAmong"
+                            value={m.id}
+                            label={m.name}
+                            defaultChecked={e.splits.some(
+                              (s) => s.member_id === m.id
+                            )}
+                          />
                         ))}
                       </fieldset>
                     </div>

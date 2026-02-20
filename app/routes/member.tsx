@@ -7,6 +7,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
+import { Checkbox, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -359,37 +360,30 @@ export default function MemberView({
               />
             </div>
 
-            <div>
-              <label htmlFor="paidBy">Who paid?</label>
-              <select
-                id="paidBy"
-                name="paidBy"
-                defaultValue={member.id}
-                required
-              >
-                <option value="">Select…</option>
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                    {m.id === member.id ? " (you)" : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectField
+              label="Who paid?"
+              name="paidBy"
+              defaultValue={member.id}
+              required
+              placeholder="Select…"
+            >
+              {members.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.name}{m.id === member.id ? " (you)" : ""}
+                </SelectItem>
+              ))}
+            </SelectField>
 
             <fieldset className="checkbox-group">
               <legend>Split among</legend>
               {members.map((m) => (
-                <label key={m.id} className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    name="splitAmong"
-                    value={m.id}
-                    defaultChecked
-                  />
-                  {m.name}
-                  {m.id === member.id ? " (you)" : ""}
-                </label>
+                <Checkbox
+                  key={m.id}
+                  name="splitAmong"
+                  value={m.id}
+                  label={`${m.name}${m.id === member.id ? " (you)" : ""}`}
+                  defaultChecked
+                />
               ))}
             </fieldset>
 
