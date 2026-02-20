@@ -39,8 +39,18 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  --sileo-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sileo-bg: #171717; /* match tailwind neutral-900 */
+  }
+}
+
 body {
-  @apply font-sans bg-mauve-50 text-mauve-950 leading-relaxed pb-16;
+  @apply font-sans bg-mauve-50 dark:bg-neutral-950 text-mauve-950 dark:text-white leading-relaxed pb-16;
 }
 
 /* ------------------------------------------------------------------ */
@@ -66,55 +76,13 @@ p { @apply leading-relaxed; }
 /* Card                                                                */
 /* ------------------------------------------------------------------ */
 .card {
-  @apply bg-white border border-mauve-200 rounded-3xl p-6;
+  @apply bg-white dark:bg-neutral-900 border border-mauve-200 dark:border-neutral-800 rounded-3xl p-6;
 }
 
 /* ------------------------------------------------------------------ */
-/* Buttons                                                             */
+/* Buttons (fallback for native buttons)                              */
 /* ------------------------------------------------------------------ */
-button, [type="submit"] {
-  @apply font-sans font-bold text-sm rounded-full border-none cursor-pointer
-         py-3 px-6
-         transition-all duration-150 ease-out
-         inline-flex items-center justify-center gap-2 leading-snug;
-}
-
-button:not(.ghost):not(.outline):not(.small-icon) {
-  @apply bg-olive-800 text-white;
-}
-button:not(.ghost):not(.outline):not(.small-icon):hover {
-  @apply bg-olive-900;
-}
-
 button:disabled { @apply opacity-50 pointer-events-none; }
-
-button.outline {
-  @apply bg-transparent border border-mauve-200 text-mauve-900;
-}
-button.outline:hover {
-  @apply bg-mauve-50 border-mauve-400;
-}
-
-button.ghost {
-  @apply bg-transparent text-mauve-500 py-2 px-3;
-}
-button.ghost:hover {
-  @apply bg-mauve-100 text-mauve-900;
-}
-
-button.small {
-  @apply text-xs py-2 px-4;
-}
-
-button.small-icon {
-  @apply bg-transparent text-mauve-400 p-2 rounded-xl;
-}
-button.small-icon:hover {
-  @apply bg-mauve-100 text-mauve-900;
-}
-
-button[data-variant="danger"] { @apply bg-red-600 text-white; }
-button[data-variant="danger"]:hover { @apply bg-red-700; }
 
 /* ------------------------------------------------------------------ */
 /* Inputs                                                              */
@@ -126,8 +94,8 @@ select,
 textarea {
   @apply font-sans font-medium text-base
          py-3 px-4
-         border border-mauve-200 rounded-2xl
-         bg-white text-mauve-950 w-full
+         border border-mauve-200 dark:border-neutral-700 rounded-2xl
+         bg-white dark:bg-neutral-900 text-mauve-950 dark:text-white w-full
          transition-all duration-150 outline-none leading-normal;
 }
 
@@ -135,10 +103,10 @@ input:focus, select:focus, textarea:focus {
   @apply border-olive-700 ring-3 ring-olive-700/8;
 }
 
-input::placeholder { @apply text-mauve-400 font-normal; }
+input::placeholder { @apply text-mauve-400 dark:text-neutral-500 font-normal; }
 
 label:not(.flex) {
-  @apply block text-sm font-semibold text-mauve-500 mb-1.5;
+  @apply block text-sm font-semibold text-mauve-500 dark:text-neutral-400 mb-1.5;
 }
 
 select {
@@ -159,7 +127,7 @@ input[type="checkbox"] {
 fieldset { @apply border-none p-0 m-0; }
 
 legend {
-  @apply text-sm font-semibold text-mauve-500 mb-3;
+  @apply text-sm font-semibold text-mauve-500 dark:text-neutral-400 mb-3;
 }
 
 /* ------------------------------------------------------------------ */
@@ -169,11 +137,11 @@ table { @apply w-full border-collapse; }
 
 th {
   @apply text-left text-xs font-bold uppercase tracking-widest
-         text-mauve-400 py-3 border-b border-mauve-200;
+         text-mauve-400 dark:text-neutral-500 py-3 border-b border-mauve-200 dark:border-neutral-800;
 }
 
 td {
-  @apply py-3 border-b border-mauve-100 text-sm;
+  @apply py-3 border-b border-mauve-100 dark:border-neutral-800 text-sm;
 }
 
 /* ------------------------------------------------------------------ */
@@ -184,15 +152,15 @@ td {
          py-1 px-3 rounded-full leading-snug;
 }
 
-.badge.success { @apply bg-emerald-50 text-emerald-700; }
-.badge.outline { @apply bg-mauve-50 text-mauve-600 border border-mauve-200; }
+.badge.success { @apply bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400; }
+.badge.outline { @apply bg-mauve-50 dark:bg-neutral-800 text-mauve-600 dark:text-neutral-300 border border-mauve-200 dark:border-neutral-700; }
 
 
 /* ------------------------------------------------------------------ */
 /* Utility compat                                                      */
 /* ------------------------------------------------------------------ */
-.text-light  { @apply text-mauve-500; }
-.text-lighter { @apply text-mauve-400; }
+.text-light  { @apply text-mauve-500 dark:text-neutral-400; }
+.text-lighter { @apply text-mauve-400 dark:text-neutral-500; }
 .w-100       { @apply w-full; }
 .unstyled    { @apply list-none m-0 p-0; }
 
@@ -215,7 +183,7 @@ td {
 /* ------------------------------------------------------------------ */
 kbd {
   @apply inline-block py-0.5 px-2 text-xs font-mono leading-snug
-         text-mauve-500 bg-mauve-100 border border-mauve-200
+         text-mauve-500 dark:text-neutral-400 bg-mauve-100 dark:bg-neutral-800 border border-mauve-200 dark:border-neutral-700
          rounded-lg whitespace-nowrap;
 }
 
@@ -227,11 +195,11 @@ kbd {
 }
 
 .keyboard-hints button {
-  @apply shadow-md bg-white text-mauve-500 border border-mauve-200 text-xs;
+  @apply shadow-md bg-white dark:bg-neutral-900 text-mauve-500 dark:text-neutral-400 border border-mauve-200 dark:border-neutral-700 text-xs;
 }
 
 .keyboard-hints button:hover {
-  @apply shadow-lg bg-white text-mauve-900;
+  @apply shadow-lg bg-white dark:bg-neutral-800 text-mauve-900 dark:text-white;
 }
 
 @media (pointer: coarse), (max-width: 640px) {
@@ -242,20 +210,20 @@ kbd {
 /* Command palette                                                     */
 /* ------------------------------------------------------------------ */
 .command-palette-backdrop {
-  @apply fixed inset-0 bg-black/40 flex items-start justify-center pt-[15vh] z-[1000];
+  @apply fixed inset-0 bg-black/40 dark:bg-black/60 flex items-start justify-center pt-[15vh] z-[1000];
   backdrop-filter: blur(6px);
 }
 
 .command-palette-content {
-  @apply bg-white rounded-3xl w-[90%] max-w-xl max-h-[70vh] flex flex-col overflow-hidden;
+  @apply bg-white dark:bg-neutral-900 rounded-3xl w-[90%] max-w-xl max-h-[70vh] flex flex-col overflow-hidden;
   box-shadow: 0 24px 80px rgba(0,0,0,0.15);
 }
 
-.command-palette-search  { @apply py-4 px-6 border-b border-mauve-100; }
+.command-palette-search  { @apply py-4 px-6 border-b border-mauve-100 dark:border-neutral-800; }
 
 .command-palette-input {
   @apply w-full border-none bg-transparent text-base font-sans font-medium
-         py-1 outline-none text-mauve-950;
+         py-1 outline-none text-mauve-950 dark:text-white;
 }
 
 .command-palette-results { @apply flex-1 overflow-y-auto p-2; }
@@ -264,23 +232,23 @@ kbd {
   @apply flex items-center justify-between w-full
          py-3 px-4
          border-none bg-transparent rounded-2xl cursor-pointer
-         text-sm font-sans font-medium text-left text-mauve-900
+         text-sm font-sans font-medium text-left text-mauve-900 dark:text-neutral-200
          transition-colors duration-100;
 }
 
 .command-palette-item:hover,
-.command-palette-item.active { @apply bg-mauve-50; }
+.command-palette-item.active { @apply bg-mauve-50 dark:bg-neutral-800; }
 
 .command-palette-label    { @apply flex-1; }
 .command-palette-shortcut { @apply ml-4 opacity-50; }
 
 .command-palette-empty {
-  @apply py-12 text-center text-mauve-400 text-sm;
+  @apply py-12 text-center text-mauve-400 dark:text-neutral-500 text-sm;
 }
 
 .command-palette-footer {
-  @apply py-3 px-6 border-t border-mauve-100
-         flex gap-6 justify-center text-xs text-mauve-400;
+  @apply py-3 px-6 border-t border-mauve-100 dark:border-neutral-800
+         flex gap-6 justify-center text-xs text-mauve-400 dark:text-neutral-500;
 }
 
 .command-palette-footer span { @apply flex items-center gap-2; }
@@ -289,20 +257,20 @@ kbd {
 /* Help overlay                                                        */
 /* ------------------------------------------------------------------ */
 .help-overlay-backdrop {
-  @apply fixed inset-0 bg-black/40 flex items-center justify-center p-8 z-[1000] overflow-y-auto;
+  @apply fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center p-8 z-[1000] overflow-y-auto;
   backdrop-filter: blur(6px);
 }
 
 .help-overlay-content {
-  @apply bg-white rounded-3xl w-[90%] max-w-2xl max-h-[90vh] flex flex-col overflow-hidden;
+  @apply bg-white dark:bg-neutral-900 rounded-3xl w-[90%] max-w-2xl max-h-[90vh] flex flex-col overflow-hidden;
   box-shadow: 0 24px 80px rgba(0,0,0,0.15);
 }
 
 .help-overlay-header {
-  @apply flex items-center justify-between py-4 px-6 border-b border-mauve-100;
+  @apply flex items-center justify-between py-4 px-6 border-b border-mauve-100 dark:border-neutral-800;
 }
 
-.help-overlay-header h2 { @apply m-0 text-lg; }
+.help-overlay-header h2 { @apply m-0 text-lg dark:text-white; }
 
 .help-overlay-body {
   @apply flex-1 overflow-y-auto p-6 grid gap-8;
@@ -310,21 +278,21 @@ kbd {
 }
 
 .help-overlay-group h3 {
-  @apply m-0 mb-3 text-[0.7rem] uppercase tracking-widest text-mauve-400 font-bold font-sans;
+  @apply m-0 mb-3 text-[0.7rem] uppercase tracking-widest text-mauve-400 dark:text-neutral-500 font-bold font-sans;
 }
 
 .help-overlay-list { @apply m-0 p-0; }
 
 .help-overlay-item {
-  @apply flex items-center justify-between gap-4 py-2 border-b border-mauve-100;
+  @apply flex items-center justify-between gap-4 py-2 border-b border-mauve-100 dark:border-neutral-800;
 }
 
 .help-overlay-item:last-child { @apply border-b-0; }
 .help-overlay-item dt { @apply shrink-0; }
-.help-overlay-item dd { @apply flex-1 m-0 text-sm text-mauve-500; }
+.help-overlay-item dd { @apply flex-1 m-0 text-sm text-mauve-500 dark:text-neutral-400; }
 
 .help-overlay-footer {
-  @apply py-3 px-6 border-t border-mauve-100 text-center text-xs text-mauve-400;
+  @apply py-3 px-6 border-t border-mauve-100 dark:border-neutral-800 text-center text-xs text-mauve-400 dark:text-neutral-500;
 }
 
 .help-overlay-footer p { @apply m-0; }

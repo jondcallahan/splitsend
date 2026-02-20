@@ -3,32 +3,79 @@ import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import { Field as BaseField } from "@base-ui-components/react/field";
 import { Select as BaseSelect } from "@base-ui-components/react/select";
+import { type VariantProps, cva } from "class-variance-authority";
 import { Check } from "lucide-react";
 import type { ReactNode } from "react";
-import { twc } from "react-twc";
+import { twc, type TwcComponentProps } from "react-twc";
 
 /* ------------------------------------------------------------------ */
-/* TWC primitives                                                      */
+/* Card                                                                */
 /* ------------------------------------------------------------------ */
+export const Card = twc.div`bg-white dark:bg-neutral-900 border border-mauve-200 dark:border-neutral-800 rounded-3xl p-6`;
 
-/** White card — 24px padding, 24px radius */
-export const Card = twc.div`bg-white border border-mauve-200 rounded-3xl p-6`;
-
-/** Section heading label — uppercase, tracked, centered */
+/* ------------------------------------------------------------------ */
+/* Section label                                                       */
+/* ------------------------------------------------------------------ */
 export const SectionLabel = twc.p`text-xs font-bold text-mauve-400 uppercase tracking-widest text-center m-0`;
 
-/** Badges */
-export const BadgeSuccess = twc.span`inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-emerald-50 text-emerald-700`;
-export const BadgeOutline = twc.span`inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-mauve-50 text-mauve-600 border border-mauve-200`;
+/* ------------------------------------------------------------------ */
+/* Badge                                                               */
+/* ------------------------------------------------------------------ */
+const badge = cva("inline-flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full", {
+  variants: {
+    $variant: {
+      success: "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400",
+      outline: "bg-mauve-50 dark:bg-neutral-800 text-mauve-600 dark:text-neutral-300 border border-mauve-200 dark:border-neutral-700",
+    },
+  },
+  defaultVariants: {
+    $variant: "outline",
+  },
+});
+
+type BadgeProps = TwcComponentProps<"span"> & VariantProps<typeof badge>;
+
+export const Badge = twc.span<BadgeProps>(({ $variant }) => badge({ $variant }));
 
 /* ------------------------------------------------------------------ */
-/* Shared dialog styling constants                                     */
+/* Button                                                              */
+/* ------------------------------------------------------------------ */
+const button = cva(
+  "font-sans font-bold text-sm rounded-full border-none cursor-pointer py-3 px-6 transition-all duration-150 ease-out inline-flex items-center justify-center gap-2 leading-snug disabled:opacity-50 disabled:pointer-events-none",
+  {
+    variants: {
+      $variant: {
+        primary: "bg-olive-800 text-white hover:bg-olive-900",
+        outline: "bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white hover:bg-mauve-50 dark:hover:bg-neutral-800 hover:border-mauve-400 dark:hover:border-neutral-600",
+        ghost: "bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3 hover:bg-mauve-100 dark:hover:bg-neutral-800 hover:text-mauve-900 dark:hover:text-white",
+        "danger-ghost": "bg-transparent text-red-600 dark:text-red-400 py-2 px-3 hover:bg-red-100 dark:hover:bg-red-900/40 hover:text-red-800 dark:hover:text-red-300",
+        danger: "bg-red-600 text-white hover:bg-red-700",
+      },
+      $size: {
+        default: "py-3 px-6",
+        small: "text-xs py-2 px-4",
+        icon: "p-2 rounded-xl",
+      },
+    },
+    defaultVariants: {
+      $variant: "primary",
+      $size: "default",
+    },
+  }
+);
+
+type ButtonProps = TwcComponentProps<"button"> & VariantProps<typeof button>;
+
+export const Button = twc.button<ButtonProps>(({ $variant, $size }) => button({ $variant, $size }));
+
+/* ------------------------------------------------------------------ */
+/* Dialog styles                                                       */
 /* ------------------------------------------------------------------ */
 const BACKDROP_CLASS =
-  "fixed inset-0 bg-black/40 backdrop-blur-sm z-[999] transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0";
+  "fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-[999] transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0";
 
 const POPUP_CLASS =
-  "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1000] bg-white rounded-3xl w-[90%] max-w-md p-6 shadow-2xl focus:outline-none transition-all duration-150 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:scale-95";
+  "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1000] bg-white dark:bg-neutral-900 rounded-3xl w-[90%] max-w-md p-6 shadow-2xl focus:outline-none transition-all duration-150 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 data-[starting-style]:opacity-0 data-[starting-style]:scale-95";
 
 /* ------------------------------------------------------------------ */
 /* Checkbox                                                            */
@@ -51,7 +98,7 @@ export function Checkbox({
         value={value?.toString()}
         defaultChecked={defaultChecked}
         className="flex items-center justify-center w-5 h-5 rounded-lg
-                   border-2 border-mauve-300 bg-white
+                   border-2 border-mauve-300 dark:border-neutral-600 bg-white dark:bg-neutral-800
                    transition-all duration-150
                    data-[checked]:bg-olive-800 data-[checked]:border-olive-800
                    group-hover:border-mauve-400"
@@ -60,13 +107,13 @@ export function Checkbox({
           <Check size={13} strokeWidth={3} />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
-      <span className="text-sm font-medium text-mauve-700 select-none">{label}</span>
+      <span className="text-sm font-medium text-mauve-700 dark:text-neutral-300 select-none">{label}</span>
     </label>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Dialog (dismissible — click outside / Escape to close)              */
+/* Dialog                                                              */
 /* ------------------------------------------------------------------ */
 export function Dialog({
   trigger,
@@ -89,11 +136,11 @@ export function Dialog({
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className={BACKDROP_CLASS} />
         <BaseDialog.Popup className={POPUP_CLASS}>
-          <BaseDialog.Title className="text-xl font-display font-bold tracking-tight m-0">
+          <BaseDialog.Title className="text-xl font-display font-bold tracking-tight m-0 dark:text-white">
             {title}
           </BaseDialog.Title>
           {description && (
-            <BaseDialog.Description className="mt-2 text-sm text-mauve-500 leading-relaxed">
+            <BaseDialog.Description className="mt-2 text-sm text-mauve-500 dark:text-neutral-400 leading-relaxed">
               {description}
             </BaseDialog.Description>
           )}
@@ -107,19 +154,23 @@ export function Dialog({
 export function DialogClose({
   children,
   className,
+  $variant,
+  $size,
 }: {
   children: ReactNode;
   className?: string;
+  $variant?: VariantProps<typeof button>["$variant"];
+  $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseDialog.Close className={className}>
+    <BaseDialog.Close className={className ?? button({ $variant, $size })}>
       {children}
     </BaseDialog.Close>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* AlertDialog (requires explicit action — no outside click dismiss)   */
+/* AlertDialog                                                         */
 /* ------------------------------------------------------------------ */
 export function AlertDialog({
   trigger,
@@ -142,11 +193,11 @@ export function AlertDialog({
       <BaseAlertDialog.Portal>
         <BaseAlertDialog.Backdrop className={BACKDROP_CLASS} />
         <BaseAlertDialog.Popup className={POPUP_CLASS}>
-          <BaseAlertDialog.Title className="text-xl font-display font-bold tracking-tight m-0">
+          <BaseAlertDialog.Title className="text-xl font-display font-bold tracking-tight m-0 dark:text-white">
             {title}
           </BaseAlertDialog.Title>
           {description && (
-            <BaseAlertDialog.Description className="mt-2 text-sm text-mauve-500 leading-relaxed">
+            <BaseAlertDialog.Description className="mt-2 text-sm text-mauve-500 dark:text-neutral-400 leading-relaxed">
               {description}
             </BaseAlertDialog.Description>
           )}
@@ -160,12 +211,16 @@ export function AlertDialog({
 export function AlertDialogClose({
   children,
   className,
+  $variant,
+  $size,
 }: {
   children: ReactNode;
   className?: string;
+  $variant?: VariantProps<typeof button>["$variant"];
+  $size?: VariantProps<typeof button>["$size"];
 }) {
   return (
-    <BaseAlertDialog.Close className={className}>
+    <BaseAlertDialog.Close className={className ?? button({ $variant, $size })}>
       {children}
     </BaseAlertDialog.Close>
   );
@@ -185,12 +240,12 @@ export function Field({
 }) {
   return (
     <BaseField.Root className="flex flex-col gap-1.5">
-      <BaseField.Label className="text-sm font-semibold text-mauve-500">
+      <BaseField.Label className="text-sm font-semibold text-mauve-500 dark:text-neutral-400">
         {label}
       </BaseField.Label>
       {children}
       {error && (
-        <BaseField.Error className="text-sm font-medium text-red-600" forceShow>
+        <BaseField.Error className="text-sm font-medium text-red-600 dark:text-red-400" forceShow>
           {error}
         </BaseField.Error>
       )}
@@ -224,7 +279,7 @@ export function SelectField({
 
   return (
     <BaseField.Root className="flex flex-col gap-1.5">
-      <BaseField.Label className="text-sm font-semibold text-mauve-500">
+      <BaseField.Label className="text-sm font-semibold text-mauve-500 dark:text-neutral-400">
         {label}
       </BaseField.Label>
       <BaseSelect.Root
@@ -235,7 +290,7 @@ export function SelectField({
         <BaseSelect.Trigger
           className="flex items-center justify-between w-full
                      py-3 px-4
-                     border border-mauve-200 rounded-2xl bg-white text-mauve-950
+                     border border-mauve-200 dark:border-neutral-700 rounded-2xl bg-white dark:bg-neutral-900 text-mauve-950 dark:text-white
                      text-base font-medium transition-all duration-150 outline-none
                      focus:border-olive-700 focus:ring-3 focus:ring-olive-700/8
                      data-[placeholder]:text-mauve-400 data-[placeholder]:font-normal"
@@ -256,7 +311,7 @@ export function SelectField({
         <BaseSelect.Portal>
           <BaseSelect.Positioner className="z-[1001]">
             <BaseSelect.Popup
-              className="bg-white border border-mauve-200 rounded-2xl shadow-xl
+              className="bg-white dark:bg-neutral-900 border border-mauve-200 dark:border-neutral-700 rounded-2xl shadow-xl
                          py-2 min-w-[var(--anchor-width)]
                          max-h-60 overflow-auto"
             >
@@ -281,9 +336,9 @@ export function SelectItem({
       value={value.toString()}
       className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium cursor-pointer
                  outline-none transition-colors
-                 data-[highlighted]:bg-mauve-50 text-mauve-900"
+                 data-[highlighted]:bg-mauve-50 dark:data-[highlighted]:bg-neutral-800 text-mauve-900 dark:text-neutral-200"
     >
-      <BaseSelect.ItemIndicator className="text-olive-700">
+      <BaseSelect.ItemIndicator className="text-olive-700 dark:text-olive-400">
         <Check size={14} strokeWidth={2.5} />
       </BaseSelect.ItemIndicator>
       <BaseSelect.ItemText>{children}</BaseSelect.ItemText>
