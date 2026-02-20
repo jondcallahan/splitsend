@@ -207,6 +207,7 @@ export function SelectField({
   defaultValue,
   required,
   placeholder,
+  options,
   children,
 }: {
   label: string;
@@ -214,8 +215,13 @@ export function SelectField({
   defaultValue?: string | number;
   required?: boolean;
   placeholder?: string;
+  options?: { value: string | number; label: string }[];
   children: ReactNode;
 }) {
+  const labelMap = options
+    ? Object.fromEntries(options.map((o) => [o.value.toString(), o.label]))
+    : null;
+
   return (
     <BaseField.Root className="flex flex-col gap-1.5">
       <BaseField.Label className="text-sm font-semibold text-mauve-500">
@@ -234,7 +240,13 @@ export function SelectField({
                      focus:border-olive-700 focus:ring-3 focus:ring-olive-700/8
                      data-[placeholder]:text-mauve-400 data-[placeholder]:font-normal"
         >
-          <BaseSelect.Value placeholder={placeholder ?? "Select…"} />
+          <BaseSelect.Value>
+            {(value: string | null) => {
+              if (!value) return <span className="text-mauve-400 font-normal">{placeholder ?? "Select…"}</span>;
+              if (labelMap && labelMap[value]) return labelMap[value];
+              return value;
+            }}
+          </BaseSelect.Value>
           <BaseSelect.Icon className="text-mauve-400">
             <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
               <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

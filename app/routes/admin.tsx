@@ -540,7 +540,13 @@ export default function Admin({
               />
             </div>
 
-            <SelectField label="Who paid?" name="paidBy" required placeholder="Select…">
+            <SelectField
+              label="Who paid?"
+              name="paidBy"
+              required
+              placeholder="Select…"
+              options={members.map((m) => ({ value: m.id, label: m.name }))}
+            >
               {members.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
                   {m.name}
@@ -690,6 +696,7 @@ export default function Admin({
                         name="paidBy"
                         defaultValue={e.paid_by_member_id}
                         required
+                        options={members.map((m) => ({ value: m.id, label: m.name }))}
                       >
                         {members.map((m) => (
                           <SelectItem key={m.id} value={m.id}>

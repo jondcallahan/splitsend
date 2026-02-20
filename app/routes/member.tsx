@@ -366,6 +366,7 @@ export default function MemberView({
               defaultValue={member.id}
               required
               placeholder="Select…"
+              options={members.map((m) => ({ value: m.id, label: `${m.name}${m.id === member.id ? " (you)" : ""}` }))}
             >
               {members.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
