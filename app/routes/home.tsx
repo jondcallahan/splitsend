@@ -77,6 +77,17 @@ export function meta({}: Route.MetaArgs) {
         "Split expenses with friends, roommates, or travel groups. No account needed. Share a private link, track who owes what, and settle up. Free forever.",
       name: "description",
     },
+    { property: "og:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
+    { property: "og:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
+    { property: "og:image", content: "https://splitsend.app/og.png" },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://splitsend.app" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
+    { name: "twitter:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
+    { name: "twitter:image", content: "https://splitsend.app/og.png" },
   ];
 }
 
