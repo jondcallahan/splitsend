@@ -31,7 +31,7 @@ const image = new ImageResponse(
         height="56"
         style={{ marginRight: "18px" }}
       >
-        <rect width="32" height="32" rx="8" fill="#000" />
+        <path d="M 32 16 C 32 28.8 28.8 32 16 32 C 3.2 32 0 28.8 0 16 C 0 3.2 3.2 0 16 0 C 28.8 0 32 3.2 32 16 Z" fill="#000" />
         <g transform="translate(4, 4) scale(1)">
           <circle cx="8" cy="8" r="6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
           <path d="M18.09 10.37A6 6 0 1 1 10.34 18" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
