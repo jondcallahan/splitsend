@@ -417,7 +417,7 @@ export default function Admin({
         <div className="drawer-handle" />
         <Form method="post">
           <header>
-            <h3 id="rename-dialog-heading">Rename Group</h3>
+            <h3 id="rename-dialog-heading" tabIndex={-1} autoFocus>Rename Group</h3>
           </header>
           <div>
             <input type="hidden" name="intent" value="update-name" />
@@ -699,7 +699,7 @@ export default function Admin({
                   <div className="drawer-handle" />
                   <Form method="post" id={`edit-form-${e.id}`}>
                     <header>
-                      <h3 id={`${dialogId}-heading`}>Edit Expense</h3>
+                      <h3 id={`${dialogId}-heading`} tabIndex={-1} autoFocus>Edit Expense</h3>
                     </header>
                     <div className="form-stack">
                       <input

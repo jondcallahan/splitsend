@@ -449,6 +449,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                         <h3
                           id={`${dialogId}-heading`}
                           style={{ marginBottom: "0.5rem" }}
+                          tabIndex={-1}
+                          autoFocus
                         >
                           Remove from recent groups?
                         </h3>
