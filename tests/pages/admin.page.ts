@@ -55,7 +55,10 @@ export class AdminPage {
 
     await section.getByLabel(/what was it for/i).fill(description);
     await section.getByLabel(/amount/i).fill(amount);
-    await section.getByLabel(/who paid/i).selectOption({ label: paidBy });
+
+    // BaseUI Select renders the trigger as role="combobox"
+    await section.getByRole("combobox", { name: /who paid/i }).click();
+    await this.page.getByRole("option", { name: paidBy }).click();
 
     if (splitAmong !== undefined) {
       const group = section.getByRole("group", { name: /split among/i });
@@ -84,25 +87,11 @@ export class AdminPage {
     currentDescription: string,
     updates: { description?: string; amount?: string }
   ): Promise<void> {
-    // The expense description is an h3 — go up two levels to reach the expense container
-    const expenseContainer = this.page
-      .getByRole("heading", { level: 3, name: currentDescription })
-      .locator("../..");
+    // Click the Edit button (aria-label="Edit expense: {description}")
+    await this.page
+      .getByRole("button", { name: `Edit expense: ${currentDescription}` })
+      .click();
 
-    // locator() can find hidden elements; filter by dialog heading text
-    const closedDialog = expenseContainer
-      .locator("dialog")
-      .filter({ hasText: "Edit Expense" });
-    const dialogId = await closedDialog.getAttribute("id");
-    if (!dialogId) {
-      throw new Error(`No edit dialog found for "${currentDescription}"`);
-    }
-
-    await this.page.evaluate((id) => {
-      (document.querySelector(`#${id}`) as HTMLDialogElement)?.showModal();
-    }, dialogId);
-
-    // Dialog now open → getByRole finds it in the accessibility tree
     const dialog = this.page.getByRole("dialog", { name: "Edit Expense" });
     await dialog.waitFor({ state: "visible" });
 
@@ -124,28 +113,24 @@ export class AdminPage {
   }
 
   async deleteExpense(description: string): Promise<void> {
-    const expenseContainer = this.page
-      .getByRole("heading", { level: 3, name: description })
-      .locator("../..");
+    // Open the edit dialog first via the Edit button
+    await this.page
+      .getByRole("button", { name: `Edit expense: ${description}` })
+      .click();
 
-    const closedDialog = expenseContainer
-      .locator("dialog")
-      .filter({ hasText: "Delete Expense?" });
-    const dialogId = await closedDialog.getAttribute("id");
-    if (!dialogId) {
-      throw new Error(`No delete dialog found for "${description}"`);
-    }
+    const editDialog = this.page.getByRole("dialog", { name: "Edit Expense" });
+    await editDialog.waitFor({ state: "visible" });
 
-    await this.page.evaluate((id) => {
-      (document.querySelector(`#${id}`) as HTMLDialogElement)?.showModal();
-    }, dialogId);
+    // Click "Delete" inside the edit dialog — this closes edit and opens confirmation
+    await editDialog.getByRole("button", { name: "Delete" }).click();
 
-    const dialog = this.page.getByRole("dialog", { name: "Delete Expense?" });
-    await dialog.waitFor({ state: "visible" });
+    // Wait for the delete confirmation alertdialog
+    const confirmDialog = this.page.getByRole("alertdialog");
+    await confirmDialog.waitFor({ state: "visible" });
 
     await Promise.all([
       this.waitForPost(),
-      dialog.getByRole("button", { name: "Delete" }).click(),
+      confirmDialog.getByRole("button", { name: "Delete" }).click(),
     ]);
     await this.page
       .getByRole("heading", { level: 3, name: description })
@@ -153,11 +138,9 @@ export class AdminPage {
   }
 
   async renameGroup(newName: string): Promise<void> {
-    await this.page.evaluate(() => {
-      (
-        document.querySelector("#rename-dialog") as HTMLDialogElement
-      )?.showModal();
-    });
+    // Click the Rename group button (aria-label="Rename group")
+    await this.page.getByRole("button", { name: /rename group/i }).click();
+
     const dialog = this.page.getByRole("dialog", { name: "Rename Group" });
     await dialog.waitFor({ state: "visible" });
     await dialog.getByLabel(/group name/i).fill(newName);
@@ -199,6 +182,8 @@ export class AdminPage {
     await this.page.evaluate(() => {
       const win = window as typeof window & { __capturedUrl?: string };
       win.__capturedUrl = undefined;
+      // Remove the Web Share API so the clipboard fallback is always used
+      (navigator as { share?: unknown }).share = undefined;
       navigator.clipboard.writeText = (text: string): Promise<void> => {
         win.__capturedUrl = text;
         return Promise.resolve();
@@ -206,7 +191,7 @@ export class AdminPage {
     });
 
     const row = this.page.getByRole("row").filter({ hasText: memberName });
-    await row.getByRole("button", { name: /copy link/i }).click();
+    await row.getByRole("button", { name: /share link/i }).click();
 
     const url = await this.page.evaluate(
       () => (window as typeof window & { __capturedUrl?: string }).__capturedUrl

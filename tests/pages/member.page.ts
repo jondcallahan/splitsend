@@ -46,16 +46,10 @@ export class MemberPage {
     await section.getByLabel(/what was it for/i).fill(description);
     await section.getByLabel(/amount/i).fill(amount);
 
-    // Options may include "(you)" suffix — select by value of the matching option
-    const matchingOption = section
-      .locator("#paidBy option")
-      .filter({ hasText: paidBy })
-      .first();
-    const value = await matchingOption.getAttribute("value");
-    if (!value) {
-      throw new Error(`Member option not found: ${paidBy}`);
-    }
-    await section.getByLabel(/who paid/i).selectOption(value);
+    // BaseUI Select renders the trigger as role="combobox".
+    // Options may include "(you)" suffix — name match is a substring search.
+    await section.getByRole("combobox", { name: /who paid/i }).click();
+    await this.page.getByRole("option", { name: paidBy }).click();
 
     if (splitAmong !== undefined) {
       const group = section.getByRole("group", { name: /split among/i });

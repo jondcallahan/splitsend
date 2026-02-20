@@ -6,7 +6,7 @@ test("renders hero content", async ({ page, homePage }) => {
   await expect(
     page.getByRole("button", { name: /create group/i })
   ).toBeVisible();
-  await expect(page.getByText(/how it works/i)).toBeVisible();
+  await expect(page.getByText(/how to split bills/i)).toBeVisible();
 });
 
 test("create group navigates to admin", async ({ homePage }) => {

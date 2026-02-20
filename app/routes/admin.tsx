@@ -395,15 +395,22 @@ export default function Admin({
     setShortcutGroups(shortcuts);
   }, [members, setShortcutGroups]);
 
-  // Show success toast when expense is added
+  // Close dialogs and show toasts on successful actions
   useEffect(() => {
     if (actionData?.success) {
       const { formData } = navigation;
-      if (formData?.get("intent") === "add-expense") {
+      const intent = formData?.get("intent");
+      if (intent === "add-expense") {
         sileo.success({
           duration: 2000,
           title: "Expense added",
         });
+      }
+      if (intent === "update-name") {
+        setRenameOpen(false);
+      }
+      if (intent === "update-expense") {
+        setEditingExpenseId(null);
       }
     }
   }, [actionData, navigation.formData]);

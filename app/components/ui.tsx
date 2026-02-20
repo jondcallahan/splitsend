@@ -6,7 +6,7 @@ import { Select as BaseSelect } from "@base-ui-components/react/select";
 import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
 import { Check } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { twc } from "react-twc";
 import type { TwcComponentProps } from "react-twc";
 
@@ -115,6 +115,7 @@ export function Checkbox({
         name={name}
         value={value?.toString()}
         defaultChecked={defaultChecked}
+        aria-label={label}
         className="flex items-center justify-center w-5 h-5 rounded-lg
                    border-2 border-mauve-300 dark:border-neutral-600 bg-white dark:bg-neutral-800
                    transition-all duration-150
@@ -263,7 +264,7 @@ export function Field({
       <BaseField.Label className="text-sm font-semibold text-mauve-500 dark:text-neutral-400">
         {label}
       </BaseField.Label>
-      {children}
+      <BaseField.Control render={children as ReactElement} />
       {error && (
         <BaseField.Error
           className="text-sm font-medium text-red-600 dark:text-red-400"
@@ -311,6 +312,7 @@ export function SelectField({
         required={required}
       >
         <BaseSelect.Trigger
+          aria-label={label}
           className="flex items-center justify-between w-full
                      py-3 px-4
                      border border-mauve-200 dark:border-neutral-700 rounded-2xl bg-white dark:bg-neutral-900 text-mauve-950 dark:text-white
