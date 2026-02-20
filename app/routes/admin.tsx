@@ -720,8 +720,7 @@ export default function Admin({
                           setEditingExpenseId(null);
                           setDeletingExpenseId(e.id);
                         }}
-                        $variant="ghost"
-                        className="text-red-600 dark:text-red-400"
+                        $variant="danger-ghost"
                       >
                         <Trash2 size={14} /> Delete
                       </Button>

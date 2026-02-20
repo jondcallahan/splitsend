@@ -48,6 +48,7 @@ const button = cva(
         primary: "bg-olive-800 text-white hover:bg-olive-900",
         outline: "bg-transparent border border-mauve-200 dark:border-neutral-700 text-mauve-900 dark:text-white hover:bg-mauve-50 dark:hover:bg-neutral-800 hover:border-mauve-400 dark:hover:border-neutral-600",
         ghost: "bg-transparent text-mauve-500 dark:text-neutral-400 py-2 px-3 hover:bg-mauve-100 dark:hover:bg-neutral-800 hover:text-mauve-900 dark:hover:text-white",
+        "danger-ghost": "bg-transparent text-red-600 dark:text-red-400 py-2 px-3 hover:bg-pink-100 dark:hover:bg-red-900/40 hover:text-red-900 dark:hover:text-red-300",
         danger: "bg-red-600 text-white hover:bg-red-700",
       },
       $size: {
