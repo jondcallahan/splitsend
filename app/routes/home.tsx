@@ -439,9 +439,11 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   </button>
                   <dialog
                     id={dialogId}
+                    className="drawer"
                     aria-labelledby={`${dialogId}-heading`}
                     closedby="any"
                   >
+                    <div className="drawer-handle" />
                     <div style={{ padding: "1.5rem" }}>
                       <div style={{ marginBottom: "1.5rem" }}>
                         <h3

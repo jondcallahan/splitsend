@@ -412,8 +412,9 @@ export default function Admin({
         <small className="text-light">Admin</small>
       </div>
 
-      {/* Rename Dialog */}
-      <dialog key={group.name} id="rename-dialog" aria-labelledby="rename-dialog-heading" closedby="any">
+      {/* Rename Drawer */}
+      <dialog key={group.name} id="rename-dialog" className="drawer" aria-labelledby="rename-dialog-heading" closedby="any">
+        <div className="drawer-handle" />
         <Form method="post">
           <header>
             <h3 id="rename-dialog-heading">Rename Group</h3>
@@ -693,8 +694,9 @@ export default function Admin({
                   </Form>
                 </dialog>
 
-                {/* Edit Dialog */}
-                <dialog id={dialogId} aria-labelledby={`${dialogId}-heading`} closedby="any">
+                {/* Edit Drawer */}
+                <dialog id={dialogId} className="drawer" aria-labelledby={`${dialogId}-heading`} closedby="any">
+                  <div className="drawer-handle" />
                   <Form method="post" id={`edit-form-${e.id}`}>
                     <header>
                       <h3 id={`${dialogId}-heading`}>Edit Expense</h3>
