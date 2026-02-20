@@ -20,21 +20,20 @@ import type { ShortcutGroup } from "./components/help-overlay";
 import { Button } from "./components/ui";
 import { KeyboardContext } from "./contexts/keyboard-context";
 
+import "@fontsource/google-sans-flex/400.css";
+import "@fontsource/google-sans-flex/500.css";
+import "@fontsource/google-sans-flex/600.css";
+import "@fontsource/google-sans-flex/700.css";
+import "@fontsource/google-sans-flex/800.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/700.css";
 import "sileo/styles.css";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
   { href: "/favicon.svg", rel: "icon", type: "image/svg+xml" },
-  { href: "https://fonts.googleapis.com", rel: "preconnect" },
-  {
-    crossOrigin: "anonymous",
-    href: "https://fonts.gstatic.com",
-    rel: "preconnect",
-  },
-  {
-    href: "https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=JetBrains+Mono:wght@400;500;700&display=swap",
-    rel: "stylesheet",
-  },
+
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {

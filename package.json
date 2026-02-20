@@ -17,6 +17,7 @@
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-rc.0",
     "@fontsource/google-sans-flex": "^5.2.2",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@knadh/oat": "^0.3.0",
     "@libsql/client": "^0.17.0",
     "@react-router/node": "7.12.0",
