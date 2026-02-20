@@ -137,7 +137,7 @@ input:focus, select:focus, textarea:focus {
 
 input::placeholder { @apply text-mauve-400 font-normal; }
 
-label {
+label:not(.flex) {
   @apply block text-sm font-semibold text-mauve-500 mb-1.5;
 }
 
