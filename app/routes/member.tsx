@@ -201,7 +201,6 @@ export default function MemberView({
       const { formData } = navigation;
       if (formData?.get("intent") === "add-expense") {
         sileo.success({
-          description: "Expense added successfully",
           duration: 2000,
           title: "Expense added",
         });

@@ -171,7 +171,7 @@ export default function Admin({
   function copyLink(link: string, name: string) {
     navigator.clipboard.writeText(link);
     sileo.success({
-      description: `Invite link for ${name} copied to clipboard`,
+      description: `Share this with ${name}`,
       duration: 2000,
       title: "Link copied",
     });
@@ -380,7 +380,6 @@ export default function Admin({
       const { formData } = navigation;
       if (formData?.get("intent") === "add-expense") {
         sileo.success({
-          description: "Expense added successfully",
           duration: 2000,
           title: "Expense added",
         });

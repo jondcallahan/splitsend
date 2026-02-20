@@ -118,7 +118,10 @@ export default function App() {
         shortcutGroups,
       }}
     >
-      <Toaster position="top-right" />
+      <Toaster position="top-right" options={{
+        fill: "#171717",
+        styles: { description: "text-white/75!" },
+      }} />
       <Outlet />
 
       {/* Keyboard hints — only visible on non-touch devices via CSS */}
