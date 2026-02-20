@@ -1,7 +1,6 @@
 import { useHotkey } from "@tanstack/react-hotkeys";
 import type { RegisterableHotkey } from "@tanstack/react-hotkeys";
 import {
-  Wallet,
   Shield,
   User,
   LinkIcon,
@@ -36,7 +35,7 @@ import type { Route } from "./+types/home";
 // ---------------------------------------------------------------------------
 const FAQ_ITEMS = [
   {
-    a: "No. SplitSend requires no account or sign-up — not for you, and not for anyone in your group. Just create a group and share the link.",
+    a: "No. SplitSend requires no account or sign-up, not for you and not for anyone in your group. Just create a group and share the link.",
     q: "Do I need to create an account to use SplitSend?",
   },
   {
@@ -44,15 +43,15 @@ const FAQ_ITEMS = [
     q: "Does anyone need to download an app?",
   },
   {
-    a: "Yes, completely free. No ads, no subscription, no freemium limits.",
+    a: "Yes. No ads, no subscription, no freemium limits.",
     q: "Is SplitSend free?",
   },
   {
-    a: "When multiple people owe each other money, the naive approach requires everyone to pay everyone back individually. SplitSend calculates the minimum number of transfers needed to settle all balances — so a group of four might need 3 payments instead of 6.",
+    a: "When multiple people owe each other money, the naive approach requires everyone to pay everyone back individually. SplitSend calculates the minimum number of transfers needed to settle all balances, so a group of four might need 3 payments instead of 6.",
     q: "How does SplitSend simplify debts?",
   },
   {
-    a: "Yes. Unlike Splitwise, SplitSend doesn't require accounts, has no ads, no transaction limits, and includes smart debt simplification for free — not as a paid upgrade.",
+    a: "SplitSend doesn't require accounts, has no ads or transaction limits, and debt simplification is free (Splitwise charges for that).",
     q: "Is SplitSend a good Splitwise alternative?",
   },
   {
@@ -60,7 +59,7 @@ const FAQ_ITEMS = [
     q: "How does the shared link work?",
   },
   {
-    a: "Group and member pages are never indexed by search engines. Each person's link is unique and unguessable — there's no public directory of groups.",
+    a: "Group and member pages are never indexed by search engines. Each person's link is unique and unguessable. There's no public directory of groups.",
     q: "Is my data private?",
   },
 ];
@@ -71,11 +70,11 @@ const FAQ_ITEMS = [
 export function meta({}: Route.MetaArgs) {
   return [
     {
-      title: "SplitSend — Free Bill Splitter. No Account, No App, Just a Link.",
+      title: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link.",
     },
     {
       content:
-        "Split expenses with friends, roommates, or on a group trip — no account needed. Share a private link, track who owes what, and settle up in seconds. Free forever.",
+        "Split expenses with friends, roommates, or travel groups. No account needed. Share a private link, track who owes what, and settle up. Free forever.",
       name: "description",
     },
   ];
@@ -300,7 +299,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             marginBottom: "0.5rem",
           }}
         >
-          <Wallet size={36} /> SplitSend
+          <img src="/favicon.svg" alt="" width={36} height={36} /> SplitSend
         </h1>
         <p
           style={{
@@ -323,8 +322,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
           }}
         >
           Share a private link. Everyone adds expenses. SplitSend figures out
-          who owes who and minimizes the payments to settle up. Free, private,
-          instant.
+          who owes whom and minimizes the payments to settle up.
         </p>
       </div>
 
@@ -356,7 +354,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               className="flex items-center justify-center gap-2"
               style={{ marginTop: "1rem", width: "100%" }}
             >
-              {isSubmitting ? "Creating…" : "Create Group — It's Free"}
+              {isSubmitting ? "Creating…" : "Create Group (it's free)"}
             </Button>
           </fieldset>
         </Form>
@@ -742,7 +740,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             className="card"
             style={{ padding: "1.25rem", textAlign: "center" }}
           >
-            <Zap size={24} style={{ marginBottom: "0.5rem", opacity: 0.6 }} />
+            <Zap size={24} className="inline-block mb-2 opacity-60" />
             <strong style={{ display: "block", marginBottom: "0.25rem" }}>
               1. Create a group
             </strong>
@@ -756,7 +754,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
           >
             <LinkIcon
               size={24}
-              style={{ marginBottom: "0.5rem", opacity: 0.6 }}
+              className="inline-block mb-2 opacity-60"
             />
             <strong style={{ display: "block", marginBottom: "0.25rem" }}>
               2. Share the link
@@ -771,7 +769,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
           >
             <ReceiptText
               size={24}
-              style={{ marginBottom: "0.5rem", opacity: 0.6 }}
+              className="inline-block mb-2 opacity-60"
             />
             <strong style={{ display: "block", marginBottom: "0.25rem" }}>
               3. Add expenses
@@ -801,7 +799,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          Works for any shared expense
+          People use it for
         </h2>
         <p
           style={{
@@ -812,8 +810,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          No matter the occasion, everyone gets their own link — no accounts, no
-          app downloads required.
+          Everyone gets their own link. No accounts, no app downloads.
         </p>
         <div
           style={{
@@ -824,22 +821,22 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         >
           {[
             {
-              body: "Track shared groceries, utilities, and rent month to month without a spreadsheet or awkward conversations.",
+              body: "Track groceries, utilities, and rent without a spreadsheet. Way less awkward than texting 'hey you owe me $23.'",
               icon: <HomeIcon size={20} style={{ opacity: 0.6 }} />,
               title: "Splitting rent and bills with roommates",
             },
             {
-              body: "Hotels, restaurants, activities — log as you go, settle when you're back. No one needs to download a thing.",
+              body: "Log hotels, restaurants, and activities as you go. Settle when you're back. Nobody needs to download anything.",
               icon: <Plane size={20} style={{ opacity: 0.6 }} />,
               title: "Group trips and vacations",
             },
             {
-              body: "Bachelorette parties, ski weekends, birthday dinners. One link for the whole crew.",
+              body: "Bachelorette parties, ski weekends, birthday dinners. Send one link and you're done.",
               icon: <PartyPopper size={20} style={{ opacity: 0.6 }} />,
               title: "Group events",
             },
             {
-              body: "Keep track of shared costs without a subscription or asking your partner to sign up for yet another app.",
+              body: "Track shared costs without asking your partner to sign up for yet another app.",
               icon: <Heart size={20} style={{ opacity: 0.6 }} />,
               title: "Couples and households",
             },
@@ -886,10 +883,12 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         }}
       >
         <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-          <ArrowRightLeft
-            size={28}
-            style={{ marginBottom: "0.5rem", opacity: 0.5 }}
-          />
+          <div className="flex justify-center">
+            <ArrowRightLeft
+              size={28}
+              className="mb-2 opacity-50"
+            />
+          </div>
           <h2
             style={{
               fontSize: "1.5rem",
@@ -897,7 +896,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               marginBottom: "0.5rem",
             }}
           >
-            Fewer payments. Less hassle.
+            Fewer payments to settle up
           </h2>
           <p
             style={{
@@ -908,10 +907,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               opacity: 0.6,
             }}
           >
-            When everyone owes everyone, things get messy fast. SplitSend
-            automatically simplifies the debts so your group settles up with the
-            fewest payments possible. This is a feature Splitwise locks behind a
-            Pro subscription — here it's always free.
+            When everyone owes everyone, things get messy. SplitSend
+            simplifies the debts so your group settles up with the fewest
+            payments possible. Splitwise charges for this. Here it's free.
           </p>
         </div>
         <div
@@ -975,8 +973,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          Instead of everyone paying everyone back individually, we figure out
-          the shortest path to settle all debts at once.
+          Instead of everyone paying everyone back individually, we find
+          the shortest path to settle all debts.
         </p>
       </section>
 
@@ -998,7 +996,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          The free Splitwise alternative — no signup, no ads, no limits
+          A free Splitwise alternative
         </h2>
         <p
           style={{
@@ -1010,9 +1008,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          Splitwise now limits free users to 3 expenses per day and shows ads
-          throughout the app. SplitSend is completely free, has no ads, and
-          requires no account from anyone in your group.
+          Splitwise limits free users to 3 expenses per day and shows ads.
+          SplitSend is free, has no ads, and nobody needs an account.
         </p>
         <div style={{ margin: "0 auto", maxWidth: 520 }}>
           <table
@@ -1216,10 +1213,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
       {/* ------------------------------------------------------------------ */}
       <div style={{ marginBottom: "2rem", textAlign: "center" }}>
         <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem", opacity: 0.7 }}>
-          Free. Private. Instant.
-        </p>
-        <p style={{ fontSize: "0.85rem", opacity: 0.4 }}>
-          No accounts. No downloads. No nonsense.
+          Create a group and share the link. That's it.
         </p>
       </div>
     </main>
