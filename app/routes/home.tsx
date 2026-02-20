@@ -88,6 +88,7 @@ export function meta({}: Route.MetaArgs) {
     { name: "twitter:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
     { name: "twitter:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
     { name: "twitter:image", content: "https://splitsend.app/og.png" },
+    { tagName: "link", rel: "canonical", href: "https://splitsend.app/" },
   ];
 }
 
