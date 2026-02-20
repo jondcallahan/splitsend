@@ -14,6 +14,7 @@ import { sileo } from "sileo";
 
 import type { Command } from "~/components/command-palette";
 import type { ShortcutGroup } from "~/components/help-overlay";
+import { Dialog, DialogClose, AlertDialog, AlertDialogClose, Checkbox, SelectField, SelectItem } from "~/components/ui";
 
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { ExpenseDAO } from "~/dao/expense.dao.server";
@@ -162,6 +163,11 @@ export default function Admin({
   const isSubmitting = navigation.state === "submitting";
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
+  // Dialog state
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [editingExpenseId, setEditingExpenseId] = useState<number | null>(null);
+  const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
+
   // Refs for keyboard navigation
   const memberInputRef = useRef<HTMLInputElement>(null);
   const expenseDescriptionRef = useRef<HTMLInputElement>(null);
@@ -208,14 +214,9 @@ export default function Admin({
     }
   });
 
-  // R - Toggle rename dialog using OAT's dialog API
+  // R - Toggle rename dialog
   useHotkey("R", () => {
-    const dialog = document.querySelector(
-      "#rename-dialog"
-    ) as HTMLDialogElement;
-    if (dialog) {
-      dialog.open ? dialog.close() : dialog.showModal();
-    }
+    setRenameOpen((prev) => !prev);
   });
 
   // H - Navigate home
@@ -284,12 +285,7 @@ export default function Admin({
         shortcut: "M",
       },
       {
-        action: () => {
-          const dialog = document.querySelector(
-            "#rename-dialog"
-          ) as HTMLDialogElement;
-          dialog?.showModal();
-        },
+        action: () => setRenameOpen(true),
         id: "toggle-rename",
         label: "Rename group",
         shortcut: "R",
@@ -399,8 +395,7 @@ export default function Admin({
             <h1 style={{ margin: 0 }}>{group.name}</h1>
             <button
               type="button"
-              commandfor="rename-dialog"
-              command="show-modal"
+              onClick={() => setRenameOpen(true)}
               aria-label="Rename group"
               title="Rename group (R)"
               className="outline small"
@@ -413,37 +408,32 @@ export default function Admin({
       </div>
 
       {/* Rename Dialog */}
-      <dialog key={group.name} id="rename-dialog" aria-labelledby="rename-dialog-heading" closedby="any">
+      <Dialog
+        key={group.name}
+        title="Rename Group"
+        open={renameOpen}
+        onOpenChange={setRenameOpen}
+      >
         <Form method="post">
-          <header>
-            <h3 id="rename-dialog-heading">Rename Group</h3>
-          </header>
-          <div>
-            <input type="hidden" name="intent" value="update-name" />
-            <label htmlFor="rename-input">Group name</label>
-            <input
-              id="rename-input"
-              name="groupName"
-              type="text"
-              defaultValue={group.name}
-              required
-            />
-          </div>
-          <footer className="flex gap-2">
-            <button
-              type="button"
-              commandfor="rename-dialog"
-              command="close"
-              className="outline"
-            >
+          <input type="hidden" name="intent" value="update-name" />
+          <label htmlFor="rename-input">Group name</label>
+          <input
+            id="rename-input"
+            name="groupName"
+            type="text"
+            defaultValue={group.name}
+            required
+          />
+          <div className="mt-6 flex gap-3 justify-end">
+            <DialogClose className="outline">
               Cancel
-            </button>
+            </DialogClose>
             <button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving…" : "Save"}
             </button>
-          </footer>
+          </div>
         </Form>
-      </dialog>
+      </Dialog>
 
       {actionData?.error && (
         <p className="card p-4 mb-4" style={{ color: "var(--danger)" }}>
@@ -550,30 +540,30 @@ export default function Admin({
               />
             </div>
 
-            <div>
-              <label htmlFor="paidBy">Who paid?</label>
-              <select id="paidBy" name="paidBy" required>
-                <option value="">Select…</option>
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectField
+              label="Who paid?"
+              name="paidBy"
+              required
+              placeholder="Select…"
+              options={members.map((m) => ({ value: m.id, label: m.name }))}
+            >
+              {members.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.name}
+                </SelectItem>
+              ))}
+            </SelectField>
 
             <fieldset className="checkbox-group">
               <legend>Split among</legend>
               {members.map((m) => (
-                <label key={m.id} className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    name="splitAmong"
-                    value={m.id}
-                    defaultChecked
-                  />
-                  {m.name}
-                </label>
+                <Checkbox
+                  key={m.id}
+                  name="splitAmong"
+                  value={m.id}
+                  label={m.name}
+                  defaultChecked
+                />
               ))}
             </fieldset>
 
@@ -621,7 +611,6 @@ export default function Admin({
             <Receipt size={20} /> Expenses
           </h2>
           {expenses.map((e, idx) => {
-            const dialogId = `edit-expense-${e.id}`;
             return (
               <div
                 key={`${e.id}-${e.description}-${e.amount}-${e.paid_by_member_id}`}
@@ -638,8 +627,7 @@ export default function Admin({
                     <button
                       type="button"
                       aria-label={`Edit expense: ${e.description}`}
-                      commandfor={dialogId}
-                      command="show-modal"
+                      onClick={() => setEditingExpenseId(e.id)}
                       className="outline small"
                     >
                       <Pencil size={14} />
@@ -665,46 +653,15 @@ export default function Admin({
                   Added by {e.added_by_name ?? "admin"}
                 </small>
 
-                {/* Delete Confirmation Dialog */}
-                <dialog id={`delete-dialog-${e.id}`} aria-labelledby={`delete-dialog-${e.id}-heading`} closedby="any">
-                  <Form method="post">
-                    <input type="hidden" name="intent" value="delete-expense" />
-                    <input type="hidden" name="expenseId" value={e.id} />
-                    <header>
-                      <h3 id={`delete-dialog-${e.id}-heading`}>Delete Expense?</h3>
-                      <p>
-                        Are you sure you want to delete "{e.description}"? This
-                        action cannot be undone.
-                      </p>
-                    </header>
-                    <footer className="flex gap-2 justify-between">
-                      <button
-                        type="button"
-                        commandfor={`delete-dialog-${e.id}`}
-                        command="close"
-                        className="outline"
-                      >
-                        Cancel
-                      </button>
-                      <button type="submit" data-variant="danger">
-                        Delete
-                      </button>
-                    </footer>
-                  </Form>
-                </dialog>
-
                 {/* Edit Dialog */}
-                <dialog id={dialogId} aria-labelledby={`${dialogId}-heading`} closedby="any">
-                  <Form method="post" id={`edit-form-${e.id}`}>
-                    <header>
-                      <h3 id={`${dialogId}-heading`}>Edit Expense</h3>
-                    </header>
+                <Dialog
+                  title="Edit Expense"
+                  open={editingExpenseId === e.id}
+                  onOpenChange={(open) => { if (!open) setEditingExpenseId(null); }}
+                >
+                  <Form method="post">
                     <div className="form-stack">
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="update-expense"
-                      />
+                      <input type="hidden" name="intent" value="update-expense" />
                       <input type="hidden" name="expenseId" value={e.id} />
 
                       <div>
@@ -734,72 +691,79 @@ export default function Admin({
                         />
                       </div>
 
-                      <div>
-                        <label htmlFor={`paid-${e.id}`}>Who paid?</label>
-                        <select
-                          id={`paid-${e.id}`}
-                          name="paidBy"
-                          defaultValue={e.paid_by_member_id}
-                          required
-                        >
-                          {members.map((m) => (
-                            <option key={m.id} value={m.id}>
-                              {m.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      <SelectField
+                        label="Who paid?"
+                        name="paidBy"
+                        defaultValue={e.paid_by_member_id}
+                        required
+                        options={members.map((m) => ({ value: m.id, label: m.name }))}
+                      >
+                        {members.map((m) => (
+                          <SelectItem key={m.id} value={m.id}>
+                            {m.name}
+                          </SelectItem>
+                        ))}
+                      </SelectField>
 
                       <fieldset className="checkbox-group">
                         <legend>Split among</legend>
                         {members.map((m) => (
-                          <label
+                          <Checkbox
                             key={m.id}
-                            className="flex items-center gap-2 mb-2"
-                          >
-                            <input
-                              type="checkbox"
-                              name="splitAmong"
-                              value={m.id}
-                              defaultChecked={e.splits.some(
-                                (s) => s.member_id === m.id
-                              )}
-                            />
-                            {m.name}
-                          </label>
+                            name="splitAmong"
+                            value={m.id}
+                            label={m.name}
+                            defaultChecked={e.splits.some(
+                              (s) => s.member_id === m.id
+                            )}
+                          />
                         ))}
                       </fieldset>
                     </div>
-                    <footer className="flex items-center justify-between">
+                    <div className="mt-6 flex items-center justify-between">
                       <button
                         type="button"
-                        commandfor={`delete-dialog-${e.id}`}
-                        command="show-modal"
+                        onClick={() => {
+                          setEditingExpenseId(null);
+                          setDeletingExpenseId(e.id);
+                        }}
                         data-variant="danger"
-                        className="ghost small"
+                        className="ghost"
                       >
                         <Trash2 size={14} /> Delete
                       </button>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          commandfor={dialogId}
-                          command="close"
-                          className="outline"
-                        >
+                      <div className="flex gap-3">
+                        <DialogClose className="outline">
                           Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="flex items-center gap-2"
-                        >
+                        </DialogClose>
+                        <button type="submit" disabled={isSubmitting}>
                           {isSubmitting ? "Saving…" : "Save"}
                         </button>
                       </div>
-                    </footer>
+                    </div>
                   </Form>
-                </dialog>
+                </Dialog>
+
+                {/* Delete Confirmation AlertDialog */}
+                <AlertDialog
+                  title="Delete Expense?"
+                  description={`Are you sure you want to delete "${e.description}"? This action cannot be undone.`}
+                  open={deletingExpenseId === e.id}
+                  onOpenChange={(open) => { if (!open) setDeletingExpenseId(null); }}
+                >
+                  <Form method="post">
+                    <input type="hidden" name="intent" value="delete-expense" />
+                    <input type="hidden" name="expenseId" value={e.id} />
+                    <div className="flex gap-3 justify-end">
+                      <AlertDialogClose className="outline">
+                        Cancel
+                      </AlertDialogClose>
+                      <button type="submit" data-variant="danger">
+                        Delete
+                      </button>
+                    </div>
+                  </Form>
+                </AlertDialog>
               </div>
             );
           })}
