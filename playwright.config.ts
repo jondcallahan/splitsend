@@ -7,17 +7,17 @@ export default defineConfig({
   testDir: "./tests",
   timeout: 10_000,
   use: {
-    baseURL: "http://localhost:5174",
     actionTimeout: 5_000,
+    baseURL: "http://localhost:5174",
     navigationTimeout: 5_000,
     trace: "on-first-retry",
   },
   webServer: {
     command: "bunx --bun react-router dev --port 5174",
-    url: "http://localhost:5174",
-    reuseExistingServer: false,
     env: {
       PLAYWRIGHT_TEST: "1",
     },
+    reuseExistingServer: false,
+    url: "http://localhost:5174",
   },
 });

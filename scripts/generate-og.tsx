@@ -23,7 +23,9 @@ const image = new ImageResponse(
     }}
   >
     {/* Header */}
-    <div style={{ alignItems: "center", display: "flex", marginBottom: "40px" }}>
+    <div
+      style={{ alignItems: "center", display: "flex", marginBottom: "40px" }}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 32 32"
@@ -31,15 +33,51 @@ const image = new ImageResponse(
         height="56"
         style={{ marginRight: "18px" }}
       >
-        <path d="M 32 16 C 32 28.8 28.8 32 16 32 C 3.2 32 0 28.8 0 16 C 0 3.2 3.2 0 16 0 C 28.8 0 32 3.2 32 16 Z" fill="#000" />
+        <path
+          d="M 32 16 C 32 28.8 28.8 32 16 32 C 3.2 32 0 28.8 0 16 C 0 3.2 3.2 0 16 0 C 28.8 0 32 3.2 32 16 Z"
+          fill="#000"
+        />
         <g transform="translate(4, 4) scale(1)">
-          <circle cx="8" cy="8" r="6" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
-          <path d="M18.09 10.37A6 6 0 1 1 10.34 18" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
-          <path d="M7 6h1v4" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
-          <path d="m16.71 13.88.7.71-2.82 2.82" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+          <circle
+            cx="8"
+            cy="8"
+            r="6"
+            fill="none"
+            stroke="#fff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M18.09 10.37A6 6 0 1 1 10.34 18"
+            fill="none"
+            stroke="#fff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M7 6h1v4"
+            fill="none"
+            stroke="#fff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+          <path
+            d="m16.71 13.88.7.71-2.82 2.82"
+            fill="none"
+            stroke="#fff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
         </g>
       </svg>
-      <div style={{ color: "#000", display: "flex", fontSize: "42px", fontWeight: "bold" }}>
+      <div
+        style={{
+          color: "#000",
+          display: "flex",
+          fontSize: "42px",
+          fontWeight: "bold",
+        }}
+      >
         SplitSend
       </div>
     </div>
@@ -100,7 +138,14 @@ const image = new ImageResponse(
         justifyContent: "space-between",
       }}
     >
-      <div style={{ color: "#333", display: "flex", fontSize: "24px", fontWeight: "bold" }}>
+      <div
+        style={{
+          color: "#333",
+          display: "flex",
+          fontSize: "24px",
+          fontWeight: "bold",
+        }}
+      >
         splitsend.app
       </div>
       <div style={{ display: "flex", gap: "12px" }}>
@@ -126,10 +171,10 @@ const image = new ImageResponse(
   {
     fonts: [
       {
-        name: "Google Sans Flex",
         data: fontData,
-        weight: 700,
+        name: "Google Sans Flex",
         style: "normal" as const,
+        weight: 700,
       },
     ],
     height: 630,

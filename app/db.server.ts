@@ -1,7 +1,7 @@
 import { mkdir, readdir } from "node:fs/promises";
 
-import { createClient } from '@libsql/client';
-import type { Client } from '@libsql/client';
+import { createClient } from "@libsql/client";
+import type { Client } from "@libsql/client";
 
 const isRemote = !!(
   process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN

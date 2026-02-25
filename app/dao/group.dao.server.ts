@@ -30,7 +30,9 @@ export const GroupDAO = {
         args: [slug],
         sql: "SELECT id FROM groups WHERE slug = ?",
       });
-      if (existing.rows.length === 0) {break;}
+      if (existing.rows.length === 0) {
+        break;
+      }
       slug = generateSlug();
       attempts++;
     }

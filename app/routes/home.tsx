@@ -77,18 +77,34 @@ export function meta({}: Route.MetaArgs) {
         "Split expenses with friends, roommates, or travel groups. No account needed. Share a private link, track who owes what, and settle up. Free forever.",
       name: "description",
     },
-    { property: "og:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
-    { property: "og:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
-    { property: "og:image", content: "https://www.splitsend.app/og.png" },
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://www.splitsend.app" },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
-    { name: "twitter:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
-    { name: "twitter:image", content: "https://www.splitsend.app/og.png" },
-    { tagName: "link", rel: "canonical", href: "https://www.splitsend.app/" },
+    {
+      content:
+        "SplitSend: Free Bill Splitter. No Account, No App, Just a Link.",
+      property: "og:title",
+    },
+    {
+      content:
+        "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever.",
+      property: "og:description",
+    },
+    { content: "https://www.splitsend.app/og.png", property: "og:image" },
+    { content: "1200", property: "og:image:width" },
+    { content: "630", property: "og:image:height" },
+    { content: "website", property: "og:type" },
+    { content: "https://www.splitsend.app", property: "og:url" },
+    { content: "summary_large_image", name: "twitter:card" },
+    {
+      content:
+        "SplitSend: Free Bill Splitter. No Account, No App, Just a Link.",
+      name: "twitter:title",
+    },
+    {
+      content:
+        "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever.",
+      name: "twitter:description",
+    },
+    { content: "https://www.splitsend.app/og.png", name: "twitter:image" },
+    { href: "https://www.splitsend.app/", rel: "canonical", tagName: "link" },
   ];
 }
 
@@ -459,7 +475,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
                   }
                   open={dismissingUrl !== null}
                   onOpenChange={(open) => {
-                    if (!open) {setDismissingUrl(null);}
+                    if (!open) {
+                      setDismissingUrl(null);
+                    }
                   }}
                 >
                   <Form method="post">
@@ -764,10 +782,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             className="card"
             style={{ padding: "1.25rem", textAlign: "center" }}
           >
-            <LinkIcon
-              size={24}
-              className="inline-block mb-2 opacity-60"
-            />
+            <LinkIcon size={24} className="inline-block mb-2 opacity-60" />
             <strong style={{ display: "block", marginBottom: "0.25rem" }}>
               2. Share the link
             </strong>
@@ -779,10 +794,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             className="card"
             style={{ padding: "1.25rem", textAlign: "center" }}
           >
-            <ReceiptText
-              size={24}
-              className="inline-block mb-2 opacity-60"
-            />
+            <ReceiptText size={24} className="inline-block mb-2 opacity-60" />
             <strong style={{ display: "block", marginBottom: "0.25rem" }}>
               3. Add expenses
             </strong>
@@ -896,10 +908,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
       >
         <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
           <div className="flex justify-center">
-            <ArrowRightLeft
-              size={28}
-              className="mb-2 opacity-50"
-            />
+            <ArrowRightLeft size={28} className="mb-2 opacity-50" />
           </div>
           <h2
             style={{
@@ -919,9 +928,9 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               opacity: 0.6,
             }}
           >
-            When everyone owes everyone, things get messy. SplitSend
-            simplifies the debts so your group settles up with the fewest
-            payments possible. Splitwise charges for this. Here it's free.
+            When everyone owes everyone, things get messy. SplitSend simplifies
+            the debts so your group settles up with the fewest payments
+            possible. Splitwise charges for this. Here it's free.
           </p>
         </div>
         <div
@@ -985,8 +994,8 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textAlign: "center",
           }}
         >
-          Instead of everyone paying everyone back individually, we find
-          the shortest path to settle all debts.
+          Instead of everyone paying everyone back individually, we find the
+          shortest path to settle all debts.
         </p>
       </section>
 

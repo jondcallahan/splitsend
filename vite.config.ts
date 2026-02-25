@@ -18,7 +18,7 @@ export default defineConfig(({ isSsrBuild, command }) => ({
   },
 
   ssr: {
-    noExternal: command === "build" && isSsrBuild ? true : undefined,
     external: ["@vercel/og"],
+    noExternal: command === "build" && isSsrBuild ? true : undefined,
   },
 }));

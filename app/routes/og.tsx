@@ -26,13 +26,17 @@ function getFontData(): Buffer {
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const group = await GroupDAO.findBySlug(params.slug);
-  if (!group) {return new Response("Not Found", { status: 404 });}
+  if (!group) {
+    return new Response("Not Found", { status: 404 });
+  }
 
   const member = await MemberDAO.findByGroupIdAndToken(
     group.id,
     params.memberToken
   );
-  if (!member) {return new Response("Not Found", { status: 404 });}
+  if (!member) {
+    return new Response("Not Found", { status: 404 });
+  }
 
   const balances = await ExpenseDAO.getBalances(group.id);
   const myBalances = balances.filter(
@@ -289,10 +293,10 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     {
       fonts: [
         {
-          name: "Google Sans Flex",
           data: getFontData(),
-          weight: 700,
+          name: "Google Sans Flex",
           style: "normal",
+          weight: 700,
         },
       ],
       headers: {
