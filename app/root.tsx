@@ -33,8 +33,14 @@ import "./app.css";
 
 export const links: Route.LinksFunction = () => [
   { href: "/favicon.svg", rel: "icon", type: "image/svg+xml" },
-
 ];
+
+export function meta() {
+  return [
+    { name: "theme-color", content: "#faf9fb", media: "(prefers-color-scheme: light)" },
+    { name: "theme-color", content: "#0a0a0a", media: "(prefers-color-scheme: dark)" },
+  ];
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

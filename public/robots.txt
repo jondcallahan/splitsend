@@ -4,3 +4,5 @@ Allow: /$
 
 # Block all group pages (includes member pages, admin pages, and OG images)
 Disallow: /g/
+
+Sitemap: https://www.splitsend.app/sitemap.xml

@@ -23,10 +23,8 @@ import type { ShortcutGroup } from "~/components/help-overlay";
 import { AlertDialog, AlertDialogClose, Button } from "~/components/ui";
 import { useKeyboard } from "~/contexts/keyboard-context";
 import { GroupDAO } from "~/dao/group.dao.server";
-import {
-  parseRecentGroups,
-  removeRecentGroup,
-} from "~/lib/recent-groups.server";
+import { parseRecentGroups, removeRecentGroup } from "~/lib/recent-groups.server";
+import { PromoVideoPlayer } from "~/components/promo-video";
 
 import type { Route } from "./+types/home";
 
@@ -84,6 +82,7 @@ export function meta({}: Route.MetaArgs) {
     { property: "og:image:height", content: "630" },
     { property: "og:type", content: "website" },
     { property: "og:url", content: "https://www.splitsend.app" },
+    { property: "og:site_name", content: "SplitSend" },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "SplitSend: Free Bill Splitter. No Account, No App, Just a Link." },
     { name: "twitter:description", content: "Split expenses with friends. No account needed. Share a link, track who owes what, and settle up. Free forever." },
@@ -120,78 +119,6 @@ export async function action({ request }: Route.ActionArgs) {
 
   const group = await GroupDAO.create(name);
   return redirect(`/g/${group.slug}/admin/${group.admin_token}`);
-}
-
-// ---------------------------------------------------------------------------
-// Phone mockup shell
-// ---------------------------------------------------------------------------
-function PhoneMockup({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        background: "#1c1c1e",
-        borderRadius: 40,
-        boxShadow:
-          "0 30px 70px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
-        flexShrink: 0,
-        padding: "10px",
-        width: 210,
-      }}
-    >
-      {/* Dynamic island */}
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          height: 22,
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            background: "#111",
-            borderRadius: 8,
-            height: 10,
-            width: 68,
-          }}
-        />
-      </div>
-
-      {/* Screen */}
-      <div
-        style={{
-          background: "var(--background, #f8f9fa)",
-          borderRadius: 28,
-          fontSize: "0.68rem",
-          lineHeight: 1.4,
-          minHeight: 400,
-          overflow: "hidden",
-          padding: "0.75rem 0.6rem",
-        }}
-      >
-        {children}
-      </div>
-
-      {/* Home indicator */}
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          height: 22,
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            background: "#444",
-            borderRadius: 3,
-            height: 3,
-            width: 64,
-          }}
-        />
-      </div>
-    </div>
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -279,7 +206,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
 
   return (
     <main className="container" style={{ marginTop: "10vh", maxWidth: 640 }}>
-      {/* JSON-LD FAQ structured data */}
+      {/* JSON-LD: FAQ */}
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -292,6 +219,45 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               acceptedAnswer: { "@type": "Answer", text: a },
               name: q,
             })),
+          }),
+        }}
+      />
+
+      {/* JSON-LD: WebApplication */}
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "SplitSend",
+            url: "https://www.splitsend.app",
+            description:
+              "Split expenses with friends, roommates, or travel groups. No account needed — share a private link, track who owes what, and settle up.",
+            applicationCategory: "FinanceApplication",
+            operatingSystem: "Any",
+            browserRequirements: "Requires JavaScript",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          }),
+        }}
+      />
+
+      {/* JSON-LD: Organization */}
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "SplitSend",
+            url: "https://www.splitsend.app",
+            logo: "https://www.splitsend.app/favicon.svg",
           }),
         }}
       />
@@ -311,7 +277,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             marginBottom: "0.5rem",
           }}
         >
-          <img src="/favicon.svg" alt="" width={36} height={36} /> SplitSend
+          <img src="/favicon.svg" alt="" width={36} height={36} /> SplitSend: free bill splitter
         </h1>
         <p
           style={{
@@ -338,6 +304,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
         </p>
       </div>
 
+
       {/* ------------------------------------------------------------------ */}
       {/* Create Group — the main action                                      */}
       {/* ------------------------------------------------------------------ */}
@@ -355,7 +322,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
               autoComplete="off"
             />
 
-            {actionData?.error && (
+            {actionData && "error" in actionData && actionData.error && (
               <p style={{ color: "var(--color-error, red)" }}>
                 {actionData.error}
               </p>
@@ -486,7 +453,7 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Device mockups                                                       */}
+      {/* See how it works                                                   */}
       {/* ------------------------------------------------------------------ */}
       <section style={{ marginBottom: "3rem" }}>
         <p
@@ -499,230 +466,10 @@ export default function Home({ loaderData, actionData }: Route.ComponentProps) {
             textTransform: "uppercase",
           }}
         >
-          What your group members see
+          See how it works
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "1.5rem",
-            justifyContent: "center",
-          }}
-        >
-          {/* Phone 1 — Balance view */}
-          <PhoneMockup>
-            <a
-              style={{
-                color: "inherit",
-                fontSize: "0.65rem",
-                opacity: 0.45,
-                textDecoration: "none",
-              }}
-            >
-              ← SplitSend
-            </a>
-            <div
-              style={{
-                fontSize: "0.95rem",
-                fontWeight: 700,
-                marginTop: "0.2rem",
-              }}
-            >
-              Ski Trip 2026
-            </div>
-            <div style={{ marginBottom: "0.75rem", opacity: 0.55 }}>
-              Logged in as Alex
-            </div>
-
-            <div
-              className="card"
-              style={{ marginBottom: "0.5rem", padding: "0.6rem" }}
-            >
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  fontWeight: 700,
-                  gap: "0.3rem",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <ArrowRightLeft size={12} /> Your Balances
-              </div>
-              <div
-                style={{
-                  borderBottom: "1px solid var(--border)",
-                  padding: "0.3rem 0",
-                }}
-              >
-                <span>
-                  Mike owes you{" "}
-                  <strong style={{ color: "var(--color-success, #2e7d32)" }}>
-                    $45.00
-                  </strong>
-                </span>
-              </div>
-              <div style={{ padding: "0.3rem 0" }}>
-                <span>
-                  You owe Sarah{" "}
-                  <strong style={{ color: "var(--color-error, #d32f2f)" }}>
-                    $12.50
-                  </strong>
-                </span>
-              </div>
-            </div>
-
-            <div className="card" style={{ padding: "0.6rem" }}>
-              <div style={{ fontWeight: 700, marginBottom: "0.4rem" }}>
-                Expenses
-              </div>
-              {[
-                { amount: "$320.00", label: "Hotel", paidBy: "Alex" },
-                { amount: "$180.00", label: "Lift tickets", paidBy: "Mike" },
-                { amount: "$95.00", label: "Dinner", paidBy: "Sarah" },
-              ].map((e) => (
-                <div
-                  key={e.label}
-                  style={{
-                    borderBottom: "1px solid var(--border)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    opacity: 0.75,
-                    padding: "0.25rem 0",
-                  }}
-                >
-                  <span>{e.label}</span>
-                  <span style={{ fontWeight: 600 }}>{e.amount}</span>
-                </div>
-              ))}
-            </div>
-          </PhoneMockup>
-
-          {/* Phone 2 — Add expense view */}
-          <PhoneMockup>
-            <a
-              style={{
-                color: "inherit",
-                fontSize: "0.65rem",
-                opacity: 0.45,
-                textDecoration: "none",
-              }}
-            >
-              ← SplitSend
-            </a>
-            <div
-              style={{
-                fontSize: "0.95rem",
-                fontWeight: 700,
-                marginTop: "0.2rem",
-              }}
-            >
-              Ski Trip 2026
-            </div>
-            <div style={{ marginBottom: "0.75rem", opacity: 0.55 }}>
-              Logged in as Mike
-            </div>
-
-            <div
-              className="card"
-              style={{ marginBottom: "0.5rem", padding: "0.6rem" }}
-            >
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                  fontWeight: 700,
-                  gap: "0.3rem",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <ArrowRightLeft size={12} /> Your Balances
-              </div>
-              <div style={{ padding: "0.3rem 0" }}>
-                <span style={{ opacity: 0.6 }}>You're all settled up! 🎉</span>
-              </div>
-            </div>
-
-            <div className="card" style={{ padding: "0.6rem" }}>
-              <div style={{ fontWeight: 700, marginBottom: "0.5rem" }}>
-                Add Expense
-              </div>
-              <div style={{ marginBottom: "0.35rem" }}>
-                <div
-                  style={{
-                    fontSize: "0.6rem",
-                    marginBottom: "0.2rem",
-                    opacity: 0.5,
-                  }}
-                >
-                  What was it for?
-                </div>
-                <div
-                  style={{
-                    background: "var(--muted, #f5f5f5)",
-                    borderRadius: 6,
-                    opacity: 0.8,
-                    padding: "0.35rem 0.5rem",
-                  }}
-                >
-                  Après-ski drinks
-                </div>
-              </div>
-              <div style={{ marginBottom: "0.35rem" }}>
-                <div
-                  style={{
-                    fontSize: "0.6rem",
-                    marginBottom: "0.2rem",
-                    opacity: 0.5,
-                  }}
-                >
-                  Amount
-                </div>
-                <div
-                  style={{
-                    background: "var(--muted, #f5f5f5)",
-                    borderRadius: 6,
-                    opacity: 0.8,
-                    padding: "0.35rem 0.5rem",
-                  }}
-                >
-                  $62.00
-                </div>
-              </div>
-              <div style={{ marginBottom: "0.5rem" }}>
-                <div
-                  style={{
-                    fontSize: "0.6rem",
-                    marginBottom: "0.2rem",
-                    opacity: 0.5,
-                  }}
-                >
-                  Who paid?
-                </div>
-                <div
-                  style={{
-                    background: "var(--muted, #f5f5f5)",
-                    borderRadius: 6,
-                    opacity: 0.8,
-                    padding: "0.35rem 0.5rem",
-                  }}
-                >
-                  Mike (you)
-                </div>
-              </div>
-              <Button
-                style={{
-                  fontSize: "0.65rem",
-                  padding: "0.4rem 0",
-                  width: "100%",
-                }}
-              >
-                Add Expense
-              </Button>
-            </div>
-          </PhoneMockup>
-        </div>
+        <PromoVideoPlayer />
       </section>
 
       {/* ------------------------------------------------------------------ */}
